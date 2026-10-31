@@ -704,6 +704,18 @@ body.lowfx .hg-dot{animation:none}
   .sw-update{bottom:20px}
 }
 
+.wk-tools{
+  display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;
+}
+.wk-tools .wk-toggle{margin:0;flex:1 1 240px;max-width:360px}
+.wk-new{
+  flex-shrink:0;padding:11px 15px;border-radius:var(--rF);
+  background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.32);
+  color:var(--pl);font-weight:800;font-size:.78rem;white-space:nowrap;
+  transition:background var(--fast) var(--ease),transform var(--fast) var(--ease);
+}
+.wk-new:hover{background:rgba(124,58,237,.24)}
+.wk-new:active{transform:scale(.97)}
 .wk-toggle{
   display:flex;gap:4px;padding:4px;margin:0 auto 16px;max-width:360px;
   background:rgba(0,0,0,.35);border:1px solid var(--b0);border-radius:var(--rF);
@@ -1195,6 +1207,12 @@ body.lowfx .br-fill{filter:none;transition:none}
   color:#f87171;font-size:.85rem;transition:all var(--fast) var(--ease);
 }
 .btn-del-sch:hover{background:rgba(248,113,113,.2)}
+.btn-edit-sch{
+  flex-shrink:0;padding:9px 12px;border-radius:var(--r8);
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.28);
+  color:var(--c);font-size:.85rem;transition:all var(--fast) var(--ease);
+}
+.btn-edit-sch:hover{background:rgba(34,211,238,.2)}
 .sch-card.own{border-color:rgba(34,211,238,.3)}
 .sch-card.own .lvl{background:rgba(34,211,238,.14);color:var(--c);border-color:rgba(34,211,238,.3)}
 .add-card{
@@ -1786,9 +1804,12 @@ body.lowfx .br-fill{filter:none;transition:none}
       <div class="sh" id="wk-head">📍 Dagens pass – <span id="sch-lbl" class="sch-lbl-val">Inget valt</span></div>
 
       <!-- Växla mellan dagens pass och hela veckan -->
-      <div class="wk-toggle" id="wk-toggle" role="group" aria-label="Välj vy">
-        <button class="wk-tg" id="wk-tg-day"  data-act="wkView" data-v="day"  aria-pressed="true">📍 Idag</button>
-        <button class="wk-tg" id="wk-tg-week" data-act="wkView" data-v="week" aria-pressed="false">🗓️ Hela veckan</button>
+      <div class="wk-tools">
+        <div class="wk-toggle" id="wk-toggle" role="group" aria-label="Välj vy">
+          <button class="wk-tg" id="wk-tg-day"  data-act="wkView" data-v="day"  aria-pressed="true">📍 Idag</button>
+          <button class="wk-tg" id="wk-tg-week" data-act="wkView" data-v="week" aria-pressed="false">🗓️ Hela veckan</button>
+        </div>
+        <button class="wk-new" data-act="openBuilder" aria-label="Skapa eget schema">➕ Eget schema</button>
       </div>
     </div>
 
@@ -1948,7 +1969,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v10  ·  No-login  ·  Firebase-ready
+   GymApp v11  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2761,7 +2782,9 @@ function renderSchGrid() {
       </div>
       <div class="sch-actions">
         <button class="btn-sel">${i === SCH ? '✓ Valt schema' : 'Välj detta schema'}</button>
-        ${own ? `<button class="btn-del-sch" title="Radera schemat" data-stop
+        ${own ? `<button class="btn-edit-sch" title="Redigera schemat" data-stop
+                   data-act="editMySched" data-i="${i - nBuiltIn}">✏️</button>
+                 <button class="btn-del-sch" title="Radera schemat" data-stop
                    data-act="delMySched" data-i="${i - nBuiltIn}">🗑</button>` : ''}
       </div>
     </div>`;
@@ -3671,7 +3694,23 @@ window.toast = msg => {
 /* ════════════════════════════════════════════════
    SCHEMA-BYGGARE – UI
 ════════════════════════════════════════════════ */
-let _draft = null;   // senaste analyserade schemat
+let _draft = null;    // senaste analyserade schemat
+let _editIdx = null;  // index i UD.mySched när ett eget schema redigeras
+
+const SB_TITLE_NEW  = '➕ Skapa eget schema';
+const SB_TITLE_EDIT = '✏️ Redigera schema';
+
+function sbTitle(t) {
+  const el = $('#sb-title');
+  if (el) el.textContent = t;
+}
+
+function resetBuilderForm() {
+  _draft = null;
+  const ta = $('#sb-raw');  if (ta) ta.value = '';
+  const nb = $('#sb-name'); if (nb) nb.value = '';
+  const rs = $('#sb-result'); if (rs) rs.hidden = true;
+}
 
 window.openBuilder = () => {
   const m = $('#sb-modal');
@@ -3686,6 +3725,35 @@ window.closeBuilder = () => {
   if (!m || !m.classList.contains('show')) return;
   m.classList.remove('show');
   document.body.style.overflow = '';
+  _editIdx = null;
+  sbTitle(SB_TITLE_NEW);
+};
+
+/* Redigera ett befintligt eget schema – samma byggare, men sparar över */
+window.editMySched = i => {
+  const s = Array.isArray(UD.mySched) ? UD.mySched[i] : null;
+  if (!s || !Array.isArray(s.days)) return;
+
+  const days = JSON.parse(JSON.stringify(s.days));
+  _draft = {
+    days,
+    warn: [],
+    exCount:  days.reduce((a, d) => a + (d.ex?.length || 0), 0),
+    dayCount: days.filter(d => d.ex?.length).length,
+    noImg:    days.flatMap(d => d.ex || []).filter(e => !e.img).length,
+  };
+  _editIdx = i;
+
+  const m  = String(s.name || '').trim().match(/^(\p{Extended_Pictographic}+)\s*(.*)$/u);
+  const em = $('#sb-emoji'), nm = $('#sb-name');
+  if (em) em.value = (m ? m[1] : '⭐').slice(0, 4);
+  if (nm) nm.value = (m ? m[2] : String(s.name || '')).slice(0, 40);
+  const ta = $('#sb-raw'); if (ta) ta.value = '';
+
+  $('#sb-result').hidden = false;
+  sbTitle(SB_TITLE_EDIT);
+  renderDraft();
+  openBuilder();
 };
 
 window.fillExample = () => {
@@ -3819,8 +3887,9 @@ window.loadTemplate = i => {
 
 window.saveSchema = () => {
   if (!_draft) { toast('🔍 Analysera schemat först'); return; }
-  const emoji = ($('#sb-emoji')?.value || '⭐').trim().slice(0, 4);
-  const nm    = ($('#sb-name')?.value  || '').trim().slice(0, 40) || 'Mitt egna schema';
+  const emoji   = ($('#sb-emoji')?.value || '⭐').trim().slice(0, 4);
+  const nm      = ($('#sb-name')?.value  || '').trim().slice(0, 40) || 'Mitt egna schema';
+  const editIdx = _editIdx;
 
   const obj = {
     name: `${emoji} ${nm}`.trim(),
@@ -3831,6 +3900,22 @@ window.saveSchema = () => {
     days: _draft.days,
   };
 
+  /* Redigering – spara över befintligt schema */
+  if (editIdx !== null) {
+    const old = UD.mySched[editIdx];
+    if (!old) { toast('⚠️ Schemat hittades inte'); return; }
+    if (old.created) obj.created = old.created;   // behåll ursprungligt datum
+    UD.mySched[editIdx] = obj;
+    SCH = SCHED.length + editIdx;
+    UD.sch = SCH;
+    save();
+    closeBuilder();
+    resetBuilderForm();
+    try { renderSchGrid(); renderWorkout(); updNavDay(); updStats(); } catch {}
+    toast(`✅ "${nm}" uppdaterat!`);
+    return;
+  }
+
   const r = saveMySched(obj);
   if (!r.ok) { toast('⚠️ ' + r.msg); return; }
 
@@ -3839,11 +3924,7 @@ window.saveSchema = () => {
   try { renderSchGrid(); } catch {}
   toast(`✅ "${nm}" sparat och aktiverat!`);
 
-  // Rensa formuläret
-  _draft = null;
-  const ta = $('#sb-raw'); if (ta) ta.value = '';
-  const nb = $('#sb-name'); if (nb) nb.value = '';
-  const rs = $('#sb-result'); if (rs) rs.hidden = true;
+  resetBuilderForm();
 };
 
 window.delMySched = i => {
@@ -3908,6 +3989,9 @@ window.importJSON = ev => {
       const exCount  = days.reduce((a, d) => a + d.ex.length, 0);
       const dayCount = days.filter(d => d.ex.length).length;
       _draft = { days, warn:[], exCount, dayCount, noImg: days.flatMap(d => d.ex).filter(e => !e.img).length };
+      /* Importerad fil blir alltid ett nytt schema */
+      _editIdx = null;
+      sbTitle(SB_TITLE_NEW);
 
       const nb = $('#sb-name');
       if (nb) nb.value = String(j.name || 'Importerat schema').replace(/^\S*\s/, '').slice(0, 40);
@@ -4133,8 +4217,9 @@ Object.assign(ACTIONS, {
   bReset:       () => bReset(),
   togNotif:     () => togNotif(),
   saveNotif:    () => saveNotif(),
-  openBuilder:  () => openBuilder(),
+  openBuilder:  () => { _editIdx = null; sbTitle(SB_TITLE_NEW); openBuilder(); },
   closeBuilder: () => closeBuilder(),
+  editMySched:  d => editMySched(+d.i),
   fillExample:  () => fillExample(),
   loadTemplate: d => loadTemplate(d.i),
   analyze:      () => analyzeSchema(),
@@ -4178,7 +4263,7 @@ window.GymBackupHost = {
 window.GymApp = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v10',
+  version: 'v11',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };

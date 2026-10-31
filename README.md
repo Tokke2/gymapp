@@ -12,7 +12,7 @@ appen fungerar offline.
 
 | Funktion | Beskrivning |
 |---|---|
-| 📋 Schema | Eget veckoschema med övningar, set, reps, bilder, steg och andning |
+| 📋 Egna scheman | Skapa, redigera och radera egna veckoscheman – via text, mall eller JSON |
 | 🏋️ Dagens pass | Schemafliken visar bara **dagens** träning – inte morgondagens |
 | 💾 Viktlogg | Spara kg per övning och se historiken under Framsteg |
 | ⬆️ Auto-progression | Efter 2 pass i rad på samma vikt föreslås +2,5 kg (bara förslag) |
@@ -39,6 +39,18 @@ Schema-fliken:
 
 Schemat är ett vanligt eget schema – det kan redigeras eller raderas. Efter det
 läggs det inte tillbaka automatiskt.
+
+## Egna scheman
+
+Under **Schema** finns knappen **➕ Eget schema** (och korten på hemskärmen):
+
+- **Klistra in text** – appen tolkar dagar, set, reps och matchar bilder automatiskt
+- **Ladda mall** – utgå från standardpasset och ändra det du vill
+- **JSON** – importera eller exportera ett schema
+- **Redigera** – pennan på ett eget schema öppnar samma byggare och sparar över det
+- **Radera** – papperskorgen tar bort schemat
+
+Upp till 10 egna scheman. Det valda schemat styr vilket pass som visas i dagsvyn.
 
 ## Filstruktur
 
