@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="GymApp"/>
   <meta name="format-detection" content="telephone=no"/>
+  <meta name="author" content="Rickard Längkvist"/>
   <meta name="description" content="GymApp – Din personliga träningsapp med schema, vikter, balans och progression. Fungerar offline."/>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="icons/icon-192.png"/>
@@ -552,6 +553,11 @@ body.lowfx .hg-dot{animation:none}
 .btn-sel:hover::after{transform:translateX(100%);transition:transform .6s var(--ease)}
 .btn-sel:active{transform:translateY(0) scale(.98)}
 .sch-card.sel .btn-sel{background:var(--grad-g);box-shadow:0 4px 14px rgba(74,222,128,.34);color:#052e16}
+.copyright{
+  margin:18px 0 4px;text-align:center;
+  font-size:.72rem;color:var(--t3);letter-spacing:.02em;
+}
+
 .sel-info{
   display:none;max-width:480px;margin:0 auto 20px;
   background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.28);
@@ -1767,6 +1773,8 @@ body.lowfx .br-fill{filter:none;transition:none}
         </span>
         <span class="ext-arrow" aria-hidden="true">›</span>
       </a>
+
+      <p class="copyright">© 2026 Rickard Längkvist</p>
     </div>
   </div>
 </section>
@@ -1940,7 +1948,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v9  ·  No-login  ·  Firebase-ready
+   GymApp v10  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2131,10 +2139,11 @@ const QUOTES = [
 /* ── DATA ────────────────────────────────────── */
 /* ════════════════════════════════════════════════
    SCHEMAN
-   Inga färdiga scheman ligger i appen – listan börjar
-   tom och fylls bara med det du själv skapar.
-   TEMPLATES nedan kan laddas in med ett tryck från
-   byggaren, men räknas inte som ett befintligt schema.
+   SCHED är tom – alla scheman är egna och sparas i
+   UD.mySched. Vid första start läggs standardpasset
+   (TEMPLATES[0]) in automatiskt så Schema-fliken
+   aldrig är tom. Det kan sedan raderas som vilket
+   eget schema som helst.
 ════════════════════════════════════════════════ */
 const SCHED = [];
 
@@ -2182,6 +2191,21 @@ const TEMPLATES = [
     { n:'Söndag',  t:'rest', ex:[] },
   ]},
 ];
+
+/* Standardpasset – läggs in en gång vid första start så att
+   Schema-fliken aldrig är tom. Därefter är det ett vanligt
+   eget schema som kan redigeras eller raderas. */
+const DEFAULT_SCHEMA_NAME = '🔥 Mitt Schema';
+function defaultSchema() {
+  return {
+    v: 1,
+    name: DEFAULT_SCHEMA_NAME,
+    lv: 'own',
+    own: true,
+    desc: 'Standardpass – 2 gymdagar, 3 hemmadagar och 2 vilodagar.',
+    days: JSON.parse(JSON.stringify(TEMPLATES[0].days)),
+  };
+}
 
 /* ════════════════════════════════════════════════
    BILDBANK + SMART MATCHNING
@@ -2425,6 +2449,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* 1 · Läs och sanera */
   UD  = LOG.safe('load', () => sanitize(LS.data()), sanitize(null));
+
+  /* 1b · Första starten: standardpasset läggs in och väljs.
+     Flaggan gör att schemat inte läggs tillbaka om det raderas. */
+  if (!UD.defaultSeeded) {
+    UD.defaultSeeded = 1;
+    const i = UD.mySched.findIndex(s => s && s.name === DEFAULT_SCHEMA_NAME);
+    if (i >= 0) {
+      UD.sch = SCHED.length + i;
+    } else if (UD.mySched.length < 10) {
+      UD.mySched.push(defaultSchema());
+      UD.sch = SCHED.length + UD.mySched.length - 1;
+    }
+    LOG.safe('seed', () => save());
+  }
+
   SCH = Math.max(0, Math.min(UD.sch | 0, allSched().length - 1));
 
   /* 2 · Rita det som syns direkt – resten väntar till nästa frame */
@@ -3121,6 +3160,24 @@ function renderWorkout() {
     }
   }
 }
+
+/* Dagsvyn visar bara dagens pass. Har appen stått öppen över midnatt
+   ritas den om så att gårdagens kort inte ligger kvar. */
+let _dayKey = new Date().toDateString();
+function checkDayRollover() {
+  const now = new Date().toDateString();
+  if (now === _dayKey) return;
+  _dayKey = now;
+  LOG.safe('newday', () => {
+    updNavDay();
+    renderWorkout();
+    renderActivityDots();
+    updStats();
+  });
+}
+addEventListener('focus', checkDayRollover);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDayRollover(); });
+setInterval(checkDayRollover, 60_000);
 
 /* ════════════════════════════════════════════════
    RENDER — BALANCE
@@ -4121,7 +4178,7 @@ window.GymBackupHost = {
 window.GymApp = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v9',
+  version: 'v10',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };
