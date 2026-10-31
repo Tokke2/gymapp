@@ -837,6 +837,53 @@ Räknas som "finns i spec" – nästa `förslag` måste ge andra idéer.
 | F149 | 📉 **Noll Layout-Shift (CLS = 0) & förberäknad kort-geometri** – reserverar exakt höjd för alla bilder och paneler innan de laddas så sidan aldrig hoppar och webbläsaren sparar layout-CPU |
 | F150 | 🧪 **Mikro-evidenskort ("🔬 Varför funkar detta?")** – 2 meningar forskningsbakgrund per övning samt för 15–30 reps, 100-reps och balansrutinen för den som vill förstå mekanismen |
 
+### Omgång 7 – 2026-10-31 *(från kommandot `förslag` – 25 nya, ingen byggd)*
+
+**Egna övningar & scheman**
+| # | Idé |
+|---|---|
+| F151 | 🧩 **Egen övningsbank** – skapa egna övningar (namn, emoji, muskler, steg, andning) som sparas och kan återanvändas i alla scheman |
+| F152 | 📷 **Egen bild per övning** – ta foto eller välj fil; bilden beskärs och komprimeras lokalt innan den sparas och används av tumme, panel och offline-cache |
+| F153 | 📑 **Kopiera schema** – duplicera ett eget schema med ett tryck och ändra kopian, utan att röra originalet |
+| F154 | 📅 **Kopiera dag** – kopiera alla övningar från en veckodag till en annan (t.ex. måndag → onsdag) |
+| F155 | ⚡ **Snabbredigera i dagsvyn** – lägg till, ta bort eller byt en övning direkt i dagens pass utan att öppna hela byggaren |
+| F156 | ⭐ **Favoritövningar** – stjärnmärk övningar och lägg till dem med ett tryck när du bygger nya scheman |
+| F157 | 🧪 **Teknikläge** – visar bild, steg och andning utan vikt, reps och timer – för att lära in rörelsen först |
+| F158 | 🔒 **Lås schema** – skydda ett schema mot oavsiktlig redigering; kräver ett extra tryck att låsa upp |
+
+**Under passet**
+| # | Idé |
+|---|---|
+| F159 | ⏱️ **Set-tid (arbetstid)** – starta/stoppa per set och se hur länge setet tog, med snitt per övning i historiken |
+| F160 | 🕐 **Passklocka** – total tid för passet inklusive vila, startar vid första avbockningen och stannar när passet är klart |
+| F161 | 🔇 **Tyst passläge** – ett tryck stänger av animationer, vibrationer och ljud under passet (bra på gym eller sent) |
+| F162 | 🧾 **Senaste passet per övning** – i panelen visas "senast: 40 kg × 12, för 6 dagar sedan" så du vet vad du ska slå |
+
+**Tillgänglighet & tydlighet**
+| # | Idé |
+|---|---|
+| F163 | 🎨 **Färgblindssäker kodning** – gym/hemma/vila får mönster och ikoner utöver färg, så dagtyperna går att skilja även utan färgseende |
+| F164 | 🔊 **Skärmläsarannonser i timern** – `aria-live` som säger "30 sekunder kvar", "10", "3", "klart" utan att spamma |
+| F165 | ⌨️ **Tangentbordsgenvägar** – 1–4 byter flik, mellanslag bockar av, Esc stänger paneler, `?` visar översikten |
+| F166 | ⚖️ **kg/lb-växlare** – visa vikter i pound för lbs-hantlar; allt lagras fortfarande i kg |
+| F167 | 🌙 **Nattdämpning** – efter kl 21 dämpas kontrast och glöd automatiskt (kan stängas av), skonsamt för kvällspasset |
+
+**Lagring & prestanda**
+| # | Idé |
+|---|---|
+| F168 | 📊 **Lagringskvitto per schema** – visa kB per schema och de största posterna, så du ser vad som tar plats |
+| F169 | 🧹 **Auto-trimning av bildcachen** – rensar cachade bilder för scheman som raderats eller inte använts på 30 dagar |
+| F170 | 🗂️ **Dagscache för bilder** – cachar bara bilderna för dagens och nästa pass i stället för alla 33 direkt |
+| F171 | 🔋 **Batterisparvakt** – slår på `lowfx` automatiskt när batteriet är under 20 % och laddaren inte är i |
+
+**Dela & hitta**
+| # | Idé |
+|---|---|
+| F172 | 📤 **Dela dagens pass som text** – skicka övningar, set och reps som vanlig text via telefonens delningsmeny |
+| F173 | 📶 **Offline-indikator** – liten badge som visar "Offline – allt funkar" när nätet försvinner, så du slipper undra |
+| F174 | 🆕 **"Vad är nytt" efter uppdatering** – ett kort ark visar de senaste ändringarna första gången efter en ny version |
+| F175 | 📦 **Export/import av enskild övning** – spara eller skicka en övning som JSON och lägg in den i ett annat schema |
+
 ---
 
 ## ✅ Checklista
