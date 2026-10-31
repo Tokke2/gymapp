@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"/>
+  <meta name="theme-color" content="#06060d" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#22d3ee"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Balans"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="description" content="GymApp – Daglig balansrutin på 2–3 minuter. Trygg och enkel med stöd."/>
+  <link rel="manifest" href="gymapp/manifest.json"/>
+  <link rel="apple-touch-icon" href="gymapp/icons/icon-192.png"/>
+  <link rel="icon" href="gymapp/icons/icon-192.png"/>
+  <title>⚖️ Balansrutin – GymApp</title>
+<style>
+/* ── TOKENS (matchar index.html exakt) ── */
+:root {
+  --bg:#06060d; --bg2:#0b0b18;
+  --s0:rgba(255,255,255,.045); --s1:rgba(255,255,255,.08); --s2:rgba(255,255,255,.12);
+  --b0:rgba(255,255,255,.07);  --b1:rgba(255,255,255,.15); --b2:rgba(255,255,255,.24);
+
+  --p:#7c3aed; --pl:#a78bfa; --pd:#4c1d95;
+  --c:#22d3ee; --cl:#67e8f9; --cd:#0e7490;
+  --g:#4ade80; --gl:#86efac; --gd:#15803d;
+  --o:#f97316; --ol:#fdba74;
+  --r:#ef4444; --rl:#fca5a5;
+  --b:#60a5fa; --bl:#93c5fd;
+  --y:#facc15; --yl:#fde047;
+  --pk:#ec4899; --pkl:#f9a8d4;
+
+  --grad-p:linear-gradient(135deg,#a78bfa,#7c3aed);
+  --grad-c:linear-gradient(135deg,#67e8f9,#0891b2);
+  --grad-g:linear-gradient(135deg,#86efac,#16a34a);
+  --grad-o:linear-gradient(135deg,#fdba74,#ea580c);
+  --grad-b:linear-gradient(135deg,#93c5fd,#2563eb);
+  --grad-pk:linear-gradient(135deg,#f9a8d4,#db2777);
+  --grad-fire:linear-gradient(135deg,#facc15,#f97316,#ef4444);
+  --grad-hero:linear-gradient(120deg,#67e8f9,#4ade80,#a78bfa,#f9a8d4,#67e8f9);
+
+  --t1:#f8fafc; --t2:#a8b3c4; --t3:#64748b;
+
+  --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r20:20px; --r24:24px; --rF:9999px;
+  --blur:blur(16px); --blurH:blur(28px);
+  --ease:cubic-bezier(.4,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --fast:.14s; --mid:.24s; --slow:.4s;
+
+  --gC:0 0 24px rgba(34,211,238,.24);
+  --gP:0 0 24px rgba(124,58,237,.3);
+  --gG:0 0 24px rgba(74,222,128,.2);
+  --sh1:0 2px 8px rgba(0,0,0,.3);
+  --sh2:0 6px 20px rgba(0,0,0,.4);
+  --sh3:0 12px 36px rgba(0,0,0,.5);
+}
+
+@keyframes hueShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-text-size-adjust:100%;
+  -moz-text-size-adjust:100%;
+  text-size-adjust:100%;
+  color-scheme:dark;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(34,211,238,.3) rgba(255,255,255,.04);
+}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{background:rgba(34,211,238,.28);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,211,238,.48)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',system-ui,sans-serif;
+  background:var(--bg);color:var(--t1);
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeSpeed;
+  overscroll-behavior-y:none;
+  padding-bottom:calc(60px + env(safe-area-inset-bottom, 0px));
+  padding-left:env(safe-area-inset-left, 0px);
+  padding-right:env(safe-area-inset-right, 0px);
+}
+button,input{
+  font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;
+  -webkit-appearance:none;appearance:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+input{font-size:16px}                    /* iOS zoomar inte in */
+img{display:block;max-width:100%;height:auto}
+
+/* Träffytor ≥44px på touch */
+@media(pointer:coarse){
+  button,.back-btn,.ex-head-row,.day-check,[data-act]{min-height:44px}
+  .preset{min-width:64px}
+  .day-check{min-width:44px}
+}
+button,.ex-head-row,.day-check,.preset,.day-lbl{
+  -webkit-user-select:none;user-select:none;
+}
+p,.step,.ex-desc,.meta-c{-webkit-user-select:text;user-select:text}
+
+/* ── ANIMATED MESH BG (samma orbs som index.html) ── */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(70px);animation:drift linear infinite;
+  contain:strict;              /* will-change borttaget – höll GPU-lager i onödan */
+}
+.orb1{width:460px;height:460px;
+  background:radial-gradient(circle,rgba(34,211,238,.15),transparent 70%);
+  top:-180px;left:-120px;animation-duration:20s}
+.orb2{width:420px;height:420px;
+  background:radial-gradient(circle,rgba(124,58,237,.12),transparent 70%);
+  bottom:-140px;right:-90px;animation-duration:17s;animation-direction:reverse}
+.orb3{width:300px;height:300px;
+  background:radial-gradient(circle,rgba(74,222,128,.08),transparent 70%);
+  top:45%;left:42%;animation-duration:26s;animation-delay:-7s}
+/* Bara translate – rotate på stor blur är dyrt på mobil */
+@keyframes drift{
+  0%  {transform:translate3d(0,0,0)}
+  33% {transform:translate3d(28px,-36px,0)}
+  66% {transform:translate3d(-18px,18px,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+body.idle .orb{animation-play-state:paused}   /* pausa i bakgrunden */
+body.lowfx .orb{animation:none;filter:blur(54px)}
+@media(prefers-reduced-motion:reduce){
+  .orb{animation:none}
+  .header-icon{animation:none}
+}
+
+/* ── STICKY BACK NAV ── */
+.back-nav{
+  position:sticky;top:0;z-index:90;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px max(18px, env(safe-area-inset-left, 0px)) 12px max(18px, env(safe-area-inset-right, 0px));
+  background:rgba(6,6,13,.88);
+  -webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  border-bottom:1px solid var(--b0);
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--t2);font-size:.82rem;font-weight:700;
+  padding:7px 14px;border-radius:var(--rF);
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);transition:all var(--fast);
+  text-decoration:none;
+}
+.back-btn:hover{color:var(--t1);border-color:var(--b1)}
+.nav-title{
+  font-size:.86rem;font-weight:800;color:var(--c);
+  background:linear-gradient(135deg,var(--c),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── HEADER ── */
+.header{
+  position:relative;z-index:1;
+  text-align:center;padding:clamp(20px, 3vw, 32px) 20px clamp(16px, 2.2vw, 22px);
+}
+.header-icon{
+  font-size:clamp(2.4rem, 4.5vw, 3.2rem);display:block;margin-bottom:10px;
+  filter:drop-shadow(0 0 22px rgba(34,211,238,.5));
+  animation:float 3.2s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.header h1{
+  font-size:clamp(1.65rem, 4vw, 2.2rem);font-weight:900;letter-spacing:-.04em;margin-bottom:5px;
+  color:var(--cl);
+  background:var(--grad-hero);background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:hueShift 9s ease infinite;
+}
+body.lowfx .header h1{animation:none}
+.header p{color:var(--t2);font-size:clamp(.81rem, 1.8vw, .89rem)}
+
+/* Badges row */
+.badge-row{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.hbadge{
+  display:flex;align-items:center;gap:5px;
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--rF);
+  padding:7px 15px;font-size:.79rem;font-weight:600;color:var(--t2);
+}
+.hbadge.streak{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25);color:var(--o)}
+.hbadge.today{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25);color:var(--g)}
+
+/* ── QUOTE ── */
+.qotd{
+  max-width:680px;margin:0 auto 16px;
+  background:linear-gradient(135deg,rgba(34,211,238,.07),rgba(124,58,237,.05));
+  border:1px solid rgba(34,211,238,.18);border-radius:var(--r16);
+  padding:13px 18px;font-style:italic;font-size:.81rem;
+  color:var(--t2);line-height:1.6;text-align:center;
+  position:relative;z-index:1;
+}
+.qotd b{color:var(--pl);font-style:normal;font-size:.73rem;display:block;margin-top:5px}
+
+/* ── INFO BANNER ── */
+.info-banner{
+  max-width:1140px;margin:0 auto 22px;
+  background:rgba(34,211,238,.07);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid rgba(34,211,238,.18);border-left:3px solid var(--c);
+  border-radius:var(--r16);padding:13px 18px;
+  font-size:.82rem;color:var(--t2);line-height:1.6;
+  position:relative;z-index:1;
+}
+.info-banner b{color:var(--c)}
+
+/* ── WRAP & RESPONSIV 2-KOLUMNS DASHBOARD ── */
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(14px, 2.5vw, 24px);position:relative;z-index:1}
+.bal-dashboard{
+  display:grid;grid-template-columns:1fr;gap:22px;align-items:start;
+}
+.bal-col-side,.bal-col-main{min-width:0;display:flex;flex-direction:column;gap:18px}
+
+/* ── SECTION HEADING ── */
+.sh{
+  font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.sh::after{content:'';flex:1;height:1px;background:var(--b0)}
+
+/* ── TIMER CARD ── */
+.timer-card{
+  background:var(--s1);-webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  border:1px solid var(--b1);border-radius:var(--r24);
+  padding:28px 24px;max-width:420px;width:100%;margin:0 auto;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.3),var(--gC);
+  position:relative;overflow:hidden;
+}
+.timer-card::before{
+  content:'';position:absolute;top:-55px;right:-55px;width:160px;height:160px;
+  background:radial-gradient(circle,rgba(34,211,238,.2),transparent 70%);pointer-events:none;
+}
+.timer-card::after{
+  content:'';position:absolute;bottom:-45px;left:-45px;width:130px;height:130px;
+  background:radial-gradient(circle,rgba(124,58,237,.14),transparent 70%);pointer-events:none;
+}
+.timer-lbl{
+  font-size:.66rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--c);margin-bottom:14px;position:relative;z-index:1;
+}
+
+/* SVG ring */
+.timer-ring{position:relative;width:150px;height:150px;margin:0 auto 15px}
+.timer-ring svg{transform:rotate(-90deg);width:150px;height:150px}
+.tr-bg  {fill:none;stroke:rgba(255,255,255,.06);stroke-width:9}
+.tr-fill{
+  fill:none;stroke:url(#tGrad);stroke-width:9;
+  stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:0;
+  transition:stroke-dashoffset .28s linear;
+  filter:drop-shadow(0 0 6px rgba(34,211,238,.5));
+}
+.timer-digits{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:1;
+}
+.timer-time{
+  font-size:2.3rem;font-weight:900;letter-spacing:3px;
+  font-variant-numeric:tabular-nums;line-height:1;
+  color:var(--cl);
+  background:linear-gradient(135deg,var(--cl),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.timer-sub{font-size:.59rem;color:var(--t3);margin-top:4px;letter-spacing:.08em}
+.timer-status{
+  font-size:.77rem;color:var(--t2);min-height:22px;
+  margin-bottom:15px;transition:color var(--fast);position:relative;z-index:1;
+}
+.timer-status.run {color:var(--c)}
+.timer-status.done{color:var(--g);font-weight:700}
+.timer-status.paused{color:var(--o)}
+
+/* Presets */
+.presets{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;position:relative;z-index:1}
+.preset{
+  background:rgba(34,211,238,.09);color:var(--c);
+  border:1px solid rgba(34,211,238,.22);
+  padding:6px 15px;border-radius:var(--rF);font-size:.74rem;font-weight:600;
+  transition:all var(--fast);
+}
+.preset:hover,.preset.on{background:rgba(34,211,238,.2);border-color:var(--c)}
+
+/* Timer buttons */
+.tbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.tbtn{padding:11px 18px;border-radius:var(--r12);font-weight:700;font-size:.82rem;transition:all var(--fast);flex:1;min-width:86px}
+.tbtn:hover{transform:translateY(-2px)}
+.tbtn.s{background:linear-gradient(135deg,var(--g),var(--gd));color:#000;box-shadow:0 4px 14px rgba(74,222,128,.32)}
+.tbtn.p{background:linear-gradient(135deg,var(--r),#b91c1c);color:#fff}
+.tbtn.r{background:rgba(255,255,255,.07);color:var(--t2);border:1px solid var(--b0)}
+
+/* ── EXERCISE GRID ── */
+.exercise-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));
+  gap:13px;
+}
+.ex-card{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-left:3px solid var(--c);
+  border-radius:var(--r16);padding:19px;
+  transition:border-color var(--fast) var(--ease),transform var(--fast) var(--ease);
+  content-visibility:auto;              /* hoppa över layout utanför skärmen */
+  contain-intrinsic-size:auto 280px;
+  min-width:0;display:flex;flex-direction:column;justify-content:space-between;
+}
+.ex-card:hover{transform:translateY(-2px);border-color:var(--b1);border-left-color:var(--c)}
+.ex-card.stol-card{border-left-color:var(--g)}
+.ex-card.stol-card:hover{border-left-color:var(--g)}
+
+.ex-num{font-size:.66rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+
+/* Clickable header row */
+.ex-head-row{
+  display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;user-select:none;gap:8px;
+  padding:4px 0 6px;border-radius:var(--r8);
+  transition:all var(--fast);
+}
+.ex-head-row:active{background:rgba(255,255,255,.03)}
+.ex-head-row:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.ex-head-txt{flex:1;min-width:0}
+.ex-title-row{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;margin-bottom:3px;flex-wrap:wrap;
+}
+.ex-head-row:hover .ex-title{color:var(--c)}
+.ex-title{font-size:.93rem;font-weight:700;transition:color var(--fast);overflow-wrap:anywhere}
+.ex-tag{
+  font-size:.63rem;font-weight:700;padding:2px 9px;
+  border-radius:var(--rF);white-space:nowrap;flex-shrink:0;
+}
+.ex-tag.vagg{background:rgba(34,211,238,.1);color:var(--c);border:1px solid rgba(34,211,238,.25)}
+.ex-tag.stol{background:rgba(74,222,128,.1);color:var(--g);border:1px solid rgba(74,222,128,.25)}
+.ex-time{font-size:.75rem;font-weight:700;color:var(--o);margin-top:3px}
+.ex-chevron{
+  font-size:.68rem;color:var(--t3);flex-shrink:0;
+  transition:transform var(--fast) var(--ease),color var(--fast);
+}
+.ex-card.open .ex-chevron{transform:rotate(180deg);color:var(--c)}
+
+/* Expandable panel */
+.ex-panel{display:none;margin-top:11px;animation:fdDn .22s var(--ease)}
+@keyframes fdDn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.ex-card.open .ex-panel{display:block}
+
+/* Image */
+.ex-img-wrap{
+  background:rgba(0,0,0,.3);border-radius:var(--r12);overflow:hidden;
+  margin-bottom:11px;aspect-ratio:16/9;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--b0);
+}
+.ex-img{width:100%;height:100%;object-fit:cover;display:block}
+.ex-img-err{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--t3);font-size:.72rem;width:100%;height:100%}
+
+/* Steps */
+.how-title{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--c);margin-bottom:8px}
+.steps{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.step{display:flex;gap:8px;align-items:flex-start;font-size:.74rem;color:var(--t2);line-height:1.5}
+.step-n{
+  flex-shrink:0;width:18px;height:18px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  color:#fff;font-size:.59rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+
+/* Meta + breath */
+.ex-meta2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.meta-b{background:rgba(0,0,0,.22);border-radius:var(--r8);padding:9px;border:1px solid var(--b0)}
+.meta-t{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:3px}
+.meta-c{font-size:.72rem;color:var(--t2);line-height:1.4}
+.meta-c.g{color:var(--g);font-style:italic}
+.breath-row{
+  display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--t2);
+  padding:7px 10px;border-radius:var(--r8);
+  background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);
+}
+
+/* Description */
+.ex-desc{font-size:.78rem;color:var(--t2);line-height:1.6;margin-top:10px}
+
+/* Done button */
+.ex-done-btn{
+  margin-top:12px;padding:10px;width:100%;
+  background:rgba(255,255,255,.05);border:1px solid var(--b0);
+  color:var(--t2);border-radius:var(--r12);font-size:.8rem;font-weight:700;
+  transition:all var(--fast);
+}
+.ex-done-btn:hover{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--g)}
+.ex-done-btn.done{background:rgba(74,222,128,.16);color:var(--g);border-color:rgba(74,222,128,.4);font-weight:800}
+
+/* ── WEEKLY PROGRESS ── */
+.progress-card{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:20px;margin:0;
+}
+.progress-card h3{font-size:.7rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.day-row{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.day-row:last-child{margin-bottom:0}
+.day-lbl{font-size:.78rem;color:var(--t2);width:68px;font-weight:600;flex-shrink:0}
+.day-lbl.today-lbl{color:var(--c);font-weight:800}
+.day-bar-bg{flex:1;background:rgba(255,255,255,.06);border-radius:6px;height:8px;overflow:hidden}
+.day-bar-fill{
+  height:100%;border-radius:6px;width:0%;
+  background:linear-gradient(90deg,var(--c),var(--g));
+  transition:width .45s var(--ease);
+  box-shadow:0 0 8px rgba(34,211,238,.4);
+}
+.day-bar-fill.missed{background:rgba(239,68,68,.35)}
+.day-check{
+  width:30px;height:30px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.14);
+  background:transparent;cursor:pointer;
+  font-size:.88rem;display:flex;align-items:center;justify-content:center;
+  transition:all var(--fast);flex-shrink:0;
+}
+.day-check:hover{border-color:var(--c)}
+.day-check.done{
+  background:linear-gradient(135deg,var(--c),var(--g));
+  border-color:transparent;
+  box-shadow:0 0 12px rgba(34,211,238,.4);color:#000;font-weight:700;
+}
+.day-check.today-check{border-color:var(--c);box-shadow:0 0 0 2px rgba(34,211,238,.3)}
+.day-check.missed-check{border-color:rgba(239,68,68,.35)}
+
+/* ── TOTAL RING ── */
+.total-card{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:22px;
+  text-align:center;margin:0;
+}
+.total-card h3{font-size:.7rem;font-weight:700;color:var(--pl);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.total-ring{position:relative;width:120px;height:120px;margin:0 auto 12px}
+.total-ring svg{transform:rotate(-90deg);width:120px;height:120px}
+.total-ring-bg  {fill:none;stroke:rgba(255,255,255,.06);stroke-width:10}
+.total-ring-fill{
+  fill:none;stroke:url(#totGrad);stroke-width:10;
+  stroke-linecap:round;stroke-dasharray:314;stroke-dashoffset:314;
+  transition:stroke-dashoffset .55s var(--ease);
+}
+.total-digits{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.total-pct{
+  font-size:1.65rem;font-weight:900;color:var(--pl);
+  background:linear-gradient(135deg,var(--pl),var(--c));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.total-lbl{font-size:.62rem;color:var(--t3);margin-top:2px}
+.total-text{font-size:.81rem;color:var(--t2)}
+
+/* ── MOTIVATIONS-BANNER ── */
+.motiv-banner{
+  background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(34,211,238,.07));
+  border:1px solid rgba(124,58,237,.22);border-radius:var(--r16);
+  padding:14px 18px;text-align:center;margin:0;
+  font-size:.83rem;font-weight:600;color:var(--pl);display:none;
+}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;color:var(--t3);font-size:.73rem;
+  padding:22px 18px;position:relative;z-index:1;
+}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));
+  transform:translate(-50%,20px);
+  background:rgba(14,14,24,.97);
+  border:1px solid var(--b1);border-radius:var(--rF);
+  padding:11px 20px;font-size:.82rem;font-weight:600;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+  opacity:0;pointer-events:none;z-index:900;
+  max-width:calc(100vw - 40px);text-align:center;
+  transition:opacity var(--mid) var(--ease),transform var(--mid) var(--ease);
+}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ── RESPONSIVE ALLA SKÄRMAR ── */
+@media(min-width:920px){
+  .bal-dashboard{
+    grid-template-columns:340px minmax(0,1fr);
+    gap:24px;
+  }
+  .bal-col-side{
+    position:sticky;top:68px;
+  }
+  .timer-card{max-width:none;margin:0}
+}
+@media(min-width:601px) and (max-width:919px){
+  .bal-col-side{
+    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+    gap:16px;align-items:stretch;
+  }
+  .timer-card{max-width:none;margin:0}
+  .total-card{display:flex;flex-direction:column;justify-content:center}
+  .exercise-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  .header{padding:22px 16px 16px}
+  .exercise-grid{grid-template-columns:1fr}
+  .ex-meta2{grid-template-columns:1fr}
+  .ex-card{padding:16px}
+  .timer-card{padding:24px 16px}
+  .presets{gap:6px}
+  .preset{flex:1;padding:10px 6px;font-size:.76rem}
+  .tbtns{gap:7px}
+  .tbtn{flex:1;padding:12px 8px}
+  .day-lbl{font-size:.75rem;min-width:52px}
+  .badge-row{gap:8px}
+  .hbadge{font-size:.74rem;padding:6px 12px}
+}
+@media(max-width:360px){
+  .ex-title{font-size:.86rem}
+  .preset{font-size:.7rem;padding:10px 4px}
+}
+/* Liggande läge på mobil – kompaktare header */
+@media(max-height:500px) and (orientation:landscape){
+  .header{padding:12px 18px 10px}
+  .header-icon{font-size:1.9rem;margin-bottom:4px;animation:none}
+  .back-nav{padding:8px 16px}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .back-nav{background:rgba(8,8,18,.98)}
+  .timer-card,.ex-card,.progress-card,.total-card,.info-banner{background:rgba(16,16,30,.95)}
+}
+@media(forced-colors:active){
+  .header h1,.nav-title,.timer-time,.total-pct{
+    -webkit-text-fill-color:currentColor;color:CanvasText;background:none;
+  }
+  .timer-card,.ex-card,.progress-card,.total-card{border:1px solid CanvasText}
+}
+@media(prefers-reduced-motion:reduce){
+  .ex-panel,.motiv-banner,.qotd{animation:none}
+  .ex-card:hover,.back-btn:hover{transform:none}
+  .day-bar-fill,.tr-fill,.total-ring-fill{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div id="bg" aria-hidden="true">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- SVG gradient defs -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <linearGradient id="tGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="totGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- Back navigation -->
+<nav class="back-nav" aria-label="Navigering">
+  <a href="gymapp/index.html" class="back-btn" aria-label="Tillbaka till GymApp">
+    ← Tillbaka
+  </a>
+  <span class="nav-title">⚖️ GymApp</span>
+</nav>
+
+<!-- Header -->
+<header class="header">
+  <span class="header-icon" aria-hidden="true">⚖️</span>
+  <h1>Daglig Balansrutin</h1>
+  <p>~2–3 min &nbsp;·&nbsp; Varje dag &nbsp;·&nbsp; Med stöd – trygg &amp; enkel</p>
+  <div class="badge-row">
+    <div class="hbadge streak" id="streak-badge" aria-live="polite">
+      🔥 <span id="streak-count">0 dagars streak</span>
+    </div>
+    <div class="hbadge today" id="today-badge" aria-live="polite">
+      ✅ <span id="today-count">0/6 idag</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- Quote of the day -->
+  <div class="qotd" id="qotd" style="display:none">
+    <span id="qotd-text"></span>
+    <b id="qotd-author"></b>
+  </div>
+
+  <!-- Info -->
+  <div class="info-banner">
+    💡 <b>Tips:</b> Gör rutinen på morgonen eller innan träning.
+    Håll alltid en hand nära stol eller vägg vid behov.
+    <b>Konsistens varje dag ger resultat</b> – resultaten syns efter 2–4 veckor! 🎯
+  </div>
+
+  <!-- Responsiv 2-kolumns dashboard på större skärmar -->
+  <div class="bal-dashboard">
+    <!-- Vänster/topp: Timer + Veckans genomförande -->
+    <div class="bal-col-side">
+      <div>
+        <div class="sh">⏱ Timer</div>
+        <div class="timer-card" role="timer" aria-label="Balans-timer">
+          <div class="timer-lbl">⏱ ÖVNINGSTIMER</div>
+
+          <div class="timer-ring">
+            <svg viewBox="0 0 150 150" aria-hidden="true">
+              <circle class="tr-bg"   cx="75" cy="75" r="70"/>
+              <circle class="tr-fill" cx="75" cy="75" r="70" id="timerRing"/>
+            </svg>
+            <div class="timer-digits">
+              <span class="timer-time" id="timerDisplay" aria-live="polite">00:30</span>
+              <span class="timer-sub"  id="timerSub">SEKUNDER</span>
+            </div>
+          </div>
+
+          <div class="timer-status" id="timerStatus">Välj tid och tryck Start</div>
+
+          <div class="presets" role="group" aria-label="Välj tid">
+            <button class="preset"    data-act="setSecs" data-s="20" aria-pressed="false">20 sek</button>
+            <button class="preset on" data-act="setSecs" data-s="30" aria-pressed="true">30 sek</button>
+            <button class="preset"    data-act="setSecs" data-s="60" aria-pressed="false">60 sek</button>
+            <button class="preset"    data-act="setSecs" data-s="90" aria-pressed="false">90 sek</button>
+          </div>
+
+          <div class="tbtns">
+            <button class="tbtn s" data-act="start" aria-label="Starta timer">▶ Start</button>
+            <button class="tbtn p" data-act="stop"  aria-label="Pausa timer">⏸ Pausa</button>
+            <button class="tbtn r" data-act="reset" aria-label="Återställ">↺ Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total ring -->
+      <div class="total-card">
+        <h3>📊 Veckans genomförande</h3>
+        <div class="total-ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="total-ring-bg"   cx="60" cy="60" r="50"/>
+            <circle class="total-ring-fill" cx="60" cy="60" r="50" id="totalRing"/>
+          </svg>
+          <div class="total-digits">
+            <span class="total-pct" id="totalPct">0%</span>
+            <span class="total-lbl">denna vecka</span>
+          </div>
+        </div>
+        <p class="total-text" id="totalText">Kryssa av dagar för att se din progress!</p>
+      </div>
+    </div>
+
+    <!-- Höger/huvud: Övningar + Veckans framsteg -->
+    <div class="bal-col-main">
+      <div>
+        <div class="sh">🧘 Övningar</div>
+        <div class="exercise-grid" id="exerciseGrid" role="list"></div>
+      </div>
+
+      <!-- Motivation banner (visas vid 6/6) -->
+      <div class="motiv-banner" id="motiv-banner" role="status" aria-live="polite"></div>
+
+      <!-- Weekly -->
+      <div>
+        <div class="sh">📅 Veckans framsteg</div>
+        <div class="progress-card">
+          <h3>📅 Avbockning per dag</h3>
+          <div id="dayRows"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>⚖️ GymApp – Balansrutin &nbsp;·&nbsp; Resultat syns efter 2–4 veckor 💪</footer>
+
+<script>
+'use strict';
+
+/* ════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════ */
+const EXERCISES = [
+  { id:0, num:'01', title:'Häl-till-tå gång på stället',
+    tag:'vagg', tagLabel:'🧱 väggstöd', time:'30 sekunder', icon:'🦶',
+    img:'gymapp/images/bal-heel-toe.png',
+    muscles:'Balansnervsystemet, vader, höftböjare, core',
+    desc:'Stå nära väggen med en hand lätt mot den. Lyft hälen på ena foten och ställ den framför tårna – som att gå på lina, men på stället.',
+    steps:['Stå med sidan mot väggen, hand lätt mot den','Lyft hälen på foten längst bak','Placera den framför den andra fotens tår – häl mot tå','Skifta vikten framåt och upprepa','Fokusera blicken på en fast punkt','Håll i 30 sek – öka takt gradvis'],
+    tip:'💡 Fokusera blicken på en fast punkt framför dig', breath:'Andas naturligt och jämnt' },
+  { id:1, num:'02', title:'Sittande benlyftar',
+    tag:'stol', tagLabel:'🪑 sittande', time:'20 reps per ben', icon:'🦵',
+    img:'gymapp/images/bal-leg-lift.png',
+    muscles:'Höftböjare (iliopsoas), quadriceps, core',
+    desc:'Sitt på en stol med rak rygg. Lyft ett ben rakt ut i 2 sek, håll 1 sek, sänk kontrollerat. Tränar höftböjare & kroppskontroll.',
+    steps:['Sitt med rak rygg, fötterna i golvet','Händerna på lårens sidor','Spänn magen lätt','Lyft ett ben rakt ut – håll knät sträckt','Håll 1–2 sek, sänk kontrollerat','Byt ben efter alla reps'],
+    tip:'💡 Håll ryggen rak – luta dig inte bakåt', breath:'Andas UT upp, IN ned' },
+  { id:2, num:'03', title:'Stå på ett ben',
+    tag:'vagg', tagLabel:'🧱 väggstöd', time:'20 sek × 2 per ben', icon:'🧍',
+    img:'gymapp/images/bal-one-leg.png',
+    muscles:'Balanscentrum, fotmuskler, gluteus medius, core',
+    desc:'Stå med en hand lätt mot väggen. Lyft ena foten lite från golvet och håll balansen. Öka tid varje vecka!',
+    steps:['Stå nära väggen – bara fingertopparna mot den','Lyft en fot lätt – ca 5 cm','Håll balansen i 20 sekunder','Titta på en fast punkt rakt fram','Byt fot och upprepa','Mål: klara utan att ta i väggen'],
+    tip:'💡 Börja med bara fingertopparna mot väggen', breath:'Andas jämnt och djupt – håll aldrig andan' },
+  { id:3, num:'04', title:'Sittande sidolutning',
+    tag:'stol', tagLabel:'🪑 sittande', time:'10 reps per sida', icon:'↔️',
+    img:'gymapp/images/bal-side-lean.png',
+    muscles:'Obliques, quadratus lumborum, core-stabilisatorer',
+    desc:'Sitt på stolkanten utan ryggstöd. Luta dig åt sidan och räta upp med coremusklerna. Tränar sidostabilitet.',
+    steps:['Sitt på stolkanten – ingen kontakt med ryggstödet','Fötterna plant, axelbredd isär','Händerna korsade på bröstet','Luta sakta åt ena sidan – känn core arbeta','Räta upp med muskelkraft','Byt sida – 10 reps per sida'],
+    tip:'💡 Håll fötterna stadigt planterade i golvet', breath:'Andas UT vid lutning, IN tillbaka' },
+  { id:4, num:'05', title:'Häl & tålyftar',
+    tag:'vagg', tagLabel:'🧱 väggstöd', time:'15 reps', icon:'👆',
+    img:'gymapp/images/bal-calf-raise.png',
+    muscles:'Gastrocnemius, soleus (vader), peroneusmusklerna',
+    desc:'Stå med händerna mot väggen. Res upp på tårna, håll 1 sek, sänk ned kontrollerat. Stärker vader och fotledens stabilitet.',
+    steps:['Händerna lätt mot väggen','Fötterna parallella, höftbrett isär','Res sakta upp på tårna – håll 1 sek','Sänk kontrollerat 2–3 sek','Hälen NÄSTAN till golvet – inte fullt ned','Upprepa 15 ggr'],
+    tip:'💡 Prova utan händer mot väggen när det känns lätt', breath:'Andas UT upp, IN ned' },
+  { id:5, num:'06', title:'Blickfokus – huvudrotation',
+    tag:'stol', tagLabel:'🪑 sittande', time:'10 reps per sida', icon:'👁️',
+    img:'gymapp/images/bal-head-rotation.png',
+    muscles:'Vestibularsystemet, ögonmotoriska muskler, nacken',
+    desc:'Håll tummen framför dig och följ den med blicken medan du roterar huvudet långsamt. Tränar vestibularsystemet!',
+    steps:['Sitt stadigt med fötterna i golvet','Sträck armen rakt fram, tummen i ögonhöjd','Fokusera blicken på tummen','Rotera huvudet LÅNGSAMT – blicken följer','Rotera tillbaka till mitten','Byt riktning – 10 reps per sida'],
+    tip:'💡 Gör alltid långsamt – inga snabba rörelser', breath:'Andas jämnt och mjukt' },
+];
+
+const DAYS    = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+
+const QUOTES = [
+  { text:'Det spelar ingen roll hur långsamt du går, så länge du inte stannar.', by:'Konfucius' },
+  { text:'Kroppen uppnår vad sinnet tror.', by:'Napoleon Hill' },
+  { text:'Ta hand om din kropp – det är det enda stället du måste leva i.', by:'Jim Rohn' },
+  { text:'Din enda gräns är du själv.', by:'Okänd' },
+  { text:'Framgång börjar dagen du bestämmer dig för att börja.', by:'Harvey MacKay' },
+  { text:'Balans är inte något du hittar – det är något du skapar.', by:'Okänd' },
+  { text:'Varje steg, hur litet det än är, för dig framåt.', by:'Okänd' },
+];
+
+const MOTIV_MSGS = [
+  '🎉 Perfekt! Alla 6 övningar gjorda idag!',
+  '🔥 Fantastiskt – du är oövervinnerlig idag!',
+  '💪 Wow! Balansrutinen är klar – bra jobbat!',
+  '⭐ Alla 6/6 – du är en mästare på balans!',
+];
+
+/* ════════════════════════════════════════════════
+   LOG · tyst diagnostik
+   Ingen console-utskrift i normalläge. Fel hamnar i
+   en ringbuffert – hämtas med ?debug=1 eller
+   Balans.log() i konsolen.
+════════════════════════════════════════════════ */
+const LOG = (() => {
+  const BUF = [], MAX = 30;
+  const DEV = /[?&]debug=1/.test(location.search);
+  const push = (lvl, tag, d) => {
+    BUF.push({ t: Date.now(), lvl, tag, d: String(d ?? '').slice(0, 200) });
+    if (BUF.length > MAX) BUF.shift();
+    if (DEV) (console[lvl] || console.log)(`[${tag}]`, d);
+  };
+  return {
+    warn:  (t, d) => push('warn',  t, d),
+    error: (t, d) => push('error', t, d),
+    info:  (t, d) => push('info',  t, d),
+    dump:  () => BUF.slice(),
+    safe(tag, fn, fb) {
+      try { return fn(); }
+      catch (e) { push('error', tag, e?.message || e); return fb; }
+    },
+  };
+})();
+addEventListener('error', e => LOG.error('window', e.message), { passive: true });
+addEventListener('unhandledrejection', e => LOG.error('promise', e.reason?.message || e.reason), { passive: true });
+
+/* ── DOM-HJÄLPARE ── */
+const $  = id => document.getElementById(id);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+/* ── DATUM ────────────────────────────────────
+   BUGGFIX: toISOString() ger UTC. Tränade du efter
+   midnatt svensk tid registrerades passet på fel
+   dag. sv-SE ger alltid korrekt lokalt datum.     */
+const ymd = (d = new Date()) => d.toLocaleDateString('sv-SE');
+const todayISO = () => ymd();
+const exKey = id => `${ymd()}_ex${id}`;
+/* Måndag = 0 */
+const dowMon = (d = new Date()) => (d.getDay() + 6) % 7;
+/* Datum för veckodag i innevarande vecka */
+function dateOfWeekday(i, base = new Date()) {
+  const d = new Date(base);
+  d.setDate(base.getDate() - dowMon(base) + i);
+  d.setHours(12, 0, 0, 0);         // undvik sommartidsglapp
+  return d;
+}
+
+/* ════════════════════════════════════════════════
+   STATE  ·  localStorage med trimning och debounce
+════════════════════════════════════════════════ */
+const KEY      = 'gymapp_balance';   // veckohistorik (egen för denna sida)
+const APP_KEY  = 'ga_data';          // delas med index.html
+const SAVE_MS  = 350;
+const KEEP_EX  = 120;
+const KEEP_DAY = 400;
+
+/* ════════════════════════════════════════════════
+   SYNK MED APPEN
+   Avbockade övningar lagras i appens  ga_data.balDays
+   med exakt samma nyckelformat, så båda sidorna visar
+   samma sak. Veckohistoriken ligger kvar lokalt.
+════════════════════════════════════════════════ */
+const appDayKey = (i, d = new Date()) => `${d.toDateString()}_${i}`;
+
+function loadAppData() {
+  return LOG.safe('app', () => {
+    const raw = localStorage.getItem(APP_KEY);
+    return raw ? (JSON.parse(raw) || {}) : {};
+  }, {});
+}
+
+function appBalDays() {
+  const d = loadAppData();
+  return Array.isArray(d.balDays) ? d.balDays : [];
+}
+
+/* Skriv tillbaka till appens data utan att röra något annat */
+function syncToApp(i, done) {
+  LOG.safe('sync', () => {
+    const d   = loadAppData();
+    if (!Array.isArray(d.balDays)) d.balDays = [];
+    const key = appDayKey(i);
+    const ix  = d.balDays.indexOf(key);
+    if (done && ix === -1)      d.balDays.push(key);
+    else if (!done && ix !== -1) d.balDays.splice(ix, 1);
+    if (d.balDays.length > KEEP_DAY) d.balDays = d.balDays.slice(-KEEP_DAY);
+    localStorage.setItem(APP_KEY, JSON.stringify(d));
+  });
+}
+
+function loadState() {
+  return LOG.safe('load', () => {
+    const raw = localStorage.getItem(KEY);
+    const s   = raw ? JSON.parse(raw) : {};
+    const obj = v => (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+    return { exerciseDone: obj(s.exerciseDone), weekDone: obj(s.weekDone) };
+  }, { exerciseDone: {}, weekDone: {} });
+}
+
+function trimState(st) {
+  const ex = Object.keys(st.exerciseDone);
+  if (ex.length > KEEP_EX) {
+    ex.sort();
+    ex.slice(0, ex.length - KEEP_EX).forEach(k => delete st.exerciseDone[k]);
+  }
+  const wd = Object.keys(st.weekDone);
+  if (wd.length > KEEP_DAY) {
+    wd.sort();
+    wd.slice(0, wd.length - KEEP_DAY).forEach(k => delete st.weekDone[k]);
+  }
+  return st;
+}
+
+let ST = loadState();
+let _saveT = 0, _dirty = false;
+
+/* Debouncad skrivning – 5 snabba tryck ger 1 skrivning */
+function saveState() {
+  _dirty = true;
+  clearTimeout(_saveT);
+  _saveT = setTimeout(saveNow, SAVE_MS);
+}
+function saveNow() {
+  clearTimeout(_saveT);
+  if (!_dirty) return;
+  _dirty = false;
+  LOG.safe('save', () => localStorage.setItem(KEY, JSON.stringify(trimState(ST))));
+}
+addEventListener('pagehide', saveNow);
+addEventListener('beforeunload', saveNow);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { saveNow(); document.body.classList.add('idle'); return; }
+  document.body.classList.remove('idle');
+  /* Kan ha bockats av i appen medan sidan låg i bakgrunden */
+  if (typeof pullFromApp === 'function' && pullFromApp()) {
+    renderExercises(); updTodayCount();
+  }
+});
+
+/* ── HAPTIK ── */
+const _canVib = 'vibrate' in navigator
+  && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const vib = p => { if (_canVib) LOG.safe('vib', () => navigator.vibrate(p)); };
+
+/* ── TIMER-STATE ── */
+const T = { total:30, left:30, raf:0, running:false, startTime:0, startLeft:0,
+            CIRC: 2 * Math.PI * 70 };
+
+/* ════════════════════════════════════════════════
+   EVENT DELEGATION
+   En lyssnare istället för ~20 inline onclick.
+   Dynamiskt innehåll behöver ingen ombindning.
+════════════════════════════════════════════════ */
+const ACTIONS = Object.create(null);
+
+function onAct(e) {
+  const el = e.target.closest?.('[data-act]');
+  if (!el) return;
+  const fn = ACTIONS[el.dataset.act];
+  if (!fn) return;
+  if (el.dataset.stop !== undefined) e.stopPropagation();
+  LOG.safe('act:' + el.dataset.act, () => fn(el.dataset, el, e));
+}
+document.addEventListener('click', onAct);
+/* Tangentbord: Enter/Space på allt som agerar som knapp */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest?.('[data-act]');
+  if (!el || el.tagName === 'BUTTON' || el.tagName === 'A') return;
+  e.preventDefault();
+  onAct(e);
+});
+
+/* ════════════════════════════════════════════════
+   BOOT  ·  kritiskt först, resten när tråden är fri
+════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const t0 = performance.now();
+
+  /* Ringarnas dasharray sätts en gång, inte per frame */
+  LOG.safe('rings', () => {
+    const tr = $('timerRing');
+    if (tr) tr.style.strokeDasharray = T.CIRC;
+    const to = $('totalRing');
+    if (to) to.style.strokeDasharray = TOTAL_CIRC;
+  });
+
+  pullFromApp();            // appen är sanningen vid start
+
+  [['showQotd', showQotd], ['updTodayCount', updTodayCount],
+   ['updStreak', updStreak], ['updTimerDisplay', updTimerDisplay],
+   ['renderExercises', renderExercises]]
+    .forEach(([n, f]) => LOG.safe(n, f));
+
+  const later = () => [['renderWeek', renderWeekProgress], ['updTotalRing', updTotalRing]]
+    .forEach(([n, f]) => LOG.safe(n, f));
+  ('requestIdleCallback' in window)
+    ? requestIdleCallback(later, { timeout: 700 })
+    : setTimeout(later, 50);
+
+  /* Prestandaprofil – svag enhet eller datasparläge → enklare effekter */
+  LOG.safe('perf', () => {
+    const mem = navigator.deviceMemory || 4;
+    const cpu = navigator.hardwareConcurrency || 4;
+    if (mem <= 2 || cpu <= 2 || navigator.connection?.saveData)
+      document.body.classList.add('lowfx');
+  });
+
+  /* Ny dag medan appen är öppen → rendera om */
+  let curDay = ymd();
+  setInterval(() => {
+    const d = ymd();
+    if (d !== curDay) {
+      curDay = d;
+      LOG.info('newday', d);
+      renderExercises(); updTodayCount(); renderWeekProgress();
+      updStreak(); updTotalRing();
+    }
+  }, 60_000);
+
+  LOG.info('boot', `${Math.round(performance.now() - t0)} ms`);
+});
+
+/* ════════════════════════════════════════════════
+   DAGENS CITAT
+════════════════════════════════════════════════ */
+function showQotd() {
+  const el = $('qotd');
+  if (!el) return;
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const doy   = Math.floor((Date.now() - start) / 86_400_000);
+  const q     = QUOTES[doy % QUOTES.length];
+  const t = $('qotd-text'), a = $('qotd-author');
+  if (t) t.textContent = `"${q.text}"`;
+  if (a) a.textContent = `– ${q.by}`;
+  el.style.display = '';
+}
+
+/* ════════════════════════════════════════════════
+   ÖVNINGAR
+════════════════════════════════════════════════ */
+function renderExercises() {
+  const grid = $('exerciseGrid');
+  if (!grid) return;
+
+  /* Bygg utanför DOM → en enda insättning, inga mellanreflows */
+  const frag = document.createDocumentFragment();
+
+  EXERCISES.forEach(ex => {
+    const done = isDone(ex.id);
+    const card = document.createElement('div');
+    card.className = `ex-card${ex.tag === 'stol' ? ' stol-card' : ''}`;
+    card.id = 'ec' + ex.id;
+    card.setAttribute('role', 'listitem');
+    card.innerHTML = `
+      <div>
+        <div class="ex-num">Övning ${ex.num}</div>
+
+        <div class="ex-head-row" data-act="togEx" data-id="${ex.id}"
+             role="button" tabindex="0" aria-expanded="false" aria-controls="ep${ex.id}">
+          <div class="ex-head-txt">
+            <div class="ex-title-row">
+              <span class="ex-title">${ex.icon} ${esc(ex.title)}</span>
+              <span class="ex-tag ${ex.tag}">${ex.tagLabel}</span>
+            </div>
+            <div class="ex-time">⏱ ${esc(ex.time)}</div>
+          </div>
+          <span class="ex-chevron" aria-hidden="true">▼</span>
+        </div>
+
+        <div class="ex-panel" id="ep${ex.id}">
+          <div class="ex-img-wrap">
+            <img class="ex-img" src="${ex.img}" alt="${esc(ex.title)}"
+                 loading="lazy" decoding="async" width="900" height="502"/>
+          </div>
+          <div class="how-title">📋 Utförande</div>
+          <ol class="steps">
+            ${ex.steps.map((st, i) =>
+              `<li class="step"><span class="step-n">${i + 1}</span><span>${esc(st)}</span></li>`
+            ).join('')}
+          </ol>
+          <div class="ex-meta2">
+            <div class="meta-b"><div class="meta-t">💪 Tränar</div><div class="meta-c">${esc(ex.muscles)}</div></div>
+            <div class="meta-b"><div class="meta-t">💡 Tips</div><div class="meta-c g">${esc(ex.tip)}</div></div>
+          </div>
+          <div class="breath-row">🫁 <strong>Andning:</strong>&nbsp;${esc(ex.breath)}</div>
+        </div>
+
+        <p class="ex-desc">${esc(ex.desc)}</p>
+      </div>
+
+      <button class="ex-done-btn${done ? ' done' : ''}" id="eb${ex.id}"
+              data-act="togDone" data-id="${ex.id}" aria-pressed="${done}">
+        ${done ? '✅ Gjord!' : '○ Markera som klar'}
+      </button>`;
+
+    /* Bildfel hanteras via lyssnare – ingen inline onerror */
+    const img = card.querySelector('.ex-img');
+    img?.addEventListener('error', () => {
+      const w = img.parentNode;
+      if (w) w.innerHTML = `<div class="ex-img-err"><span>${ex.icon}</span><span>${esc(ex.title)}</span></div>`;
+    }, { once: true });
+
+    frag.appendChild(card);
+  });
+
+  grid.replaceChildren(frag);
+}
+
+ACTIONS.togEx = d => {
+  const card = $('ec' + d.id);
+  if (!card) return;
+  const open = card.classList.toggle('open');
+  card.querySelector('.ex-head-row')?.setAttribute('aria-expanded', String(open));
+  if (open) vib(8);
+};
+
+ACTIONS.togDone = d => {
+  const id = d.id;
+  const k  = exKey(id);
+  const now = !ST.exerciseDone[k];
+  if (now) ST.exerciseDone[k] = 1;
+  else delete ST.exerciseDone[k];
+  saveState();
+  syncToApp(+id, now);               // håll appen i synk
+
+  const btn = $('eb' + id);
+  if (btn) {
+    btn.classList.toggle('done', now);
+    btn.textContent = now ? '✅ Gjord!' : '○ Markera som klar';
+    btn.setAttribute('aria-pressed', String(now));
+  }
+  vib(now ? 18 : 8);
+  updTodayCount();
+};
+
+/* ════════════════════════════════════════════════
+   DAGENS RÄKNARE  ·  auto-avbockning av dagen
+════════════════════════════════════════════════ */
+/* Övning klar? Appens data styr – lokalt är bara en spegel. */
+function isDone(id) {
+  return !!ST.exerciseDone[exKey(id)];
+}
+
+function doneToday() {
+  return EXERCISES.reduce((n, ex) => n + (isDone(ex.id) ? 1 : 0), 0);
+}
+
+/* Läs in appens avbockningar vid start och vid återkomst */
+function pullFromApp() {
+  const list = appBalDays();
+  let changed = false;
+  for (const ex of EXERCISES) {
+    const appHas = list.includes(appDayKey(ex.id));
+    const locHas = !!ST.exerciseDone[exKey(ex.id)];
+    if (appHas !== locHas) {
+      if (appHas) ST.exerciseDone[exKey(ex.id)] = 1;
+      else        delete ST.exerciseDone[exKey(ex.id)];
+      changed = true;
+    }
+  }
+  if (changed) { saveState(); LOG.info('sync', 'hämtade ändringar från appen'); }
+  return changed;
+}
+
+function updTodayCount() {
+  const done  = doneToday();
+  const total = EXERCISES.length;
+  const el = $('today-count');
+  if (el) el.textContent = `${done}/${total} idag`;
+
+  /* Alla klara → bocka av dagen automatiskt (tidigare krävdes manuellt tryck) */
+  const key = ymd();
+  const all = done >= total;
+  if (all && !ST.weekDone[key]) {
+    ST.weekDone[key] = 1;
+    saveState();
+    renderWeekProgress(); updStreak(); updTotalRing();
+    vib([120, 60, 120]);
+  }
+
+  const banner = $('motiv-banner');
+  if (banner) {
+    if (all) {
+      /* Stabilt meddelande per dag – slumpades tidigare vid varje omritning */
+      const idx = [...key].reduce((a, c) => a + c.charCodeAt(0), 0) % MOTIV_MSGS.length;
+      banner.textContent   = MOTIV_MSGS[idx];
+      banner.style.display = '';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   STREAK
+════════════════════════════════════════════════ */
+function updStreak() {
+  const done = ST.weekDone;
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  if (!done[ymd(d)]) d.setDate(d.getDate() - 1);   // idag ej klar → räkna från igår
+
+  let streak = 0;
+  for (let i = 0; i < 400; i++) {
+    if (!done[ymd(d)]) break;
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  const el = $('streak-count');
+  if (el) el.textContent = `${streak} dagars streak`;
+  const badge = $('streak-badge');
+  if (badge) badge.style.opacity = streak > 0 ? '1' : '.5';
+}
+
+/* ════════════════════════════════════════════════
+   VECKANS FRAMSTEG
+════════════════════════════════════════════════ */
+function renderWeekProgress() {
+  const box = $('dayRows');
+  if (!box) return;
+
+  const today    = new Date(); today.setHours(12, 0, 0, 0);
+  const todayStr = ymd(today);
+  const frag     = document.createDocumentFragment();
+
+  DAYS.forEach((day, i) => {
+    const d    = dateOfWeekday(i, today);
+    const key  = ymd(d);
+    const done = !!ST.weekDone[key];
+    const isToday  = key === todayStr;
+    const isFuture = d > today && !isToday;
+    const missed   = !done && !isToday && !isFuture;
+
+    const row = document.createElement('div');
+    row.className = 'day-row';
+    row.innerHTML = `
+      <span class="day-lbl${isToday ? ' today-lbl' : ''}">${day}${isToday ? ' 👈' : ''}</span>
+      <div class="day-bar-bg">
+        <div class="day-bar-fill${missed ? ' missed' : ''}" id="bar${i}"
+             style="width:${done ? '100%' : (missed ? '30%' : '0%')}"></div>
+      </div>
+      <div class="day-check${done ? ' done' : (isToday ? ' today-check' : (missed ? ' missed-check' : ''))}"
+           id="chk${i}" role="checkbox" aria-checked="${done}" tabindex="0"
+           aria-label="${day} ${key}"
+           data-act="togDay" data-key="${key}" data-i="${i}"
+           ${isFuture ? 'data-future="1"' : ''}>${done ? '✓' : (isToday ? '•' : '')}</div>`;
+    frag.appendChild(row);
+  });
+
+  box.replaceChildren(frag);
+}
+
+ACTIONS.togDay = d => {
+  /* Framtida dagar går inte att bocka av */
+  if (d.future) { toast('📅 Den dagen har inte kommit än'); return; }
+
+  const key = d.key, i = d.i;
+  const now = !ST.weekDone[key];
+  if (now) ST.weekDone[key] = 1;
+  else delete ST.weekDone[key];
+  saveState();
+
+  const chk = $('chk' + i), bar = $('bar' + i);
+  const isToday = key === ymd();
+  if (chk) {
+    chk.classList.toggle('done', now);
+    chk.classList.toggle('missed-check', !now && !isToday);
+    chk.setAttribute('aria-checked', String(now));
+    chk.textContent = now ? '✓' : (isToday ? '•' : '');
+  }
+  if (bar) {
+    bar.style.width = now ? '100%' : (isToday ? '0%' : '30%');
+    bar.classList.toggle('missed', !now && !isToday);
+  }
+  vib(now ? 18 : 8);
+  updTotalRing();
+  updStreak();
+};
+
+/* ════════════════════════════════════════════════
+   VECKORING
+   BUGGFIX: räknade tidigare ALLA avbockade dagar
+   någonsin → visade över 100 % efter två veckor.
+   Nu räknas bara innevarande vecka.
+════════════════════════════════════════════════ */
+const TOTAL_CIRC = 2 * Math.PI * 50;   // r=50 i SVG:n
+
+function weekCount() {
+  const today = new Date(); today.setHours(12, 0, 0, 0);
+  let n = 0;
+  for (let i = 0; i < 7; i++) if (ST.weekDone[ymd(dateOfWeekday(i, today))]) n++;
+  return n;
+}
+
+const RING_MSGS = [
+  'Kryssa av dagar för att se din progress!',
+  'Bra start – fortsätt varje dag! 💪',
+  'Två dagar klara – bygg vidare!',
+  'Halvvägs – du är på god väg! 🔥',
+  'Starkt jobbat – fyra dagar!',
+  'Imponerande vecka – nästan i mål!',
+  'Sex av sju – en dag kvar! ⭐',
+  'Perfekt vecka! Du är en balansmästare! 🏆',
+];
+
+function updTotalRing() {
+  const total = weekCount();
+  const pct   = Math.round((total / 7) * 100);
+
+  const ring = $('totalRing');
+  if (ring) ring.style.strokeDashoffset = TOTAL_CIRC * (1 - total / 7);
+  const p = $('totalPct');
+  if (p) p.textContent = pct + '%';
+  const t = $('totalText');
+  if (t) t.textContent = RING_MSGS[Math.min(total, RING_MSGS.length - 1)];
+}
+
+/* ════════════════════════════════════════════════
+   TIMER
+   requestAnimationFrame istället för setInterval:
+   pausas när fliken döljs och DOM skrivs bara när
+   sekunden faktiskt ändras (tidigare 4 ggr/sek).
+════════════════════════════════════════════════ */
+let _lastShown = -1;
+
+/* Wake Lock – skärmen slocknar inte mitt i en övning */
+let _wl = null;
+async function wakeOn()  { LOG.safe('wake', async () => { _wl = await navigator.wakeLock?.request('screen') ?? null; }); }
+function       wakeOff() { LOG.safe('wake', () => _wl?.release()); _wl = null; }
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && T.running && !_wl) wakeOn();
+});
+
+ACTIONS.setSecs = (d, el) => {
+  stopTimer();
+  T.total = +d.s || 30;
+  T.left  = T.total;
+  _lastShown = -1;
+  document.querySelectorAll('.preset').forEach(b => {
+    const on = b === el;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  updTimerDisplay();
+  setTimerStatus('Tryck Start för att börja', '');
+  vib(8);
+};
+
+ACTIONS.start = () => startTimer();
+ACTIONS.stop  = () => stopTimer();
+ACTIONS.reset = () => resetTimer();
+
+function startTimer() {
+  if (T.running) return;
+  if (T.raf) cancelAnimationFrame(T.raf);
+  if (T.left <= 0) T.left = T.total;
+  T.running   = true;
+  T.startTime = Date.now();
+  T.startLeft = T.left;
+  _lastShown  = -1;
+  setTimerStatus('Kör på! 💪', 'run');
+  wakeOn();
+  vib(12);
+
+  const tick = () => {
+    if (!T.running) return;
+    T.left = Math.max(0, T.startLeft - (Date.now() - T.startTime) / 1000);
+    const whole = Math.ceil(T.left);
+    if (whole !== _lastShown) { _lastShown = whole; updTimerDisplay(); }
+
+    if (T.left <= 0) {
+      stopTimer();
+      setTimerStatus('✅ Klart! Byt övning!', 'done');
+      vib([200, 100, 200]);
+      toast('✅ Tid ute – byt övning!');
+      return;
+    }
+    T.raf = requestAnimationFrame(tick);
+  };
+  T.raf = requestAnimationFrame(tick);
+}
+
+function stopTimer() {
+  if (T.raf) cancelAnimationFrame(T.raf);
+  T.raf = 0;
+  const was = T.running;
+  T.running = false;
+  wakeOff();
+  if (was && T.left > 0 && T.left < T.total) setTimerStatus('Pausad', 'paused');
+}
+
+function resetTimer() {
+  stopTimer();
+  T.left = T.total;
+  _lastShown = -1;
+  updTimerDisplay();
+  setTimerStatus('Tryck Start för att börja', '');
+  vib(8);
+}
+
+function updTimerDisplay() {
+  const left = Math.max(0, Math.ceil(T.left));
+  const m = String(Math.floor(left / 60)).padStart(2, '0');
+  const sc = String(left % 60).padStart(2, '0');
+  const disp = $('timerDisplay'); if (disp) disp.textContent = `${m}:${sc}`;
+  const sub  = $('timerSub');     if (sub)  sub.textContent  = left >= 60 ? 'MIN : SEK' : 'SEKUNDER';
+  const ring = $('timerRing');
+  if (ring && T.total > 0) {
+    ring.style.strokeDashoffset = T.CIRC * (1 - Math.min(1, Math.max(0, T.left / T.total)));
+  }
+}
+
+function setTimerStatus(msg, cls) {
+  const el = $('timerStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.className   = `timer-status ${cls}`;
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════ */
+let _toastT = 0;
+function toast(msg) {
+  let el = $('toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'toast';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => el.classList.remove('on'), 2600);
+}
+
+/* ════════════════════════════════════════════════
+   FELSÖKS-API  ·  tyst tills det efterfrågas
+════════════════════════════════════════════════ */
+window.Balans = {
+  log:     () => LOG.dump(),
+  data:    () => structuredClone(ST),
+  version: 'v2',
+  today:   () => ({ datum: ymd(), klara: doneToday(), av: EXERCISES.length }),
+  vecka:   () => ({ dagar: weekCount(), procent: Math.round(weekCount() / 7 * 100) }),
+  storage: () => {
+    const b = new Blob([JSON.stringify(ST)]).size;
+    return { bytes: b, kb: +(b / 1024).toFixed(1),
+             övningsposter: Object.keys(ST.exerciseDone).length,
+             dagar: Object.keys(ST.weekDone).length };
+  },
+  save:    () => { saveNow(); return 'sparat'; },
+};
+</script>
+</body>
+</html>

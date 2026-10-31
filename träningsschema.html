@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"/>
+  <meta name="theme-color" content="#06060d" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#7c3aed"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Schema"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="description" content="GymApp – Hög volym träningsschema med gym och hemmapass."/>
+  <link rel="manifest" href="gymapp/manifest.json"/>
+  <link rel="apple-touch-icon" href="gymapp/icons/icon-192.png"/>
+  <link rel="icon" href="gymapp/icons/icon-192.png"/>
+  <title>🔥 Träningsschema – GymApp</title>
+<style>
+/* ── TOKENS (matchar index.html exakt) ── */
+:root {
+  --bg:#06060d; --bg2:#0b0b18;
+  --s0:rgba(255,255,255,.045); --s1:rgba(255,255,255,.08); --s2:rgba(255,255,255,.12);
+  --b0:rgba(255,255,255,.07);  --b1:rgba(255,255,255,.15); --b2:rgba(255,255,255,.24);
+
+  --p:#7c3aed; --pl:#a78bfa; --pd:#4c1d95;
+  --c:#22d3ee; --cl:#67e8f9; --cd:#0e7490;
+  --g:#4ade80; --gl:#86efac; --gd:#15803d;
+  --o:#f97316; --ol:#fdba74;
+  --r:#ef4444; --rl:#fca5a5;
+  --b:#60a5fa; --bl:#93c5fd;
+  --y:#facc15; --yl:#fde047;
+  --pk:#ec4899; --pkl:#f9a8d4;
+
+  --grad-p:linear-gradient(135deg,#a78bfa,#7c3aed);
+  --grad-c:linear-gradient(135deg,#67e8f9,#0891b2);
+  --grad-g:linear-gradient(135deg,#86efac,#16a34a);
+  --grad-o:linear-gradient(135deg,#fdba74,#ea580c);
+  --grad-b:linear-gradient(135deg,#93c5fd,#2563eb);
+  --grad-pk:linear-gradient(135deg,#f9a8d4,#db2777);
+  --grad-fire:linear-gradient(135deg,#facc15,#f97316,#ef4444);
+  --grad-hero:linear-gradient(120deg,#a78bfa,#22d3ee,#4ade80,#facc15,#f9a8d4,#a78bfa);
+
+  --t1:#f8fafc; --t2:#a8b3c4; --t3:#64748b;
+
+  --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r20:20px; --r24:24px; --rF:9999px;
+  --blur:blur(16px); --blurH:blur(28px);
+  --ease:cubic-bezier(.4,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --fast:.14s; --mid:.24s; --slow:.4s;
+
+  --gP:0 0 24px rgba(124,58,237,.3);
+  --gC:0 0 24px rgba(34,211,238,.24);
+  --gG:0 0 24px rgba(74,222,128,.2);
+  --gO:0 0 24px rgba(249,115,22,.24);
+  --sh1:0 2px 8px rgba(0,0,0,.3);
+  --sh2:0 6px 20px rgba(0,0,0,.4);
+  --sh3:0 12px 36px rgba(0,0,0,.5);
+}
+
+@keyframes hueShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-text-size-adjust:100%;
+  -moz-text-size-adjust:100%;
+  text-size-adjust:100%;
+  color-scheme:dark;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(167,139,250,.32) rgba(255,255,255,.04);
+}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{background:rgba(167,139,250,.3);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(167,139,250,.5)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',system-ui,sans-serif;
+  background:var(--bg);color:var(--t1);
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeSpeed;
+  overscroll-behavior-y:none;
+  padding-bottom:calc(60px + env(safe-area-inset-bottom, 0px));
+  padding-left:env(safe-area-inset-left, 0px);
+  padding-right:env(safe-area-inset-right, 0px);
+}
+button{
+  cursor:pointer;border:none;background:none;font-family:inherit;color:inherit;
+  -webkit-appearance:none;appearance:none;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+input{font-size:16px}
+img{display:block;max-width:100%;height:auto}
+
+@media(pointer:coarse){
+  button,.back-btn,.ex-head,[data-act]{min-height:44px}
+}
+button,.ex-head,.day-title,.dpill{-webkit-user-select:none;user-select:none}
+p,.step-txt,.ex-desc{-webkit-user-select:text;user-select:text}
+
+/* ── ANIMATED MESH BG (orbs som index.html) ── */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{
+  position:absolute;border-radius:50%;filter:blur(70px);
+  animation:drift linear infinite;contain:strict;
+}
+.orb1{width:540px;height:540px;
+  background:radial-gradient(circle,rgba(124,58,237,.15),transparent 70%);
+  top:-200px;left:-150px;animation-duration:22s}
+.orb2{width:440px;height:440px;
+  background:radial-gradient(circle,rgba(249,115,22,.1),transparent 70%);
+  bottom:-140px;right:-100px;animation-duration:19s;animation-direction:reverse}
+.orb3{width:320px;height:320px;
+  background:radial-gradient(circle,rgba(34,211,238,.08),transparent 70%);
+  top:40%;left:40%;animation-duration:27s;animation-delay:-9s}
+body.idle .orb{animation-play-state:paused}
+body.lowfx .orb{animation:none;filter:blur(54px)}
+@media(prefers-reduced-motion:reduce){.orb{animation:none}}
+@keyframes drift{
+  0%  {transform:translate3d(0,0,0)}
+  33% {transform:translate3d(30px,-40px,0)}
+  66% {transform:translate3d(-20px,20px,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+
+/* ── STICKY BACK NAV ── */
+.back-nav{
+  position:sticky;top:0;z-index:90;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px max(18px, env(safe-area-inset-left, 0px)) 12px max(18px, env(safe-area-inset-right, 0px));
+  background:rgba(6,6,13,.88);
+  -webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  border-bottom:1px solid var(--b0);
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--t2);font-size:.82rem;font-weight:700;
+  padding:7px 14px;border-radius:var(--rF);
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);transition:all var(--fast);
+  text-decoration:none;
+}
+.back-btn:hover{color:var(--t1);border-color:var(--b1)}
+.nav-title{
+  font-size:.86rem;font-weight:800;color:var(--o);
+  background:linear-gradient(135deg,var(--o),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── HEADER ── */
+.header{position:relative;z-index:1;text-align:center;padding:clamp(20px, 3.2vw, 34px) 20px clamp(16px, 2.4vw, 24px)}
+.header h1{
+  font-size:clamp(1.75rem, 4.2vw, 2.4rem);font-weight:900;letter-spacing:-.04em;margin-bottom:5px;
+  color:var(--o);
+  background:linear-gradient(135deg,var(--o),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.header p{color:var(--t2);font-size:clamp(.82rem, 1.8vw, .9rem)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px}
+.chip{
+  display:flex;align-items:center;gap:5px;
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--rF);
+  padding:5px 13px;font-size:.74rem;font-weight:600;color:var(--t2);
+}
+.chip.y{border-color:rgba(250,204,21,.3);color:var(--y);background:rgba(250,204,21,.07)}
+.chip.c{border-color:rgba(34,211,238,.3);color:var(--c);background:rgba(34,211,238,.07)}
+.chip.g{border-color:rgba(74,222,128,.3);color:var(--g);background:rgba(74,222,128,.07)}
+.chip.o{border-color:rgba(249,115,22,.3);color:var(--o);background:rgba(249,115,22,.07)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1320px;margin:0 auto;padding:0 clamp(12px, 2.5vw, 24px);position:relative;z-index:1}
+.sh{
+  font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--t3);margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.sh::after{content:'';flex:1;height:1px;background:var(--b0)}
+
+/* ── TODAY JUMP + DAY PILLS ── */
+.today-jump{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  margin-bottom:22px;padding:14px 16px;
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);
+}
+.today-top-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;width:100%;
+}
+.today-btn{
+  padding:9px 20px;border-radius:var(--rF);font-size:.81rem;font-weight:800;
+  background:linear-gradient(135deg,var(--c),var(--p));
+  color:#fff;box-shadow:0 4px 14px rgba(34,211,238,.28);
+  transition:all var(--fast);min-height:42px;
+}
+.today-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(34,211,238,.38)}
+.day-pills{
+  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:6px;width:100%;
+}
+.dpill{
+  padding:7px 4px;border-radius:var(--r8);
+  background:rgba(255,255,255,.04);border:1px solid var(--b0);
+  font-size:.72rem;font-weight:700;color:var(--t2);text-align:center;
+  transition:all var(--fast);
+}
+.dpill:hover{color:var(--t1);border-color:var(--b1);background:var(--s1)}
+.dpill.is-today{
+  background:rgba(34,211,238,.15);color:var(--c);
+  border-color:rgba(34,211,238,.36);
+  box-shadow:0 0 12px rgba(34,211,238,.2);
+}
+
+/* ── WEEK GRID ── */
+.week-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  gap:14px;margin-bottom:44px;align-items:start;
+}
+
+/* ── DAY CARD ── */
+.dc{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:20px;
+  border-top:3px solid transparent;position:relative;overflow:hidden;
+  transition:all var(--fast) var(--ease);
+  scroll-margin-top:78px;min-width:0;
+}
+.dc::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  transition:opacity var(--fast);pointer-events:none;
+}
+.dc:hover{transform:translateY(-3px);border-color:var(--b1);box-shadow:0 14px 38px rgba(0,0,0,.22)}
+.dc:hover::before{opacity:1}
+.dc.hem {border-top-color:var(--g)}
+.dc.hem::before {background:linear-gradient(155deg,rgba(74,222,128,.06),transparent 50%)}
+.dc.gym {border-top-color:var(--b)}
+.dc.gym::before {background:linear-gradient(155deg,rgba(96,165,250,.06),transparent 50%)}
+.dc.vila{border-top-color:var(--pl)}
+.dc.vila::before{background:linear-gradient(155deg,rgba(167,139,250,.06),transparent 50%)}
+
+/* Today highlight – dubbel klass för högre specificitet */
+.dc.dc.today-card{
+  border-color:rgba(34,211,238,.34);
+  box-shadow:0 0 0 2px rgba(34,211,238,.22),0 10px 32px rgba(34,211,238,.14);
+}
+.today-tag{
+  font-size:.6rem;font-weight:800;padding:3px 9px;
+  border-radius:var(--rF);background:var(--grad-c);
+  color:#083344;border:none;
+  box-shadow:0 2px 8px rgba(34,211,238,.35);
+  margin-left:7px;vertical-align:middle;display:inline-block;
+}
+
+/* ── DAY HEADER ── */
+.dh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+.dn{font-weight:700;font-size:.97rem;min-width:0;overflow-wrap:anywhere}
+.badge{font-size:.61rem;font-weight:700;padding:3px 9px;border-radius:var(--rF);white-space:nowrap;flex-shrink:0}
+.badge.hem {background:rgba(74,222,128,.13);color:var(--g);border:1px solid rgba(74,222,128,.28)}
+.badge.gym {background:rgba(96,165,250,.13);color:var(--b);border:1px solid rgba(96,165,250,.28)}
+.badge.vila{background:rgba(167,139,250,.13);color:var(--pl);border:1px solid rgba(167,139,250,.28)}
+.dtl{font-size:.66rem;color:var(--t3);margin-bottom:13px;font-weight:500}
+.rest-p{color:var(--t2);font-size:.82rem;font-style:italic;line-height:1.6;margin-top:4px}
+
+/* ── EXERCISE LIST ── */
+.ex-ul{list-style:none}
+.ex-li{border-bottom:1px solid rgba(255,255,255,.05);min-width:0}
+.ex-li:last-child{border-bottom:none}
+
+/* ── EXERCISE HEADER ── */
+.ex-head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:8px;padding:10px 4px;cursor:pointer;
+  transition:all var(--fast);user-select:none;border-radius:var(--r8);
+}
+.ex-head:hover{background:rgba(255,255,255,.04)}
+.ex-head:hover .ex-name{color:var(--c)}
+.ex-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.ex-name{font-size:.84rem;font-weight:600;color:var(--t1);line-height:1.4;transition:color var(--fast);overflow-wrap:anywhere;word-break:break-word}
+.ex-tags{display:flex;gap:4px;flex-wrap:wrap}
+.ex-right{display:flex;align-items:center;gap:7px;flex-shrink:0;margin-top:2px}
+.ex-sets{font-size:.68rem;font-weight:600;color:var(--t2);white-space:nowrap}
+.ex-chev{
+  font-size:.68rem;color:var(--t3);flex-shrink:0;
+  transition:transform var(--fast) var(--ease),color var(--fast);
+}
+.ex-li.open .ex-chev{transform:rotate(180deg);color:var(--c)}
+
+/* ── TAGS ── */
+.tg{
+  display:inline-flex;align-items:center;
+  font-size:.58rem;font-weight:700;padding:1px 6px;
+  border-radius:5px;white-space:nowrap;
+}
+.tg.kb {background:rgba(167,139,250,.13);color:var(--pl);border:1px solid rgba(167,139,250,.24)}
+.tg.ha {background:rgba(250,204,21,.10);color:var(--y);border:1px solid rgba(250,204,21,.24)}
+.tg.st {background:rgba(74,222,128,.10);color:var(--g);border:1px solid rgba(74,222,128,.24)}
+.tg.li {background:rgba(96,165,250,.10);color:var(--b);border:1px solid rgba(96,165,250,.24)}
+.tg.ro {background:rgba(34,211,238,.10);color:var(--c);border:1px solid rgba(34,211,238,.24)}
+.tg.rh {background:rgba(74,222,128,.11);color:var(--g);border:1px solid rgba(74,222,128,.25)}
+.tg.rvh{background:rgba(74,222,128,.19);color:#86efac;border:1px solid rgba(74,222,128,.36)}
+.tg.fix{background:rgba(250,204,21,.1);color:var(--y);border:1px solid rgba(250,204,21,.25)}
+
+/* ── EXPANDABLE PANEL ── */
+.ex-panel{display:none;padding:0 0 14px;animation:fdDn .22s var(--ease)}
+@keyframes fdDn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.ex-li.open .ex-panel{display:block}
+
+/* ── IMAGE – Förbättrad bildvisning ── */
+.ex-img-wrap{
+  position:relative;
+  border-radius:var(--r12);overflow:hidden;
+  margin-bottom:13px;
+  background:rgba(0,0,0,.35);
+  border:1px solid var(--b0);
+  cursor:zoom-in;
+}
+/* Normal state: 16:9 */
+.ex-img-wrap{aspect-ratio:16/9}
+
+/* Zoomed state: full height, taller */
+.ex-img-wrap.zoomed{
+  aspect-ratio:unset;cursor:zoom-out;
+  border-color:var(--b1);box-shadow:0 0 0 2px rgba(34,211,238,.2);
+}
+.ex-img-wrap.zoomed .ex-img{
+  max-height:420px;object-fit:contain;background:rgba(0,0,0,.5);
+}
+
+.ex-img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform var(--mid) var(--ease),opacity var(--fast);
+}
+.ex-img:hover{transform:scale(1.02)}
+
+/* Zoom hint badge */
+.zoom-hint{
+  position:absolute;bottom:7px;right:7px;
+  background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.8);font-size:.6rem;font-weight:600;
+  padding:3px 8px;border-radius:var(--rF);
+  pointer-events:none;transition:opacity var(--fast);
+}
+.ex-img-wrap.zoomed .zoom-hint{opacity:0}
+
+/* Loading shimmer */
+.ex-img-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 50%,transparent 100%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s ease-in-out infinite;
+  pointer-events:none;opacity:1;transition:opacity .3s;
+}
+.ex-img-wrap.loaded::after{opacity:0}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Image error */
+.ex-img-err{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:7px;color:var(--t3);font-size:.73rem;width:100%;height:100%;
+  position:absolute;inset:0;
+}
+
+/* ── HOW-TO STEPS ── */
+.how-to-title{
+  font-size:.63rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--c);margin-bottom:8px;
+}
+.steps{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.step{display:flex;gap:9px;align-items:flex-start;font-size:.76rem;color:var(--t2);line-height:1.5}
+.step-num{
+  flex-shrink:0;width:19px;height:19px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  color:#fff;font-size:.59rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+
+/* ── META GRID ── */
+.ex-meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.meta-box{background:rgba(0,0,0,.22);border-radius:var(--r8);padding:9px;border:1px solid var(--b0)}
+.meta-title{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:4px}
+.meta-content{font-size:.73rem;color:var(--t2);line-height:1.4}
+.meta-content.tip{color:var(--g);font-style:italic}
+
+/* ── BREATHING ── */
+.breathing{
+  display:flex;align-items:center;gap:6px;font-size:.71rem;color:var(--t2);
+  padding:7px 10px;background:rgba(34,211,238,.06);
+  border:1px solid rgba(34,211,238,.18);border-radius:var(--r8);
+}
+
+/* ── 100 REPS SECTION ── */
+.hundred-card{
+  background:rgba(249,115,22,.07);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid rgba(249,115,22,.24);
+  border-radius:var(--r24);padding:clamp(18px, 3vw, 30px);margin-bottom:40px;
+  position:relative;overflow:hidden;box-shadow:var(--gO);
+}
+.hundred-card::before{
+  content:'💥';position:absolute;top:-20px;right:-10px;
+  font-size:9rem;opacity:.04;pointer-events:none;line-height:1;
+}
+.hundred-title{
+  font-size:clamp(1.15rem, 2.6vw, 1.4rem);font-weight:900;margin-bottom:6px;
+  color:var(--o);
+  background:linear-gradient(135deg,var(--o),var(--r));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hundred-sub{font-size:.8rem;color:var(--t2);margin-bottom:20px;line-height:1.6}
+.hundred-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;margin-bottom:22px;
+}
+.hbox{
+  background:rgba(0,0,0,.25);border:1px solid rgba(249,115,22,.2);
+  border-left:3px solid var(--o);border-radius:var(--r16);padding:17px;
+  transition:all var(--fast);min-width:0;
+}
+.hbox:hover{transform:translateY(-2px);background:rgba(249,115,22,.08)}
+.hbox-tag{
+  display:inline-block;background:var(--o);color:#000;
+  font-size:.59rem;font-weight:800;padding:2px 9px;
+  border-radius:var(--rF);margin-bottom:8px;
+}
+.hbox h3{color:var(--o);font-size:.9rem;margin-bottom:6px}
+.hbox p{color:var(--t2);font-size:.76rem;line-height:1.7}
+.hbox p b{color:var(--o)}
+
+/* Progress bar */
+.rep-prog{
+  background:rgba(0,0,0,.28);border:1px solid rgba(249,115,22,.2);
+  border-radius:var(--r16);padding:18px;
+}
+.rpl{font-size:.76rem;color:var(--t2);margin-bottom:9px;font-weight:600}
+.rb-bg{
+  background:rgba(255,255,255,.05);border-radius:var(--r8);height:13px;
+  overflow:hidden;border:1px solid rgba(249,115,22,.18);margin-bottom:14px;
+}
+.rb-fill{
+  height:100%;border-radius:var(--r8);width:0%;
+  background:linear-gradient(90deg,var(--o),var(--r));
+  transition:width var(--slow) var(--spring);
+  box-shadow:0 0 10px rgba(249,115,22,.5);
+}
+#rep-card.complete .rb-fill{background:var(--grad-g)}
+#rep-card.complete{
+  border-color:rgba(74,222,128,.4);
+  box-shadow:0 0 0 1px rgba(74,222,128,.22),0 8px 28px rgba(74,222,128,.16);
+}
+.rep-ctrl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rbtn{
+  padding:9px 15px;border-radius:var(--r8);font-size:.82rem;font-weight:700;
+  min-height:44px;transition:all var(--fast);
+}
+.rbtn:hover{transform:translateY(-2px)}
+.rbtn:active{transform:scale(.95)}
+.rbtn.minus{background:rgba(249,115,22,.13);color:var(--ol);border:1px solid rgba(249,115,22,.3)}
+.rbtn.plus {background:var(--grad-o);color:#431407;box-shadow:0 4px 14px rgba(249,115,22,.34)}
+.rbtn.plus:hover{box-shadow:0 7px 22px rgba(249,115,22,.5)}
+.rbtn.reset{background:rgba(255,255,255,.05);color:var(--t3);border:1px solid var(--b0)}
+.rep-count{
+  font-size:1.05rem;font-weight:800;margin-left:4px;color:var(--o);
+  background:linear-gradient(135deg,var(--o),var(--r));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;color:var(--t3);font-size:.72rem;
+  padding:18px;position:relative;z-index:1;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;
+}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));
+  transform:translate(-50%,18px);
+  background:rgba(20,16,38,.97);border:1px solid rgba(167,139,250,.34);
+  border-radius:var(--rF);padding:12px 20px;
+  font-size:.83rem;font-weight:700;color:#fff;
+  -webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  box-shadow:var(--sh3),0 0 26px rgba(124,58,237,.26);
+  opacity:0;pointer-events:none;z-index:900;
+  max-width:calc(100vw - 32px);text-align:center;
+  transition:opacity var(--mid) var(--ease),transform var(--mid) var(--spring);
+}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* Dagkort – content-visibility + tydligare dagens */
+.dc{content-visibility:auto;contain-intrinsic-size:auto 520px}
+.dc.flash{animation:flashCard 1.4s var(--ease)}
+@keyframes flashCard{
+  0%,100%{box-shadow:none}
+  30%{box-shadow:0 0 0 3px rgba(34,211,238,.4),0 0 34px rgba(34,211,238,.3)}
+}
+body.lowfx .dc.flash{animation:none}
+.today-btn:active{transform:scale(.97)}
+
+/* Aktivt schema-rad */
+.sch-name-row{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+}
+.snr-lbl{
+  font-size:.62rem;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--t3);
+}
+.snr-val{
+  font-size:.88rem;font-weight:800;color:var(--cl);
+  background:var(--grad-c);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* Tomt läge – inget schema i appen */
+.ts-empty{
+  grid-column:1/-1;max-width:520px;margin:30px auto;
+  padding:34px 26px;text-align:center;
+  background:var(--s0);border:1px dashed var(--b1);border-radius:var(--r20);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+}
+.te-ico{font-size:2.8rem;display:block;margin-bottom:13px}
+.ts-empty h3{font-size:1.08rem;font-weight:800;margin-bottom:8px;color:var(--cl)}
+.ts-empty p{font-size:.85rem;color:var(--t2);line-height:1.65;margin-bottom:20px}
+.te-btn{
+  display:inline-block;padding:13px 24px;border-radius:var(--rF);
+  background:var(--grad-c);color:#083344;font-weight:800;font-size:.87rem;
+  text-decoration:none;box-shadow:0 4px 16px rgba(34,211,238,.32);
+  transition:transform var(--fast) var(--ease);
+}
+.te-btn:hover{transform:translateY(-2px)}
+
+/* Vikt-tagg från appen */
+.tg.kgt{background:rgba(96,165,250,.14);color:var(--bl);border:1px solid rgba(96,165,250,.3)}
+
+/* ── RESPONSIVE ALLA SKÄRMAR ── */
+@media(min-width:641px) and (max-width:1023px){
+  .week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hundred-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:1024px){
+  .week-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .hundred-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(min-width:1440px){
+  .wrap{max-width:1420px}
+  .week-grid{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
+}
+@media(max-width:640px){
+  .week-grid{grid-template-columns:1fr}
+  .hundred-grid{grid-template-columns:1fr}
+  .ex-meta{grid-template-columns:1fr}
+  .ex-img-wrap.zoomed .ex-img{max-height:260px}
+  .today-top-row{flex-direction:column;align-items:stretch;text-align:center}
+  .sch-name-row{justify-content:center}
+  .today-btn{width:100%}
+  .rep-ctrl{gap:6px}
+  .rbtn{flex:1;min-width:58px;padding:11px 8px;font-size:.78rem}
+  .rbtn.reset{flex:0 0 auto;min-width:48px}
+  .dc{padding:16px 13px}
+}
+@media(max-width:360px){
+  .rbtn{font-size:.72rem;padding:11px 5px}
+  .dpill{font-size:.64rem;padding:6px 2px}
+  .chip{font-size:.68rem;padding:4px 10px}
+}
+@media(max-height:500px) and (orientation:landscape){
+  .header{padding:12px 18px 10px}
+  .back-nav{padding:8px 16px}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .back-nav{background:rgba(8,8,18,.98)}
+  .dc,.hundred-card,.today-jump,.ts-empty{background:rgba(16,16,30,.95)}
+}
+@media(forced-colors:active){
+  .header h1,.nav-title,.hundred-title,.snr-val,.rep-count{
+    -webkit-text-fill-color:currentColor;color:CanvasText;background:none;
+  }
+  .dc,.hundred-card,.hbox{border:1px solid CanvasText}
+}
+@media(prefers-reduced-motion:reduce){
+  .dc:hover,.today-btn:hover,.rbtn:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div id="bg" aria-hidden="true">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- Back nav -->
+<nav class="back-nav" aria-label="Navigering">
+  <a href="gymapp/index.html" class="back-btn" aria-label="Tillbaka till GymApp">← Tillbaka</a>
+  <span class="nav-title">🔥 GymApp</span>
+</nav>
+
+<!-- Header -->
+<header class="header">
+  <h1>🔥 Träningsschema</h1>
+  <p>Hög volym · High rep · Gym &amp; Hemma</p>
+  <div class="chips">
+    <div class="chip y">🤫 Lägenhetsanpassat</div>
+    <div class="chip c">⚖️ Balansanpassat</div>
+    <div class="chip g">📈 15–30 reps</div>
+    <div class="chip o">💪 Hög volym</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Aktivt schema + snabbhopp till veckodag -->
+  <div class="today-jump" id="today-btn-wrap">
+    <div class="today-top-row">
+      <div class="sch-name-row"><span class="snr-lbl">Aktivt schema</span><span class="snr-val" id="sch-name">–</span></div>
+      <button class="today-btn" data-act="today">📍 Gå till dagens pass</button>
+    </div>
+    <div class="day-pills" id="day-pills" role="navigation" aria-label="Hoppa till veckodag">
+      <button class="dpill" data-act="jumpDay" data-d="0">Mån</button>
+      <button class="dpill" data-act="jumpDay" data-d="1">Tis</button>
+      <button class="dpill" data-act="jumpDay" data-d="2">Ons</button>
+      <button class="dpill" data-act="jumpDay" data-d="3">Tor</button>
+      <button class="dpill" data-act="jumpDay" data-d="4">Fre</button>
+      <button class="dpill" data-act="jumpDay" data-d="5">Lör</button>
+      <button class="dpill" data-act="jumpDay" data-d="6">Sön</button>
+    </div>
+  </div>
+
+  <div class="sh">📅 Veckans pass</div>
+  <div class="week-grid" id="week-grid" role="list"></div>
+
+  <!-- 100 REPS -->
+  <div class="sh">💥 Månadsutmaning</div>
+  <div class="hundred-card">
+    <div class="hundred-title">💥 100 REPS UTMANINGEN</div>
+    <p class="hundred-sub">1 gång per månad · Lägg till i slutet av ett gympass · Kör tills 100 reps totalt, oavsett antal set · Vila max 20–30 sek!</p>
+    <div class="hundred-grid">
+      <div class="hbox"><span class="hbox-tag">MÅNAD 1</span><h3>🏋️ Bänkpress</h3><p>Välj <b>40–50%</b> av ditt max. Set tills failure, vila 20 sek. Räkna varje rep! 🎯</p></div>
+      <div class="hbox"><span class="hbox-tag">MÅNAD 2</span><h3>🦵 Benpress</h3><p>Välj <b>50–60%</b> av ditt max. Ben tål hög volym – pusha hårt! 🔥</p></div>
+      <div class="hbox"><span class="hbox-tag">MÅNAD 3</span><h3>💪 Latsdrag</h3><p>Välj <b>40–50%</b> av ditt max. Känn ryggen brinna! 🔥</p></div>
+      <div class="hbox"><span class="hbox-tag">REGLER</span><h3>📋 Hur det funkar</h3><p>✅ En övning – 100 reps totalt<br>✅ Vila max 20–30 sek<br>✅ Lagom vikt – teknik först<br>🎯 Mål: Färre set varje månad!</p></div>
+    </div>
+    <div class="rep-prog" id="rep-card">
+      <div class="rpl">📈 Spåra dina 100 reps – <span id="rep-lbl">0 / 100</span></div>
+      <div class="rb-bg"><div class="rb-fill" id="rb-fill"></div></div>
+      <div class="rep-ctrl">
+        <button class="rbtn minus" data-act="addReps" data-n="-10">−10</button>
+        <button class="rbtn minus" data-act="addReps" data-n="-1">−1</button>
+        <button class="rbtn plus"  data-act="addReps" data-n="1">+1 rep</button>
+        <button class="rbtn plus"  data-act="addReps" data-n="10">+10 reps</button>
+        <button class="rbtn reset" data-act="resetReps">↺</button>
+        <span class="rep-count" id="rep-badge"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>💜 KB = 16 kg Kettlebell</span>
+  <span>💛 Hantlar 5 kg × 2</span>
+  <span>🟢 15–20 reps</span>
+  <span>🟩 20–30 reps</span>
+  <span>🤫 Grannvänligt</span>
+  <span>⚖️ Balansanpassat</span>
+  <span>🔍 Klicka på bild för zoom</span>
+</footer>
+
+<script>
+'use strict';
+
+/* ════════════════════════════════════════════════
+   DOM HELPER
+════════════════════════════════════════════════ */
+const $  = id => document.getElementById(id);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+/* ════════════════════════════════════════════════
+   LOG · tyst diagnostik  (?debug=1 eller Schema.log())
+════════════════════════════════════════════════ */
+const LOG = (() => {
+  const BUF = [], MAX = 30;
+  const DEV = /[?&]debug=1/.test(location.search);
+  const push = (lvl, tag, d) => {
+    BUF.push({ t: Date.now(), lvl, tag, d: String(d ?? '').slice(0, 200) });
+    if (BUF.length > MAX) BUF.shift();
+    if (DEV) (console[lvl] || console.log)(`[${tag}]`, d);
+  };
+  return {
+    warn: (t,d) => push('warn',t,d), error: (t,d) => push('error',t,d),
+    info: (t,d) => push('info',t,d), dump: () => BUF.slice(),
+    safe(tag, fn, fb) { try { return fn(); } catch(e) { push('error',tag,e?.message||e); return fb; } },
+  };
+})();
+addEventListener('error', e => LOG.error('window', e.message), { passive:true });
+addEventListener('unhandledrejection', e => LOG.error('promise', e.reason?.message||e.reason), { passive:true });
+
+/* Haptik */
+const _canVib = 'vibrate' in navigator && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const vib = p => { if (_canVib) LOG.safe('vib', () => navigator.vibrate(p)); };
+
+/* ════════════════════════════════════════════════
+   EVENT DELEGATION – en lyssnare för hela sidan
+════════════════════════════════════════════════ */
+const ACTIONS = Object.create(null);
+function onAct(e) {
+  const el = e.target.closest?.('[data-act]');
+  if (!el) return;
+  const fn = ACTIONS[el.dataset.act];
+  if (!fn) return;
+  if (el.dataset.stop !== undefined) e.stopPropagation();
+  LOG.safe('act:' + el.dataset.act, () => fn(el.dataset, el, e));
+}
+document.addEventListener('click', onAct);
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest?.('[data-act]');
+  if (!el || el.tagName === 'BUTTON' || el.tagName === 'A') return;
+  e.preventDefault(); onAct(e);
+});
+
+/* Pausa bakgrundsanimation när fliken döljs */
+document.addEventListener('visibilitychange', () => {
+  document.body.classList.toggle('idle', document.hidden);
+});
+
+/* Prestandaprofil */
+LOG.safe('perf', () => {
+  const mem = navigator.deviceMemory || 4, cpu = navigator.hardwareConcurrency || 4;
+  if (mem <= 2 || cpu <= 2 || navigator.connection?.saveData)
+    document.body.classList.add('lowfx');
+});
+const qs = s  => document.querySelector(s);
+
+/* ════════════════════════════════════════════════
+   DATA  –  Alla övningar med fullständig info
+════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   DETALJBANK
+   Den rika informationen (steg, muskler, tips, andning)
+   återanvänds nu som uppslagsbok. Schemat självt kommer
+   från appens data – den här sidan hittar inte längre
+   på ett eget schema.
+════════════════════════════════════════════════ */
+const DAYS = [
+  {
+    name:'🏠 Måndag', type:'hem', badge:'🏠 Hemma – Helkropp',
+    dtl:'⏱ 13–15 min · 40 sek på / 20 sek vila',
+    exercises:[
+      { name:'Squat vid diskbänken (ryggsäck)', sets:'4 set', reps:'15–20', tags:['st'],
+        img:'gymapp/images/counter-squat.png',
+        muscles:'Quadriceps, gluteus, hamstrings, core',
+        steps:['Stå framför diskbänken – händerna på kanten för stöd','Ta på ryggsäcken med önskad vikt (böcker, vattenflaskor etc.)','Fötterna höftbrett isär, tår lätt utåt','Böj knäna och sänk höfterna rakt ned – knäna följer tårna','Sänk tills låren är parallella med golvet (eller djupare)','Pressa upp explosivt – hälarnas alltid i golvet'],
+        tip:'💡 Diskbänken ger perfekt stöd – fokusera på djup och teknik, inte balans.',
+        breath:'IN ned, UT upp' },
+      { name:'KB Deadlift (tvåhands)', sets:'4 set', reps:'15–20', tags:['kb'],
+        img:'gymapp/images/kb-deadlift.png',
+        muscles:'Hamstrings, gluteus, ryggstruktur, underarmar',
+        steps:['Fötterna höftbrett, KB mellan fötterna','Böj ned med rak rygg – bröst uppe, nacken neutral','Grip KB med båda händer, axlar rakt ovanför','Pressa hälarnas i golvet – res upp höfter och axlar simultant','Sträck ut helt, gluteus kniper','Sänk kontrollerat med rak rygg'],
+        tip:'💡 Tänk "skjut golvet ifrån dig" – inte "lyft vikten uppåt".',
+        breath:'IN ned (håll), UT vid toppen' },
+      { name:'Armhävningar (på knäna)', sets:'4 set', reps:'20–25', tags:['st'],
+        img:'gymapp/images/pushup-knees.png',
+        muscles:'Bröst (pectoralis), triceps, främre deltoideus',
+        steps:['Händer lite bredare än axelbredd','Knäna i golvet – kroppen rak från knä till huvud','Händerna vinklade lätt utåt (~45°)','Sänk bröstet kontrollerat mot golvet','Stopp strax innan bröstet nuddar','Pressa upp med full kraft'],
+        tip:'💡 Håll magen spänd – undvik att hänga i ländryggen.',
+        breath:'IN ned, UT upp' },
+      { name:'Hantel shoulder press (sittande)', sets:'4 set', reps:'20–25', tags:['ha','st'],
+        img:'gymapp/images/shoulder-press.png',
+        muscles:'Deltoideus (alla huvuden), triceps, övre trapezius',
+        steps:['Sitt med rak rygg, fötterna plant i golvet','Hantlar i axelhöjd, handflatorna framåt, armbågar 90°','Pressa rakt upp – armarna nästan raka','Hantlarna möts nästan (rör ej ihop)','Sänk kontrollerat till axelhöjd','Core aktiv – undvik att böja bakåt'],
+        tip:'💡 Håll dig upprätt – aktiverar kärnan maximalt.',
+        breath:'UT upp, IN ned' },
+      { name:'Glute bridge + KB på höfter', sets:'4 set', reps:'20–30', tags:['kb','li'],
+        img:'gymapp/images/glute-bridge.png',
+        muscles:'Gluteus maximus & medius, hamstrings, core',
+        steps:['Ligg på rygg, knäna böjda, fötterna höftbrett i golvet','KB på höfterna/bäckenet – håll med händerna','Pressa fötterna i golvet – lyft höfterna rakt upp','Pressa gluteus hårt i toppläget – kroppen rak','Håll 1 sek med gluteus knipet','Sänk höfterna kontrollerat nästan till golvet'],
+        tip:'💡 Knip gluteus aktivt – tänk "klämma en plånbok".',
+        breath:'UT upp, IN ned' },
+    ]
+  },
+  {
+    name:'🏋️ Tisdag', type:'gym', badge:'🏋️ Gym – Överkropp',
+    dtl:'⏱ 25–35 min · 30–45 sek vila',
+    exercises:[
+      { name:'Bänkpress', sets:'6 set', reps:'15–20', tags:['rh'],
+        img:'gymapp/images/benchpress.png',
+        muscles:'Pectoralis major, triceps, främre deltoideus',
+        steps:['Ligg på bänken – ögon under stången','Tag lite bredare än axelbredd','Sänk stången kontrollerat till nedre bröstet','Stången nuddar knappt bröstet','Pressa explosivt upp','Skulderbladen tryckta mot bänken hela setet'],
+        tip:'💡 Tryck skulderbladen mot bänken – aktiverar bröst bättre.',
+        breath:'IN ned, UT upp' },
+      { name:'Cable flyes – maskin, bröstmitt', sets:'6 set', reps:'20–25', tags:['rvh'],
+        img:'gymapp/images/cable-flyes.png',
+        muscles:'Pectoralis major (mitten/insida), front deltoideus',
+        steps:['Pulley i midjehöjd (bröstmitt)','Ta ett steg framåt – lätt framåtlutning','Stå med armar utspridda – lätt böjda armbågar','Drag händerna mot varandra i vid bågrörelse','Håll 1 sek i mittläget','Sänk kontrollerat tillbaka'],
+        tip:'💡 Känn att det är bröstmuskeln som drar – inte armar.',
+        breath:'UT ihop, IN ut' },
+      { name:'Axelpress maskin', sets:'4 set', reps:'15–20', tags:['rh'],
+        img:'gymapp/images/lateral-raise.png',
+        muscles:'Deltoideus (framre & mitten), triceps, trapezius',
+        steps:['Justera sätet – handtag i axelhöjd','Sitt med rak rygg, fötterna i golvet','Pressa rakt upp – armarna nästan raka','Sänk kontrollerat till axelhöjd'],
+        tip:'💡 Maskinen ger stabilitet – fokusera på deltamuskeln.',
+        breath:'UT upp, IN ned' },
+      { name:'Lateral raises', sets:'4 set', reps:'20–30', tags:['rvh'],
+        img:'gymapp/images/lateral-raise.png',
+        muscles:'Deltoideus (mitten), supraspinatus',
+        steps:['Stå upprätt, hantlar längs sidorna, lätt böjda armbågar','Lyft armarna rakt ut åt sidorna – ledd av armbågen','Lyft till axelhöjd – tummen pekar lätt nedåt','Håll 1 sek','Sänk LÅNGSAMT – 3 sek (negativa fasen är viktig!)'],
+        tip:'💡 Lätt framåtlutning + tummen ned = bättre isolering av mittdelta.',
+        breath:'UT upp, IN ned' },
+      { name:'Tricepspress kabel', sets:'4 set', reps:'20–25', tags:['rvh'],
+        img:'gymapp/images/tricep-press.png',
+        muscles:'Triceps brachii (alla tre huvuden)',
+        steps:['Kabelns ögla i övre position','Grip rep/stång – armbågarna intill kroppen','Lätt framåtlutning, kärnan spänd','Pressa ned tills armarna raka – armbågarna rör sig EJ','Håll 1 sek i botten','Kontrollerat upp till 90°'],
+        tip:'💡 Armbågarna glider framåt = vikten för tung. Sänk och fokusera.',
+        breath:'UT ned, IN upp' },
+      { name:'Facepull – bakre delta', sets:'4 set', reps:'20–25', tags:['rvh'],
+        img:'gymapp/images/facepull.png',
+        muscles:'Bakre deltoideus, rotatorkuff, rhomboids, trapezius (mitten)',
+        steps:['Kabel i ögonhöjd, rephandtag','Ta ett steg bakåt – grip med båda händer','Dra repet mot ansiktet – armbågar flareade ut','Händerna separeras och drar förbi öronen','Håll 1 sek – skulderblad ihopdraget','Sträck ut kontrollerat'],
+        tip:'💡 En av de viktigaste axelhälso-övningarna – alltid med rätt form!',
+        breath:'UT drag, IN ut' },
+    ]
+  },
+  {
+    name:'🏠 Onsdag', type:'hem', badge:'🏠 Hemma – Ben & Core',
+    dtl:'⏱ 13–15 min · 40 sek på / 20 sek vila',
+    exercises:[
+      { name:'KB Sumo squat', sets:'4 set', reps:'15–20', tags:['kb'],
+        img:'gymapp/images/sumo-squat.png',
+        muscles:'Quadriceps, gluteus, adduktorer (innerlår), core',
+        steps:['Brett ben – fötterna 1,5x axelbredd, tår ut 45°','KB hängande med båda händer mellan benen','Rak rygg, bröst uppe','Sänk höfterna rakt ned mellan fötterna','Knäna följer tårna utåt hela vägen','Pressa upp via hälar och innerlår'],
+        tip:'💡 Bredare stativ aktiverar innerläret mer.',
+        breath:'IN ned, UT upp' },
+      { name:'Seated KB press (sittande)', sets:'4 set', reps:'15–20', tags:['kb','st'],
+        img:'gymapp/images/shoulder-press.png',
+        muscles:'Deltoideus, triceps, serratus anterior',
+        steps:['Sitt på golvet – benen utsträckta eller korslagda','KB med båda händer mot bröstet','Pressa rakt upp – armarna nästan raka','Håll handleden neutral','Sänk kontrollerat tillbaka'],
+        tip:'💡 Sittande på golvet utan stöd aktiverar kärnan maximalt!',
+        breath:'UT upp, IN ned' },
+      { name:'Hantel lateral raise (sittande)', sets:'4 set', reps:'20–30', tags:['ha','st'],
+        img:'gymapp/images/lateral-raise.png',
+        muscles:'Deltoideus (mitten), supraspinatus',
+        steps:['Sitt på stolkanten, rak rygg, fötterna i golvet','Hantlar längs sidorna med lätt böjda armbågar','Lyft armarna ut åt sidorna till axelhöjd','Sänk kontrollerat – 3 sek ned'],
+        tip:'💡 Att sitta eliminerar svingning – renare isolering!',
+        breath:'UT upp, IN ned' },
+      { name:'Ab roller (från knäna)', sets:'4 set', reps:'15–20', tags:['ro'],
+        img:'gymapp/images/ab-roller.png',
+        muscles:'Rectus abdominis, obliques, serratus, latissimus',
+        steps:['Knäna i golvet, ab rollern med båda händer axelbredd','Spänn magen HÅRT – föreställ ett slag i magen','Rulla framåt långsamt – kroppen rak, höfter sjunker ej','Rulla så långt du kan utan att tappa neutral ländrygg','Dra tillbaka med magmusklerna – INTE höfterna','Full stop i startposition'],
+        tip:'💡 Kvalitet > kvantitet. 10 perfekta > 20 halvdana.',
+        breath:'IN framåt (håll spänning), UT tillbaka' },
+      { name:'Bicycle crunches (liggande)', sets:'4 set', reps:'25–30', tags:['li'],
+        img:'gymapp/images/bicycle-crunches.png',
+        muscles:'Obliques, rectus abdominis, hip flexors',
+        steps:['Ligg på rygg – händer lätt bakom huvudet','Lyft axlarna från golvet – håll dem uppe hela setet','Dra ena knät mot bröstet – rotera överkroppen mot det','Motstående armbåge rör sig mot knät','Byt sida i kontrollerad rörelse','Utsträckt ben hovrar ovanför golvet'],
+        tip:'💡 Tänk rotation från bröstet – inte böjning av nacken!',
+        breath:'Andas rytmiskt' },
+    ]
+  },
+  {
+    name:'🏋️ Torsdag', type:'gym', badge:'🏋️ Gym – Underkropp & Pull',
+    dtl:'⏱ 25–35 min · 30–45 sek vila',
+    exercises:[
+      { name:'Knäböj (Smith-maskin)', sets:'5 set', reps:'15–20', tags:['rh'],
+        img:'gymapp/images/smith-squat.png',
+        muscles:'Quadriceps, gluteus, hamstrings, adduktorer, core',
+        steps:['Stången på övre ryggen (trapezius) – ej nacken','Fötterna axelbredd isär, lite framför stången','Rak rygg, bröst uppe, blick rakt fram','Sänk kontrollerat – knäna trackerar tårna','Lår parallella med golvet eller djupare','Pressa upp explosivt genom hälarnas'],
+        tip:'💡 Smith-maskin ger extra stabilitet – bra vid balanssvårigheter.',
+        breath:'IN ned, UT upp' },
+      { name:'Benpress', sets:'5 set', reps:'15–20', tags:['rh'],
+        img:'gymapp/images/leg-press.png',
+        muscles:'Quadriceps, gluteus, hamstrings',
+        steps:['Sitt med ryggen mot kudden','Fötterna axelbredd isär på plattan, midthöjd','Lås upp vikten – sänk kontrollerat till 90°','Knäna trackerar mot yttre axeln av foten','Pressa upp till nästan raka ben – lås EJ knäna','Lås in vikten säkert efteråt'],
+        tip:'💡 Footposition: högt = mer gluteus, lågt = mer quad.',
+        breath:'IN ned, UT upp' },
+      { name:'Latsdrag', sets:'4 set', reps:'15–20', tags:['rh'],
+        img:'gymapp/images/lat-pulldown.png',
+        muscles:'Latissimus dorsi, biceps, bakre deltoideus, rhomboids',
+        steps:['Lår under vadderna, fötterna i golvet','Grip stången bredare än axelbredd, handflatorna framåt','Luta dig lätt bakåt (15°) – bröst mot stången','Drag stången mot övre bröstet – armbågar rakt ned','Håll 1 sek i botten – ryggmuskeln kniper','Armarna sträcks ut fullständigt upp'],
+        tip:'💡 Föreställ att du trycker armbågarna mot bakfickorna.',
+        breath:'UT ned, IN upp' },
+      { name:'Sittande rodd', sets:'4 set', reps:'15–20', tags:['rh'],
+        img:'gymapp/images/seated-row.png',
+        muscles:'Rhomboids, trapezius, latissimus, bakre deltoideus, biceps',
+        steps:['Fötterna mot fotstödet, lätt böjda knän','Rak rygg – lätt framåtlutning i startläget','Drag handtaget mot nedre magen/mitten av kroppen','Armbågarna smigar längs kroppen','Sträck skulderbladen bakåt och ihop i slutläget','Kontrollerat tillbaka – lat sträcker ut'],
+        tip:'💡 Tänk "klämma en penna mellan skulderbladen".',
+        breath:'UT drag, IN sträck' },
+      { name:'Bicepscurl maskin (dropset)', sets:'4 set', reps:'20→15→10', tags:['rvh'],
+        img:'gymapp/images/bicep-curl-machine.png',
+        muscles:'Biceps brachii, brachialis, brachioradialis',
+        steps:['Starta med lagom vikt – ska klara 20 reps','Armbågarna mot kudden, grip handtagen','Curl upp i full rörelseomfång – biceps kontraktar','Sänk LÅNGSAMT – 3 sek (negativa fasen bygger muskler)','Kör 20 reps → sänk vikten direkt → kör 15 → sänk → kör 10','Ingen vila mellan viktsänkningarna – äkta dropset!'],
+        tip:'💡 Dropset = en av de mest effektiva biceps-metoderna.',
+        breath:'UT upp, IN ned' },
+      { name:'Kabeldrag raka armar', sets:'4 set', reps:'20–25', tags:['rvh'],
+        img:'gymapp/images/cable-straight-arm.png',
+        muscles:'Latissimus dorsi, serratus anterior, teres major',
+        steps:['Stå framför högt ställd kabel, grip stången med raka armar','Lätt framåtlutning, kärnan spänd','Drag stången nedåt i en bågrörelse mot låren','Håll armarna raka hela rörelsen','Håll 1 sek vid låren – lat är fullt kontraktat','Kontrollerat tillbaka upp'],
+        tip:'💡 Fokusera på att "stoppa" armarna med ryggen.',
+        breath:'UT ned, IN upp' },
+    ]
+  },
+  {
+    name:'😴 Fredag', type:'vila', badge:'😴 Vila',
+    dtl:'♻️ Aktiv återhämtning', exercises:[]
+  },
+  {
+    name:'🏠 Lördag', type:'hem', badge:'🏠 Hemma – Överkropp & Core',
+    dtl:'⏱ 13–15 min · 40 sek på / 20 sek vila',
+    exercises:[
+      { name:'KB bent-over row (bordsstöd)', sets:'4 set', reps:'15–20/sida', tags:['kb'],
+        img:'gymapp/images/lat-pulldown.png',
+        muscles:'Latissimus dorsi, rhomboids, bakre deltoideus, biceps',
+        steps:['Stå vid ett bord/stol – luta ena handen mot stöd','Böj framåt med rak rygg, parallell med golvet','KB i den fria handen, arm hängande rakt ned','Drag KB mot nedre revbenen – armbåge längs kroppen','Håll 1 sek, skulderblad draget bakåt','Sänk kontrollerat med full utsträckning'],
+        tip:'💡 Stödhanden ger stabilitet – perfekt vid balanssvårigheter!',
+        breath:'UT upp, IN ned' },
+      { name:'Hantel bicepscurl (sittande)', sets:'4 set', reps:'20–30', tags:['ha','st'],
+        img:'gymapp/images/bicep-curl-machine.png',
+        muscles:'Biceps brachii, brachialis',
+        steps:['Sitt med rak rygg, hantlar längs sidorna','Armbågarna intill kroppen – rör sig EJ','Curl upp till axelhöjd – rotera handflatan uppåt','Håll 1 sek i toppen','Sänk LÅNGSAMT – 3 sek'],
+        tip:'💡 Armbågarna swingar framåt = vikten för tung.',
+        breath:'UT upp, IN ned' },
+      { name:'Tricepsdips (stol)', sets:'4 set', reps:'20–25', tags:['st'],
+        img:'gymapp/images/tricep-press.png',
+        muscles:'Triceps brachii, deltoideus (framre)',
+        steps:['Sitt på kanten av en stabil stol, händerna greppande kanten','Flytta rumpan framför stolen, benen böjda 90°','Sänk kroppen rakt ned – armbågarna bakåt (ej utåt)','Sänk till armbågarna är ~90°','Pressa upp med triceps till raka armar'],
+        tip:'💡 Håll ryggen nära stolen för att skydda axlarna.',
+        breath:'IN ned, UT upp' },
+      { name:'KB chest press (liggande)', sets:'4 set', reps:'15–20', tags:['kb','li'],
+        img:'gymapp/images/kb-chest-press.png',
+        muscles:'Pectoralis major, triceps, främre deltoideus',
+        steps:['Ligg på rygg, knäna böjda, fötterna i golvet','KB med båda händer mot bröstet','Pressa rakt upp – armarna nästan raka','Sänk kontrollerat tills armbågarna rör golvet','Golvet begränsar rörelseomfånget – säkert!'],
+        tip:'💡 Golvbegränsningen skyddar axlarna – bra alternativ till bänkpress.',
+        breath:'UT upp, IN ned' },
+      { name:'Ab roller (från knäna)', sets:'4 set', reps:'15–20', tags:['ro'],
+        img:'gymapp/images/ab-roller.png',
+        muscles:'Rectus abdominis, obliques, serratus, latissimus',
+        steps:['Knäna i golvet, ab rollern med båda händer','Spänn magen HÅRT','Rulla framåt – kroppen rak','Dra tillbaka med magkraft – inte höfter'],
+        tip:'💡 Kvalitet > kvantitet.',
+        breath:'IN framåt, UT tillbaka' },
+    ]
+  },
+  {
+    name:'😴 Söndag', type:'vila', badge:'😴 Vila',
+    dtl:'♻️ Full återhämtning', exercises:[]
+  },
+];
+
+/* Platt uppslagstabell: övningsnamn → fullständig teknikinfo */
+const EX_DETAILS = (() => {
+  const map = new Map();
+  for (const d of DAYS)
+    for (const ex of (d.exercises || []))
+      map.set(_norm(ex.name), ex);
+  return map;
+})();
+
+function _norm(t) {
+  return String(t || '').toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/[^a-zà-ÿ0-9åäö\s]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+
+/* Hitta detaljer för ett övningsnamn – exakt träff först, annars delsträng */
+function findDetails(name) {
+  const k = _norm(name);
+  if (!k) return null;
+  if (EX_DETAILS.has(k)) return EX_DETAILS.get(k);
+  let best = null, bestLen = 0;
+  for (const [key, val] of EX_DETAILS) {
+    if ((k.includes(key) || key.includes(k)) && key.length > bestLen) {
+      best = val; bestLen = key.length;
+    }
+  }
+  return best;
+}
+
+/* ════════════════════════════════════════════════
+   APPENS SCHEMA  ·  läses från samma localStorage
+   som index.html använder. Sidorna visar därmed
+   alltid samma sak.
+════════════════════════════════════════════════ */
+const APP_KEY = 'ga_data';
+const DAY_SV  = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+const TYPE_MAP  = { gym:'gym', home:'hem', rest:'vila' };
+const BADGE_MAP = { gym:'🏋️ Gym', home:'🏠 Hemma', rest:'😴 Vila' };
+const ICO_MAP   = { gym:'🏋️', home:'🏠', rest:'😴' };
+
+function loadAppSchedule() {
+  return LOG.safe('schema', () => {
+    const raw = localStorage.getItem(APP_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    const list = Array.isArray(d.mySched) ? d.mySched : [];
+    if (!list.length) return null;
+    const i = Math.max(0, Math.min(d.sch | 0, list.length - 1));
+    const sch = list[i];
+    if (!sch || !Array.isArray(sch.days)) return null;
+    return { name: sch.name || 'Mitt schema', days: sch.days, weights: d.weights || {}, idx: i };
+  }, null);
+}
+
+/* Översätt appens dagformat till den här sidans visningsformat,
+   berikat med teknikinfo från detaljbanken. */
+function buildDays(sch) {
+  return sch.days.map((day, di) => ({
+    name:  `${ICO_MAP[day.t] || '💪'} ${day.n || DAY_SV[di] || 'Dag'}`,
+    type:  TYPE_MAP[day.t] || 'hem',
+    badge: BADGE_MAP[day.t] || '',
+    dtl:   day.t === 'gym'  ? '⏱ 25–35 min · 30–45 sek vila'
+         : day.t === 'rest' ? 'Aktiv återhämtning – promenad, stretch eller yoga 🌿'
+         :                    '⏱ 13–15 min · 40 sek på / 20 sek vila',
+    exercises: (day.ex || []).map((e, ei) => {
+      const det = findDetails(e.n) || {};
+      const kg  = sch.weights[`s${sch.idx}_d${di}_e${ei}`];
+      return {
+        name:    e.n,
+        sets:    (e.s || '3×').replace('×', ' set'),
+        reps:    e.r || '',
+        kg,
+        tags:    [e.kb && 'kb', e.ha && 'ha', e.st && 'st', e.li && 'li', e.ro && 'ro'].filter(Boolean),
+        img:     e.img ? (e.img.startsWith('gymapp/') ? e.img : 'gymapp/' + e.img) : det.img,
+        muscles: e.muscles || det.muscles || '',
+        steps:   e.steps   || det.steps   || [],
+        tip:     det.tip   || '',
+        breath:  e.breath  || det.breath  || '',
+      };
+    }),
+  }));
+}
+
+/* Dagarna som faktiskt visas – fylls i boot */
+let VIEW_DAYS = [];
+let _lastSchema = '';
+
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let reps = 0;   /* laddas i boot via loadReps() */
+
+/* Today's day-of-week index (0 = Mon) */
+const todayDow = () => (new Date().getDay() + 6) % 7;
+
+/* ════════════════════════════════════════════════
+   RENDER
+════════════════════════════════════════════════ */
+function render() {
+  const grid = $('week-grid');
+  if (!grid) return;
+
+  /* Inget schema i appen → visa tomt läge istället för påhittat innehåll */
+  if (!VIEW_DAYS.length) {
+    grid.innerHTML = `
+      <div class="ts-empty">
+        <span class="te-ico" aria-hidden="true">🗓️</span>
+        <h3>Inget schema än</h3>
+        <p>Den här sidan visar ditt schema från GymApp med fullständig teknik,
+           bilder och zoom. Skapa ett schema i appen så dyker det upp här.</p>
+        <a class="te-btn" href="gymapp/index.html">➕ Skapa schema i appen</a>
+      </div>`;
+    const tb = $('today-btn-wrap');
+    if (tb) tb.style.display = 'none';
+    const lbl = $('sch-name');
+    if (lbl) lbl.textContent = '';
+    return;
+  }
+
+  const tod = todayDow();
+  grid.innerHTML = '';
+
+  VIEW_DAYS.forEach((day, di) => {
+    const isToday  = di === tod;
+    const card     = document.createElement('div');
+    card.className = `dc ${day.type}${isToday ? ' today-card' : ''}`;
+    card.id        = `day-${di}`;
+    card.setAttribute('role', 'listitem');
+
+    const todayTag = isToday ? '<span class="today-tag">📍 Idag</span>' : '';
+
+    let html = `
+      <div class="dh">
+        <span class="dn">${day.name}${todayTag}</span>
+        <span class="badge ${day.type}">${day.badge}</span>
+      </div>
+      <div class="dtl">${day.dtl}</div>`;
+
+    if (day.type === 'vila') {
+      html += `<p class="rest-p">Aktiv återhämtning – promenera, stretcha eller yoga. Det är under vilan musklerna växer! 🌿</p>`;
+    } else {
+      html += `<ul class="ex-ul">`;
+      day.exercises.forEach((ex, ei) => {
+        const uid  = `ex-${di}-${ei}`;
+        const isHome = day.type === 'hem';
+
+        // Equipment tags
+        const tagParts = [
+          ex.tags.includes('kb')  ? '<span class="tg kb">16kg KB</span>'  : '',
+          ex.tags.includes('ha')  ? '<span class="tg ha">5kg×2</span>'    : '',
+          ex.tags.includes('st')  ? '<span class="tg st">🪑</span>'        : '',
+          ex.tags.includes('li')  ? '<span class="tg li">🛏</span>'        : '',
+          ex.tags.includes('ro')  ? '<span class="tg ro">🎡</span>'        : '',
+        ].join('');
+
+        // Rep badge – parse correctly e.g. "15–20" → min=15
+        const repNums = (ex.reps || '').match(/\d+/g)?.map(Number) ?? [0];
+        const repMin  = Math.min(...repNums);
+        const repCls  = repMin >= 20 ? 'rvh' : 'rh';
+        const hasRepTag = ex.tags.includes('rh') || ex.tags.includes('rvh');
+        const repTag  = !hasRepTag && ex.reps ? `<span class="tg ${repCls}">${ex.reps}</span>` : '';
+
+        // Fixed weight label for home exercises
+        const fixedLbl = isHome
+          ? `<span class="tg fix">${ex.tags.includes('kb') ? '📌 16kg KB' : ex.tags.includes('ha') ? '📌 5kg×2' : '📌 Kroppsvikt'}</span>`
+          : (ex.kg ? `<span class="tg kgt">🏋️ ${ex.kg} kg</span>` : '');
+
+        // Escape name for onclick
+        const safeName = ex.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+        html += `
+          <li class="ex-li" id="${uid}">
+            <div class="ex-head" data-act="togEx" data-uid="${uid}"
+                 role="button" tabindex="0" aria-expanded="false">
+              <div class="ex-left">
+                <span class="ex-name">${ex.name}</span>
+                <div class="ex-tags">${tagParts}${repTag}${fixedLbl}</div>
+              </div>
+              <div class="ex-right">
+                <span class="ex-sets">${ex.sets}</span>
+                <span class="ex-chev" aria-hidden="true">▼</span>
+              </div>
+            </div>
+            <div class="ex-panel" id="panel-${uid}">
+              ${buildImage(ex.img, ex.name, uid)}
+              <div class="how-to-title">📋 Utförande</div>
+              <ol class="steps">
+                ${ex.steps.map((s,i) => `
+                  <li class="step">
+                    <span class="step-num">${i+1}</span>
+                    <span>${s}</span>
+                  </li>`).join('')}
+              </ol>
+              <div class="ex-meta">
+                <div class="meta-box">
+                  <div class="meta-title">💪 Muskler</div>
+                  <div class="meta-content">${ex.muscles}</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-title">💡 Tips</div>
+                  <div class="meta-content tip">${ex.tip}</div>
+                </div>
+              </div>
+              <div class="breathing">🫁 <strong>Andning:</strong>&nbsp;${ex.breath}</div>
+            </div>
+          </li>`;
+      });
+      html += '</ul>';
+    }
+
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+
+  /* Markera dagens knapp i veckoraden */
+  document.querySelectorAll('.dpill').forEach((btn, i) => {
+    btn.classList.toggle('is-today', i === tod);
+  });
+}
+
+/* ════════════════════════════════════════════════
+   IMAGE BUILDER  –  Förbättrad bildvisning
+════════════════════════════════════════════════ */
+function buildImage(src, alt, uid) {
+  if (!src) {
+    return `<div class="ex-img-wrap loaded">
+      <div class="ex-img-err"><span>🏋️</span><span>Bild kommer snart</span></div>
+    </div>`;
+  }
+  return `
+    <div class="ex-img-wrap" id="imgwrap-${uid}" data-act="zoom" data-id="imgwrap-${uid}">
+      <img class="ex-img" src="${src}" alt="${esc(alt)}" loading="lazy" decoding="async"/>
+      <span class="zoom-hint">🔍 Klicka för zoom</span>
+    </div>`;
+}
+
+/* Delegerad bildladdning/felhantering – 0 inline onload/onerror */
+document.addEventListener('load', e => {
+  const img = e.target;
+  if (img?.tagName === 'IMG' && img.classList.contains('ex-img')) {
+    img.closest('.ex-img-wrap')?.classList.add('loaded');
+  }
+}, true);
+document.addEventListener('error', e => {
+  const img = e.target;
+  if (img?.tagName === 'IMG' && img.classList.contains('ex-img')) {
+    const wrap = img.closest('.ex-img-wrap');
+    if (wrap) {
+      wrap.classList.add('loaded');
+      wrap.innerHTML = `<div class="ex-img-err"><span>🏋️</span><span>${esc(img.alt || '')}</span></div>`;
+    }
+  }
+}, true);
+
+ACTIONS.zoom = d => {
+  const el = $(d.id);
+  if (!el) return;
+  el.classList.toggle('zoomed');
+  vib(8);
+};
+
+/* ── FÄLL UT ÖVNING ── */
+ACTIONS.togEx = d => {
+  const li = $(d.uid);
+  if (!li) return;
+  const open = li.classList.toggle('open');
+  li.querySelector('.ex-head')?.setAttribute('aria-expanded', String(open));
+  vib(8);
+  if (open) setTimeout(() => li.scrollIntoView({ behavior:'smooth', block:'nearest' }), 60);
+};
+
+/* ── HOPPA TILL VALFRI DAG / DAGENS PASS ── */
+function scrollToDay(idx) {
+  const el = $(`day-${idx}`);
+  if (!el) return;
+  el.scrollIntoView({ behavior:'smooth', block:'start' });
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 1400);
+  vib(12);
+}
+ACTIONS.today   = () => scrollToDay(todayDow());
+ACTIONS.jumpDay = d  => scrollToDay(+d.d || 0);
+
+/* ════════════════════════════════════════════════
+   100 REPS  ·  nollställs automatiskt varje dygn
+   BUGGFIX: räknaren låg kvar i evighet, så gårdagens
+   reps räknades in i dagens mål.
+════════════════════════════════════════════════ */
+const REP_KEY = 'gym_100reps';
+const ymd = (d = new Date()) => d.toLocaleDateString('sv-SE');
+
+function loadReps() {
+  return LOG.safe('reps', () => {
+    const raw = localStorage.getItem(REP_KEY);
+    if (!raw) return 0;
+    /* Nytt format {d,n} – gammalt var bara en siffra */
+    if (raw.startsWith('{')) {
+      const o = JSON.parse(raw);
+      return o.d === ymd() ? Math.min(100, Math.max(0, o.n | 0)) : 0;
+    }
+    return Math.min(100, Math.max(0, parseInt(raw) || 0));
+  }, 0);
+}
+
+function saveReps() {
+  LOG.safe('reps', () => localStorage.setItem(REP_KEY, JSON.stringify({ d: ymd(), n: reps })));
+}
+
+function updRepsUI() {
+  const done  = reps >= 100;
+  const fill  = $('rb-fill');
+  const lbl   = $('rep-lbl');
+  const badge = $('rep-badge');
+  if (fill)  fill.style.width  = reps + '%';
+  if (lbl)   lbl.textContent   = done ? '💥 KLART!' : `${reps} / 100`;
+  if (badge) badge.textContent = done ? '🏆 100/100!' : '';
+  $('rep-card')?.classList.toggle('complete', done);
+}
+
+ACTIONS.addReps = d => {
+  const was = reps;
+  reps = Math.min(100, Math.max(0, reps + (+d.n || 0)));
+  if (reps === was) return;
+  saveReps();
+  updRepsUI();
+  vib(reps >= 100 && was < 100 ? [90,60,90] : 10);
+  if (reps >= 100 && was < 100) toast('🏆 100 reps klara – snyggt jobbat!');
+};
+
+ACTIONS.resetReps = () => {
+  if (!reps) return;
+  reps = 0; saveReps(); updRepsUI(); vib(14);
+  toast('↺ Räknaren nollställd');
+};
+
+/* ── TOAST ── */
+let _toastT = 0;
+function toast(msg) {
+  let el = $('toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'toast';
+    el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => el.classList.remove('on'), 2600);
+}
+
+/* ── FELSÖKS-API ── */
+window.Schema = {
+  log:     () => LOG.dump(),
+  version: 'v2',
+  reps:    () => ({ datum: ymd(), reps }),
+  idag:    () => todayDow(),
+};
+
+/* ════════════════════════════════════════════════
+   BOOT
+════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const t0 = performance.now();
+  reps = loadReps();
+
+  /* Hämta aktivt schema från appen */
+  const sch = loadAppSchedule();
+  VIEW_DAYS = sch ? buildDays(sch) : [];
+  const nm = $('sch-name');
+  if (nm) nm.textContent = sch ? sch.name : '';
+  LOG.info('schema', sch ? `${sch.name} · ${VIEW_DAYS.length} dagar` : 'inget schema');
+
+  LOG.safe('render', render);
+  LOG.safe('reps',   updRepsUI);
+
+  /* Rulla till dagens pass när första målningen är klar */
+  requestAnimationFrame(() => setTimeout(() => {
+    const el = $(`day-${todayDow()}`);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 450));
+
+  /* Schemat kan ha ändrats i appen medan sidan låg i bakgrunden */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    const fresh = loadAppSchedule();
+    const now   = fresh ? JSON.stringify(fresh.days) : '';
+    if (now !== _lastSchema) {
+      _lastSchema = now;
+      VIEW_DAYS = fresh ? buildDays(fresh) : [];
+      const n = $('sch-name');
+      if (n) n.textContent = fresh ? fresh.name : '';
+      LOG.safe('render', render);
+    }
+  });
+
+  /* Dygnsväxling medan sidan är öppen → nollställ reps */
+  let cur = ymd();
+  setInterval(() => {
+    const d = ymd();
+    if (d !== cur) { cur = d; reps = loadReps(); updRepsUI(); LOG.info('newday', d); }
+  }, 60_000);
+
+  LOG.info('boot', `${Math.round(performance.now() - t0)} ms`);
+});
+</script>
+</body>
+</html>
