@@ -1940,7 +1940,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v7  ·  No-login  ·  Firebase-ready
+   GymApp v9  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2116,7 +2116,6 @@ const QUOTES = [
   { text:'Smärta är tillfällig. Att ge upp är för alltid.', by:'Lance Armstrong' },
   { text:'Ta hand om din kropp – det är det enda stället du måste leva i.', by:'Jim Rohn' },
   { text:'Träning är en hyllning till vad din kropp kan göra.', by:'Okänd' },
-  { text:'Framgång börjar dagen du bestämmer dig för att börja.', by:'Harvey MacKay' },
   { text:'Du behöver inte vara bra för att börja, men du måste börja för att bli bra.', by:'Zig Ziglar' },
   { text:'Kroppen uppnår vad sinnet tror.', by:'Napoleon Hill' },
   { text:'Stark är vad du blir när du är klar med att vara svag.', by:'Okänd' },
@@ -4122,7 +4121,7 @@ window.GymBackupHost = {
 window.GymApp = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v8',
+  version: 'v9',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };
