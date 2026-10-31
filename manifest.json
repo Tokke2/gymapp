@@ -1,0 +1,105 @@
+{
+  "name":        "GymApp 💪 – Träning & Balans",
+  "short_name":  "GymApp",
+  "description": "Din personliga träningsapp – veckoschema, viktlogg, auto-progression och daglig balansrutin. Fungerar helt offline, inget konto krävs.",
+  "id":          "/gymapp/",
+  "start_url":   "./index.html?source=pwa",
+  "scope":       "./",
+
+  "display":          "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "orientation":      "any",
+
+  "background_color": "#06060d",
+  "theme_color":      "#7c3aed",
+
+  "lang": "sv-SE",
+  "dir":  "ltr",
+
+  "categories": ["fitness", "health", "sports", "lifestyle"],
+
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "monochrome" }
+  ],
+
+  "shortcuts": [
+    {
+      "name":        "Dagens pass",
+      "short_name":  "Träna",
+      "description": "Hoppa direkt till dagens träningspass",
+      "url":         "./index.html?tab=workout&source=shortcut",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name":        "Balansrutin",
+      "short_name":  "Balans",
+      "description": "Starta din dagliga balansrutin på 2–3 minuter",
+      "url":         "./index.html?tab=balance&source=shortcut",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name":        "Mina framsteg",
+      "short_name":  "Framsteg",
+      "description": "Viktlogg, streak och träningshistorik",
+      "url":         "./index.html?tab=progress&source=shortcut",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name":        "Detaljerat schema",
+      "short_name":  "Schema",
+      "description": "Hela veckoschemat med teknikbilder och 100-reps-utmaningen",
+      "url":         "../träningsschema.html?source=shortcut",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src":         "icons/icon-512.png",
+      "sizes":       "512x512",
+      "type":        "image/png",
+      "form_factor": "narrow",
+      "label":       "Hemskärm med dagens pass, streak och statistik"
+    },
+    {
+      "src":         "icons/icon-512.png",
+      "sizes":       "512x512",
+      "type":        "image/png",
+      "form_factor": "wide",
+      "label":       "Veckoschema med teknikbilder och viktlogg"
+    }
+  ],
+
+  "prefer_related_applications": false,
+  "handle_links":                "preferred",
+
+  "launch_handler": { "client_mode": ["navigate-existing", "auto"] },
+
+  "edge_side_panel": { "preferred_width": 420 },
+
+  "share_target": {
+    "action":  "./index.html",
+    "method":  "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params":  { "title": "title", "text": "text", "url": "url" }
+  },
+
+  "protocol_handlers": [
+    { "protocol": "web+gymapp", "url": "./index.html?action=%s" }
+  ],
+
+  "file_handlers": [
+    {
+      "action":      "./index.html?import=1",
+      "accept":      { "application/json": [".json"] },
+      "icons":       [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }],
+      "launch_type": "single-client"
+    }
+  ],
+
+  "related_applications": []
+}

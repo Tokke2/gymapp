@@ -1,0 +1,4141 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"/>
+  <meta name="theme-color" content="#06060d" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#7c3aed"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="GymApp"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="description" content="GymApp – Din personliga träningsapp med schema, vikter, balans och progression. Fungerar offline."/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" href="icons/icon-192.png"/>
+  <!-- Förladda det som syns först – snabbare första rendering -->
+  <link rel="preload" as="image" href="icons/icon-192.png"/>
+  <title>💪 GymApp</title>
+<style>
+/* ── TOKENS ─────────────────────────────────── */
+:root {
+  /* ── YTOR ── */
+  --bg: #06060d;
+  --bg2:#0b0b18;
+  --s0: rgba(255,255,255,.045);
+  --s1: rgba(255,255,255,.08);
+  --s2: rgba(255,255,255,.12);
+  --b0: rgba(255,255,255,.07);
+  --b1: rgba(255,255,255,.15);
+  --b2: rgba(255,255,255,.24);
+
+  /* ── KÄRNFÄRGER ── */
+  --p:#7c3aed; --pl:#a78bfa; --pd:#4c1d95;
+  --c:#22d3ee; --cl:#67e8f9; --cd:#0e7490;
+  --g:#4ade80; --gl:#86efac; --gd:#15803d;
+  --o:#f97316; --ol:#fdba74;
+  --r:#ef4444; --rl:#fca5a5;
+  --b:#60a5fa; --bl:#93c5fd;
+  --y:#facc15; --yl:#fde047;
+  --pk:#ec4899; --pkl:#f9a8d4;
+
+  /* ── FÄRGGLADA GRADIENTER ── */
+  --grad-p:  linear-gradient(135deg,#a78bfa,#7c3aed);
+  --grad-c:  linear-gradient(135deg,#67e8f9,#0891b2);
+  --grad-g:  linear-gradient(135deg,#86efac,#16a34a);
+  --grad-o:  linear-gradient(135deg,#fdba74,#ea580c);
+  --grad-pk: linear-gradient(135deg,#f9a8d4,#db2777);
+  --grad-y:  linear-gradient(135deg,#fde047,#ca8a04);
+  --grad-r:  linear-gradient(135deg,#fca5a5,#dc2626);
+  --grad-b:  linear-gradient(135deg,#93c5fd,#2563eb);
+  /* Signaturgradient – rörlig regnbåge för rubriker */
+  --grad-hero: linear-gradient(120deg,#a78bfa,#22d3ee,#4ade80,#facc15,#f9a8d4,#a78bfa);
+  --grad-fire: linear-gradient(135deg,#facc15,#f97316,#ef4444);
+  --grad-cool: linear-gradient(135deg,#22d3ee,#60a5fa,#a78bfa);
+
+  /* ── DAGSTYPER ── */
+  --day-gym:  #60a5fa;
+  --day-home: #4ade80;
+  --day-rest: #a78bfa;
+
+  /* ── TEXT ── */
+  --t1:#f8fafc; --t2:#a8b3c4; --t3:#64748b;
+
+  /* ── FORM ── */
+  --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r20:20px; --r24:24px; --rF:9999px;
+
+  --blur:blur(16px); --blurH:blur(28px);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --bounce:cubic-bezier(.68,-.55,.27,1.55);
+  --fast:.14s; --mid:.24s; --slow:.4s;
+
+  /* ── SKUGGOR & GLÖD ── */
+  --gP:0 0 24px rgba(124,58,237,.3);
+  --gC:0 0 24px rgba(34,211,238,.24);
+  --gG:0 0 24px rgba(74,222,128,.2);
+  --gO:0 0 24px rgba(249,115,22,.25);
+  --sh1:0 2px 8px rgba(0,0,0,.3);
+  --sh2:0 6px 20px rgba(0,0,0,.4);
+  --sh3:0 12px 36px rgba(0,0,0,.5);
+
+  --nav-h: 58px;
+  --mob-h: 62px;
+}
+
+/* Animerad gradient för rubriker */
+@keyframes hueShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.grad-txt{
+  background:var(--grad-hero);background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;color:transparent;
+  animation:hueShift 9s ease infinite;
+}
+body.lowfx .grad-txt{animation:none}
+
+
+/* ── RESET & CROSS-BROWSER BAS ──────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-text-size-adjust:100%;
+  -moz-text-size-adjust:100%;
+  text-size-adjust:100%;
+  color-scheme:dark;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(167,139,250,.32) rgba(255,255,255,.04);
+}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{background:rgba(167,139,250,.3);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(167,139,250,.5)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',system-ui,sans-serif;
+  background:var(--bg);color:var(--t1);
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeSpeed;         /* snabbare än optimizeLegibility */
+  overscroll-behavior-y:none;           /* ingen gummistuds i PWA-läge */
+  padding-bottom:calc(var(--mob-h) + env(safe-area-inset-bottom, 0px));
+  padding-left:env(safe-area-inset-left, 0px);
+  padding-right:env(safe-area-inset-right, 0px);
+}
+button,input,select,textarea{font-family:inherit}
+button{
+  cursor:pointer;border:none;background:none;color:inherit;
+  -webkit-appearance:none;appearance:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;          /* tar bort 300 ms fördröjning */
+}
+input,textarea{outline:none;color:inherit;-webkit-appearance:none;appearance:none}
+/* Ta bort spinner-pilar i nummerfält (Chrome/Safari/Edge/Firefox) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type="number"]{-moz-appearance:textfield;appearance:textfield}
+/* iOS zoomar in om typsnittet är under 16px i fält – låst till 16 på mobil */
+input,select,textarea{font-size:16px}
+img{display:block;max-width:100%;height:auto}
+
+/* ── MOBILANPASSNING ─────────────────────────
+   Träffytor ≥44px, säkra zoner, ingen gummistuds  */
+@media(pointer:coarse){
+  button,.nlink,.mn,[data-act]{min-height:44px}
+  .qa-btn{min-height:40px;min-width:52px}
+  .grip-tab{min-height:38px}
+  input[type="number"]{min-height:44px}
+}
+/* Ingen textmarkering vid dubbeltryck på knappar */
+button,.mn,.nlink,.sday,.adot-circle{
+  -webkit-user-select:none;user-select:none;
+}
+/* Släpp fram markering där text faktiskt ska kunna kopieras */
+p,.hstep,.bc-desc,.sb-ta,input,textarea{
+  -webkit-user-select:text;user-select:text;
+}
+
+/* ── ANIMATED MESH BG ───────────────────────── */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(70px);
+  animation:drift linear infinite;
+  /* will-change borttaget – höll GPU-lager vid liv i onödan (O9) */
+  contain:strict;
+}
+.orb1{width:560px;height:560px;
+  background:radial-gradient(circle,rgba(124,58,237,.18),transparent 70%);
+  top:-200px;left:-150px;animation-duration:22s}
+.orb2{width:460px;height:460px;
+  background:radial-gradient(circle,rgba(34,211,238,.12),transparent 70%);
+  bottom:-150px;right:-100px;animation-duration:18s;animation-direction:reverse}
+.orb3{width:320px;height:320px;
+  background:radial-gradient(circle,rgba(236,72,153,.07),transparent 70%);
+  top:40%;left:40%;animation-duration:28s;animation-delay:-8s}
+/* Bara translate – rotate på 560px blur är dyrt på mobil */
+@keyframes drift{
+  0%  {transform:translate3d(0,0,0)}
+  33% {transform:translate3d(30px,-40px,0)}
+  66% {transform:translate3d(-20px,20px,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+/* Pausa all bakgrundsanimation när fliken är dold – sparar batteri */
+body.idle .orb{animation-play-state:paused}
+/* Svag mobil / batterisparläge → statisk bakgrund */
+body.lowfx .orb{animation:none;filter:blur(56px)}
+@media(prefers-reduced-motion:reduce){
+  .orb{animation:none}
+}
+
+/* ── TOP NAV ────────────────────────────────── */
+#nav{
+  position:sticky;top:0;z-index:100;height:var(--nav-h);
+  background:rgba(6,6,13,.9);
+  -webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  border-bottom:1px solid var(--b0);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+  padding:0 max(16px, env(safe-area-inset-left, 0px)) 0 max(16px, env(safe-area-inset-right, 0px));
+}
+.nav-logo{
+  font-weight:900;font-size:clamp(.98rem, 2vw, 1.12rem);letter-spacing:-.03em;
+  color:var(--pl);
+  background:linear-gradient(135deg,var(--pl),var(--c));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;user-select:none;flex-shrink:0;
+}
+.nav-links{
+  display:flex;gap:3px;padding:3px;
+  background:rgba(255,255,255,.035);border:1px solid var(--b0);
+  border-radius:var(--r12);
+}
+.nlink{
+  color:var(--t2);padding:7px 12px;
+  border-radius:var(--r8);font-size:.8rem;font-weight:600;
+  white-space:nowrap;
+  transition:background var(--fast) var(--ease),color var(--fast) var(--ease);
+}
+.nlink:hover{background:var(--s0);color:var(--t1)}
+.nlink.on{
+  background:rgba(124,58,237,.2);color:var(--pl);
+  box-shadow:inset 0 0 0 1px rgba(124,58,237,.32);
+}
+/* Nav right – today's day badge */
+.nav-day{
+  font-size:.7rem;font-weight:700;padding:4px 10px;
+  border-radius:var(--rF);background:var(--s0);
+  border:1px solid var(--b0);color:var(--t2);
+  white-space:nowrap;
+}
+.nav-day.gym-day {background:rgba(96,165,250,.12);color:var(--b);border-color:rgba(96,165,250,.25)}
+.nav-day.home-day{background:rgba(74,222,128,.12);color:var(--g);border-color:rgba(74,222,128,.25)}
+.nav-day.rest-day{background:rgba(167,139,250,.12);color:var(--pl);border-color:rgba(167,139,250,.25)}
+
+/* ── PAGES ──────────────────────────────────── */
+.pg{
+  display:none;position:relative;z-index:1;
+  min-height:calc(100vh - var(--nav-h));
+  min-height:calc(100svh - var(--nav-h));
+  min-height:calc(100dvh - var(--nav-h));
+  padding:clamp(14px, 2.5vw, 28px);
+}
+.pg.on{display:block}
+.page-shell{width:100%;max-width:1180px;margin:0 auto}
+
+/* ── HOME — HERO & BENTO DASHBOARD ──────────── */
+.hero{text-align:center;padding:clamp(16px, 3vw, 28px) 0 clamp(14px, 2.2vw, 22px);position:relative}
+.hero h1{
+  font-size:clamp(1.8rem, 4.5vw, 2.65rem);font-weight:900;
+  letter-spacing:-.05em;margin-bottom:7px;line-height:1.06;
+}
+.hero h1 em{
+  font-style:normal;color:var(--pl);
+  background:var(--grad-hero);background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:hueShift 9s ease infinite;
+}
+body.lowfx .hero h1 em{animation:none}
+.hero p{color:var(--t2);font-size:clamp(.84rem, 1.8vw, .95rem)}
+
+/* Hälsningsrad med dagens fokus */
+.hero-greet{
+  display:inline-flex;align-items:center;gap:7px;
+  margin-bottom:10px;padding:5px 14px;border-radius:var(--rF);
+  background:var(--s0);border:1px solid var(--b0);
+  font-size:.74rem;font-weight:700;color:var(--t2);
+}
+.hero-greet .hg-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 8px var(--g);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.82)}}
+body.lowfx .hg-dot{animation:none}
+
+/* Bento-rutnät på Hem-fliken: 1 kolumn på mobil, 2 balanserade kolumner på surfplatta/dator */
+.home-bento{
+  display:grid;grid-template-columns:1fr;gap:16px;
+  max-width:680px;margin:0 auto 22px;
+}
+.hb-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+/* Dagens pass – stort färgat kort */
+.today-hero{
+  margin:0;padding:18px 20px;
+  border-radius:var(--r20);position:relative;overflow:hidden;
+  border:1px solid var(--b1);
+  background:var(--s0);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  display:flex;align-items:center;gap:16px;text-align:left;
+  width:100%;
+  transition:transform var(--fast) var(--ease),border-color var(--fast) var(--ease);
+}
+.today-hero[hidden]{display:none}
+.today-hero::before{
+  content:'';position:absolute;inset:0;opacity:.14;pointer-events:none;
+  background:var(--grad-p);
+}
+.today-hero.gym::before {background:var(--grad-b)}
+.today-hero.home::before{background:var(--grad-g)}
+.today-hero.rest::before{background:var(--grad-p)}
+.today-hero:hover{transform:translateY(-2px);border-color:var(--b2)}
+.today-hero:active{transform:scale(.99)}
+.th-ico{
+  font-size:2.1rem;flex-shrink:0;position:relative;z-index:1;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));
+}
+.th-txt{flex:1;min-width:0;position:relative;z-index:1}
+.th-lbl{
+  font-size:.64rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--t3);margin-bottom:3px;display:block;
+}
+.th-name{font-size:1.05rem;font-weight:800;margin-bottom:2px;display:block;overflow-wrap:anywhere}
+.th-meta{font-size:.75rem;color:var(--t2);display:block}
+.th-go{
+  position:relative;z-index:1;flex-shrink:0;
+  padding:9px 16px;border-radius:var(--rF);
+  background:rgba(255,255,255,.1);border:1px solid var(--b1);
+  font-size:.78rem;font-weight:800;white-space:nowrap;
+}
+
+/* Quote of the day */
+.qotd{
+  margin:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(34,211,238,.07));
+  border:1px solid rgba(124,58,237,.22);
+  border-radius:var(--r16);padding:16px 20px 16px 46px;
+  font-style:italic;font-size:.84rem;color:var(--t2);
+  line-height:1.65;text-align:left;position:relative;
+}
+.qotd::before{
+  content:'"';position:absolute;left:14px;top:4px;
+  font-size:2.6rem;line-height:1;color:var(--pl);opacity:.4;
+  font-family:Georgia,serif;
+}
+.qotd b{
+  color:var(--pl);font-style:normal;font-size:.74rem;
+  display:block;margin-top:7px;font-weight:700;
+}
+
+/* Stats – varje ruta sin egen färg */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px;margin:0;
+}
+.stat{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);
+  padding:17px 10px 15px;text-align:center;
+  transition:transform var(--fast) var(--ease),border-color var(--fast) var(--ease);
+  position:relative;overflow:hidden;cursor:default;min-width:0;
+}
+.stat::before{
+  content:'';position:absolute;inset:0 0 auto 0;height:3px;
+  background:var(--grad-p);opacity:.9;
+}
+.stat.s-streak::before{background:var(--grad-fire)}
+.stat.s-sess::before  {background:var(--grad-c)}
+.stat.s-bal::before   {background:var(--grad-g)}
+.stat::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.07),transparent 65%);
+}
+.stat:hover{transform:translateY(-3px);border-color:var(--b1)}
+.stat-val{
+  font-size:clamp(1.5rem, 3vw, 2.05rem);font-weight:900;line-height:1;margin-bottom:5px;
+  position:relative;z-index:1;
+  font-variant-numeric:tabular-nums;
+}
+.stat.s-streak .stat-val{
+  color:var(--o);
+  background:var(--grad-fire);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat.s-sess .stat-val{
+  color:var(--c);
+  background:var(--grad-c);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat.s-bal .stat-val{
+  color:var(--g);
+  background:var(--grad-g);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-lbl{
+  font-size:.68rem;color:var(--t2);font-weight:700;
+  position:relative;z-index:1;letter-spacing:.02em;
+}
+
+/* Activity dots */
+.activity-wrap{
+  margin:0;
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:14px 18px;
+}
+.activity-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;
+}
+.activity-title{
+  font-size:.67rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--t3);
+}
+.streak-badge{
+  font-size:.68rem;font-weight:700;padding:2px 9px;
+  border-radius:var(--rF);
+  background:rgba(249,115,22,.12);color:var(--o);
+  border:1px solid rgba(249,115,22,.25);
+}
+.activity-dots{display:flex;gap:6px;justify-content:space-between}
+.adot{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.adot-circle{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--b0);background:rgba(255,255,255,.04);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;transition:all var(--fast);
+}
+.adot-circle.active{
+  background:var(--grad-p);color:#fff;font-weight:800;
+  border-color:transparent;box-shadow:0 3px 12px rgba(124,58,237,.45);
+  transform:scale(1.06);
+}
+.adot-circle.today{
+  border-color:var(--c);border-width:2px;
+  box-shadow:0 0 0 3px rgba(34,211,238,.18),0 0 14px rgba(34,211,238,.3);
+}
+.adot-circle.today.active{background:var(--grad-c);box-shadow:0 3px 14px rgba(34,211,238,.5)}
+.adot-circle.missed{background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.22);color:var(--t3)}
+.adot-lbl{font-size:.58rem;color:var(--t3);font-weight:600}
+
+/* Section heading */
+.sh{
+  font-size:.68rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--t3);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.sh::after{content:'';flex:1;height:1px;background:var(--b0)}
+
+/* Notif banner */
+.notif-wrap{margin:0}
+.notif-banner{
+  background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);
+  border-radius:var(--r16);padding:14px 17px;
+  display:flex;align-items:center;gap:13px;
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  transition:border-color var(--fast);
+}
+.notif-banner:hover{border-color:rgba(74,222,128,.3)}
+.notif-text{flex:1;min-width:0}
+.notif-text b{color:var(--g);font-size:.86rem;display:block}
+.notif-text p{color:var(--t2);font-size:.73rem;margin-top:2px}
+.btn-notif{
+  padding:8px 15px;border-radius:var(--r8);
+  font-weight:700;font-size:.75rem;flex-shrink:0;
+  background:linear-gradient(135deg,var(--g),var(--gd));
+  color:#000;box-shadow:0 4px 12px rgba(74,222,128,.3);
+  transition:all var(--fast);
+}
+.btn-notif:hover{transform:translateY(-1px)}
+.btn-notif.off{background:rgba(255,255,255,.08);color:var(--t2);box-shadow:none}
+.notif-box{
+  margin:10px 0 0;
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:18px;display:none;
+}
+.notif-box-title{font-size:.8rem;font-weight:700;color:var(--c);margin-bottom:12px}
+.time-row{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.time-row label{font-size:.7rem;color:var(--t2);display:block;margin-bottom:5px;font-weight:600}
+.time-row input[type=time]{
+  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--b0);
+  border-radius:var(--r8);padding:8px 11px;color:var(--c);font-size:.92rem;outline:none;
+  color-scheme:dark;
+}
+.btn-save{
+  background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;
+  border-radius:var(--r8);padding:8px 18px;font-weight:700;font-size:.8rem;
+  box-shadow:0 4px 12px rgba(124,58,237,.3);transition:all var(--fast);
+}
+.btn-save:hover{transform:translateY(-1px)}
+.saved-lbl{color:var(--g);font-size:.74rem;margin-left:10px;display:none}
+
+/* Schedule cards */
+.home-sch-wrap{max-width:680px;margin:0 auto}
+.sch-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:14px;margin:0 auto 18px;
+}
+.sch-card{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:2px solid var(--b0);border-radius:var(--r16);
+  padding:20px;cursor:pointer;
+  transition:all var(--fast) var(--ease);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;min-width:0;
+}
+.sch-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.09),transparent);
+  opacity:0;transition:opacity var(--fast);pointer-events:none;
+}
+.sch-card::before{
+  content:'';position:absolute;inset:0 0 auto 0;height:4px;z-index:2;
+  background:var(--grad-p);
+}
+.sch-card.lv-beg::before{background:var(--grad-g)}
+.sch-card.lv-med::before{background:var(--grad-c)}
+.sch-card.lv-adv::before{background:var(--grad-fire)}
+.sch-card.own::before{background:var(--grad-pk)}
+.sch-card.add-card::before{display:none}
+.sch-card:hover{transform:translateY(-4px);border-color:var(--b1);box-shadow:var(--sh2),var(--gP)}
+.sch-card:hover::after{opacity:1}
+.sch-card.sel{
+  border-color:var(--pl);background:rgba(124,58,237,.1);
+  box-shadow:0 0 0 1px rgba(167,139,250,.28),var(--gP);
+}
+.sch-card.sel::after{background:linear-gradient(135deg,rgba(74,222,128,.08),transparent);opacity:1}
+.sch-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px;position:relative;z-index:1}
+.sch-name{font-weight:700;font-size:.93rem;min-width:0;overflow-wrap:anywhere}
+.lvl{font-size:.64rem;font-weight:800;padding:4px 11px;border-radius:var(--rF);white-space:nowrap;flex-shrink:0}
+.lvl.adv{background:rgba(124,58,237,.15);color:var(--pl);border:1px solid rgba(124,58,237,.3)}
+.lvl.med{background:rgba(34,211,238,.15);color:var(--c);border:1px solid rgba(34,211,238,.3)}
+.lvl.beg{background:rgba(74,222,128,.15);color:var(--g);border:1px solid rgba(74,222,128,.3)}
+.sch-desc{font-size:.76rem;color:var(--t2);margin-bottom:11px;line-height:1.5;position:relative;z-index:1}
+.sch-days{display:flex;gap:4px;flex-wrap:wrap;position:relative;z-index:1}
+.sday{font-size:.62rem;border-radius:6px;padding:2px 7px;font-weight:600}
+.sday.gym {background:rgba(96,165,250,.1);color:var(--b);border:1px solid rgba(96,165,250,.22)}
+.sday.home{background:rgba(74,222,128,.1);color:var(--g);border:1px solid rgba(74,222,128,.22)}
+.sday.rest{background:rgba(124,58,237,.1);color:var(--pl);border:1px solid rgba(124,58,237,.22)}
+.btn-sel{
+  margin-top:14px;width:100%;padding:12px;
+  background:var(--grad-p);
+  color:#fff;border-radius:var(--r12);font-weight:800;font-size:.85rem;
+  box-shadow:0 4px 14px rgba(124,58,237,.34);
+  position:relative;z-index:1;overflow:hidden;
+  transition:transform var(--fast) var(--ease),box-shadow var(--fast) var(--ease);
+}
+.btn-sel::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.22),transparent 70%);
+  transform:translateX(-100%);
+}
+.btn-sel:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.5)}
+.btn-sel:hover::after{transform:translateX(100%);transition:transform .6s var(--ease)}
+.btn-sel:active{transform:translateY(0) scale(.98)}
+.sch-card.sel .btn-sel{background:var(--grad-g);box-shadow:0 4px 14px rgba(74,222,128,.34);color:#052e16}
+.sel-info{
+  display:none;max-width:480px;margin:0 auto 20px;
+  background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.28);
+  border-radius:var(--r16);padding:13px;text-align:center;
+}
+.sel-info-name{color:var(--pl);font-weight:700;font-size:.93rem}
+.sel-info-sub{color:var(--t2);font-size:.75rem;margin-top:3px}
+
+/* ── WORKOUT TAB ────────────────────────────── */
+.wk-toolbar{
+  display:flex;flex-direction:column;gap:10px;margin-bottom:16px;
+}
+.wk-toolbar .sh{margin-bottom:0}
+.wk-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  gap:14px;max-width:1280px;margin:0 auto;align-items:start;
+}
+
+/* Today highlight ring on active day card */
+.dc{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:20px;
+  border-top:3px solid transparent;
+  transition:border-color var(--fast) var(--ease),transform var(--fast) var(--ease);
+  position:relative;overflow:hidden;min-width:0;
+  /* O6: hoppa över layout för kort utanför skärmen */
+  content-visibility:auto;
+  contain-intrinsic-size:auto 420px;
+}
+.dc::before{
+  content:'';position:absolute;inset:0;
+  opacity:0;transition:opacity var(--fast);pointer-events:none;
+}
+.dc:hover{transform:translateY(-3px);border-color:var(--b1);box-shadow:0 14px 36px rgba(0,0,0,.22)}
+.dc:hover::before{opacity:1}
+.dc.gym-d {border-top-color:var(--b)}
+.dc.gym-d::before {background:linear-gradient(155deg,rgba(96,165,250,.1),transparent 55%)}
+.dc.home-d{border-top-color:var(--g)}
+.dc.home-d::before{background:linear-gradient(155deg,rgba(74,222,128,.1),transparent 55%)}
+.dc.rest-d{border-top-color:var(--pl)}
+.dc.rest-d::before{background:linear-gradient(155deg,rgba(167,139,250,.1),transparent 55%)}
+/* Dagens kort lyfts fram tydligt */
+.dc.today-card{
+  border-color:rgba(34,211,238,.38);
+  box-shadow:0 0 0 2px rgba(34,211,238,.22),0 10px 32px rgba(0,0,0,.24);
+}
+.dc.today-card.gym-d {box-shadow:0 0 0 2px rgba(96,165,250,.28),0 10px 32px rgba(96,165,250,.18)}
+.dc.today-card.home-d{box-shadow:0 0 0 2px rgba(74,222,128,.28),0 10px 32px rgba(74,222,128,.18)}
+
+.dh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.dn{font-weight:700;font-size:.98rem;min-width:0;overflow-wrap:anywhere}
+.today-tag{
+  display:inline-block;font-size:.6rem;font-weight:800;padding:2px 8px;
+  border-radius:var(--rF);background:rgba(34,211,238,.16);
+  color:var(--c);border:1px solid rgba(34,211,238,.32);margin-left:6px;vertical-align:middle;
+}
+.dbadge{font-size:.65rem;font-weight:800;padding:4px 11px;border-radius:var(--rF);white-space:nowrap;flex-shrink:0}
+.dbadge.gym {background:rgba(96,165,250,.13);color:var(--b);border:1px solid rgba(96,165,250,.28)}
+.dbadge.home{background:rgba(74,222,128,.13);color:var(--g);border:1px solid rgba(74,222,128,.28)}
+.dbadge.rest{background:rgba(167,139,250,.13);color:var(--pl);border:1px solid rgba(167,139,250,.28)}
+.dtl{font-size:.68rem;color:var(--t3);margin-bottom:13px;font-weight:500}
+.rest-txt{color:var(--t2);font-size:.82rem;font-style:italic;line-height:1.6;margin-top:4px}
+
+/* Exercise list */
+.ex-ul{list-style:none}
+.ex-li{border-bottom:1px solid rgba(255,255,255,.06);min-width:0}
+.ex-li:last-child{border-bottom:none}
+.ex-head-btn{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding:11px 6px;cursor:pointer;width:100%;text-align:left;
+  background:none;border:none;border-left:2px solid transparent;
+  color:inherit;border-radius:var(--r8);
+  transition:background var(--fast) var(--ease),border-color var(--fast) var(--ease);
+}
+.ex-head-btn:hover{background:rgba(255,255,255,.04);border-left-color:var(--c)}
+.ex-head-btn:hover .ex-name{color:var(--cl)}
+.ex-li.open > .ex-head-btn{
+  background:rgba(34,211,238,.06);border-left-color:var(--c);
+}
+.ex-li.open .ex-name{color:var(--cl)}
+.ex-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.ex-name{
+  font-size:.86rem;font-weight:600;line-height:1.38;
+  display:flex;flex-wrap:wrap;align-items:center;gap:5px;
+  overflow-wrap:anywhere;word-break:break-word;
+}
+.ex-sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ex-right2{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.ex-sets{font-size:.72rem;font-weight:700;color:var(--t2);white-space:nowrap}
+.ex-chev{font-size:.67rem;color:var(--t3);transition:transform var(--fast) var(--ease),color var(--fast)}
+.ex-li.open .ex-chev{transform:rotate(180deg);color:var(--c)}
+.ex-panel2{display:none;padding:4px 4px 13px;animation:fdDn .2s var(--ease)}
+@keyframes fdDn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.ex-li.open .ex-panel2{display:block}
+.ex-img-wrap{position:relative;margin-bottom:11px}
+.ex-img2{
+  width:100%;aspect-ratio:16/9;object-fit:cover;display:block;
+  border-radius:var(--r12);border:1px solid var(--b0);
+}
+.ex-img-wrap .ex-img2{margin-bottom:0}
+
+/* ── EXTERNA SIDOR ── */
+.ext-link{
+  display:flex;align-items:center;gap:12px;
+  margin:16px auto 0;padding:14px 17px;
+  background:var(--s0);border:1px solid var(--b0);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border-radius:var(--r16);width:100%;text-align:left;text-decoration:none;
+  transition:transform var(--fast) var(--ease),border-color var(--fast) var(--ease);
+}
+.ext-link:hover{transform:translateY(-2px);border-color:rgba(124,58,237,.4)}
+.ext-link:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.ext-ico{font-size:1.5rem;flex-shrink:0}
+.ext-txt{flex:1;min-width:0}
+.ext-txt b{display:block;font-size:.86rem;color:var(--pl);margin-bottom:2px}
+.ext-txt span{font-size:.74rem;color:var(--t2);line-height:1.45;display:block}
+.ext-arrow{color:var(--t3);font-size:1.1rem;flex-shrink:0}
+
+.sw-update{
+  position:fixed;left:12px;right:12px;z-index:960;
+  bottom:calc(var(--mob-h) + 14px + env(safe-area-inset-bottom));
+  max-width:460px;margin:0 auto;
+  display:none;align-items:center;gap:12px;
+  padding:13px 15px;border-radius:var(--r16);
+  background:rgba(20,16,38,.97);border:1px solid rgba(34,211,238,.34);
+  backdrop-filter:var(--blurH);-webkit-backdrop-filter:var(--blurH);
+  box-shadow:var(--sh3),0 0 28px rgba(34,211,238,.2);
+  animation:swIn .32s var(--spring);
+}
+.sw-update.show{display:flex}
+@keyframes swIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.swu-ico{font-size:1.4rem;flex-shrink:0}
+.swu-txt{flex:1;min-width:0;font-size:.8rem;font-weight:600;color:var(--t2);line-height:1.4}
+.swu-txt b{display:block;color:var(--cl);font-size:.86rem;margin-bottom:1px}
+.swu-btn{
+  flex-shrink:0;padding:9px 15px;border-radius:var(--rF);
+  background:var(--grad-c);color:#083344;font-size:.78rem;font-weight:800;
+  box-shadow:0 3px 12px rgba(34,211,238,.3);
+}
+.swu-btn:active{transform:scale(.96)}
+.swu-x{flex-shrink:0;color:var(--t3);font-size:1rem;padding:4px 6px}
+.swu-x:hover{color:var(--t1)}
+@media(min-width:641px){
+  .sw-update{bottom:20px}
+}
+
+.wk-toggle{
+  display:flex;gap:4px;padding:4px;margin:0 auto 16px;max-width:360px;
+  background:rgba(0,0,0,.35);border:1px solid var(--b0);border-radius:var(--rF);
+}
+.wk-tg{
+  flex:1;padding:10px 12px;border-radius:var(--rF);
+  font-size:.79rem;font-weight:800;color:var(--t3);
+  transition:background var(--fast) var(--ease),color var(--fast) var(--ease);
+}
+.wk-tg:hover{color:var(--t1)}
+.wk-tg[aria-pressed="true"]{
+  background:var(--grad-p);color:#fff;box-shadow:0 3px 12px rgba(124,58,237,.32);
+}
+/* Dagsvy – ett brett kort istället för rutnät */
+.wk-grid.day-view{grid-template-columns:1fr;max-width:720px;margin-inline:auto}
+.wk-empty{
+  max-width:520px;margin:28px auto;padding:30px 24px;text-align:center;
+  background:var(--s0);border:1px dashed var(--b1);border-radius:var(--r20);
+}
+.wk-empty .we-ico{font-size:2.6rem;display:block;margin-bottom:12px}
+.wk-empty h3{font-size:1.05rem;font-weight:800;margin-bottom:7px;color:var(--pl)}
+.wk-empty p{font-size:.84rem;color:var(--t2);line-height:1.6;margin-bottom:18px}
+.wk-empty .we-btn{
+  padding:12px 22px;border-radius:var(--rF);
+  background:var(--grad-p);color:#fff;font-weight:800;font-size:.86rem;
+  box-shadow:0 4px 16px rgba(124,58,237,.34);
+}
+.sch-card.add-card.first{min-height:190px;border-color:rgba(124,58,237,.35)}
+@media(max-width:640px){
+  .wk-toggle{max-width:none}
+  .wk-tg{font-size:.76rem;padding:11px 8px}
+}
+
+.confetti-cv{
+  position:fixed;inset:0;z-index:950;pointer-events:none;
+}
+
+/* ── K5: AUTO-PROGRESSION ── */
+.prog-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:11px 0 4px}
+/* ── O10: GEMENSAM KNAPPBAS ──────────────────
+   .prog-btn .grip-tab .sb-btn .os-tab .qa-btn delade
+   nästan identisk CSS. Nu en bas + små avvikelser. */
+.prog-btn,.grip-tab,.sb-btn,.os-tab,.qa-btn{
+  font-weight:700;white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background var(--fast) var(--ease),
+             color var(--fast) var(--ease),
+             border-color var(--fast) var(--ease),
+             transform var(--fast) var(--ease);
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.prog-btn:focus-visible,.grip-tab:focus-visible,.sb-btn:focus-visible,
+.os-tab:focus-visible,.qa-btn:focus-visible{
+  outline:2px solid var(--c);outline-offset:2px;
+}
+/* Aktivt läge – delas av grip-tab och os-tab */
+.grip-tab.on,.os-tab.on{
+  background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;
+}
+
+.prog-btn{
+  padding:8px 14px;border-radius:var(--rF);
+  font-size:.74rem;font-weight:700;
+  background:var(--s0);border:1px solid var(--b0);color:var(--t2);
+  transition:all var(--fast) var(--ease);
+}
+.prog-btn:hover{color:var(--t1);border-color:var(--b1)}
+.prog-btn.done{
+  background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.3);color:var(--g);
+}
+.pdots{display:inline-flex;gap:4px;align-items:center}
+.pdot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.13);
+  transition:background var(--fast) var(--ease),box-shadow var(--fast) var(--ease);
+}
+.pdot.on{background:var(--g);box-shadow:0 0 7px rgba(74,222,128,.55)}
+
+.prog-box{
+  margin:11px 0 4px;padding:12px 13px;
+  background:linear-gradient(135deg,rgba(74,222,128,.1),rgba(34,211,238,.06));
+  border:1px solid rgba(74,222,128,.28);
+  border-radius:var(--r12);
+  animation:progIn .28s var(--spring);
+}
+@keyframes progIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.prog-msg{
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:.76rem;color:var(--t2);line-height:1.5;margin-bottom:10px;
+}
+.prog-msg b{color:var(--g)}
+.prog-ico{font-size:1.05rem;flex-shrink:0;line-height:1.2}
+.prog-acts{display:flex;gap:7px;flex-wrap:wrap}
+.prog-yes{
+  flex:1;min-width:130px;padding:9px 14px;border-radius:var(--r8);
+  background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;
+  font-size:.78rem;font-weight:700;
+  box-shadow:0 3px 11px rgba(34,197,94,.3);
+  transition:transform var(--fast) var(--ease);
+}
+.prog-yes:hover{transform:translateY(-1px)}
+.prog-no{
+  padding:9px 14px;border-radius:var(--r8);
+  background:var(--s0);border:1px solid var(--b0);color:var(--t2);
+  font-size:.78rem;font-weight:600;transition:all var(--fast) var(--ease);
+}
+.prog-no:hover{color:var(--t1)}
+@media(max-width:640px){
+  .prog-btn{font-size:.72rem;padding:8px 12px}
+  .prog-yes{min-width:110px}
+}
+@media(prefers-reduced-motion:reduce){
+  .prog-box{animation:none}
+  .prog-yes:hover{transform:none}
+}
+
+/* ── GREPP: knappval + bild vid tryck ── */
+.grip-sel{
+  position:absolute;right:9px;bottom:9px;z-index:3;
+  display:flex;gap:3px;padding:3px;
+  background:rgba(6,6,13,.82);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:var(--rF);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 3px 10px rgba(0,0,0,.4);
+}
+.grip-tab{
+  padding:5px 11px;border-radius:var(--rF);
+  font-size:.65rem;font-weight:700;white-space:nowrap;
+  color:var(--t3);
+  transition:background var(--fast) var(--ease),color var(--fast) var(--ease);
+}
+.grip-tab:hover{color:var(--t1)}
+
+/* Handbilden – tonar in vid val, försvinner sedan */
+.grip-pip{
+  position:absolute;right:9px;bottom:44px;z-index:4;
+  width:34%;max-width:140px;min-width:92px;
+  background:rgba(6,6,13,.9);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:var(--r12);padding:6px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 6px 18px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(6px) scale(.96);
+  pointer-events:none;
+  transition:opacity .22s var(--ease),transform .22s var(--ease);
+}
+.grip-pip.show{opacity:1;transform:none}
+.grip-pip img{
+  width:100%;aspect-ratio:1/1;object-fit:contain;display:block;
+  border-radius:7px;background:rgba(0,0,0,.35);
+}
+.grip-cap{
+  font-size:.58rem;color:var(--t2);text-align:center;
+  margin-top:4px;letter-spacing:.02em;font-weight:600;
+}
+@media(max-width:640px){
+  .grip-sel{right:7px;bottom:7px;padding:2px;gap:2px}
+  .grip-tab{padding:5px 9px;font-size:.62rem}
+  .grip-pip{width:40%;min-width:84px;right:7px;bottom:40px}
+}
+@media(prefers-reduced-motion:reduce){
+  .grip-pip{transition:opacity .15s linear;transform:none}
+  .grip-pip.show{transform:none}
+}
+.no-img{
+  width:100%;aspect-ratio:16/9;border-radius:var(--r12);
+  background:rgba(0,0,0,.3);border:1px solid var(--b0);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;color:var(--t3);font-size:.71rem;margin-bottom:11px;
+}
+.htitle{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--c);margin-bottom:7px}
+.hsteps{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.hstep{display:flex;gap:8px;align-items:flex-start;font-size:.73rem;color:var(--t2);line-height:1.5}
+.hsnum{
+  flex-shrink:0;width:18px;height:18px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  color:#fff;font-size:.59rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.hmeta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.hmb{background:rgba(0,0,0,.22);border-radius:var(--r8);padding:8px;border:1px solid var(--b0)}
+.hmt{font-size:.59rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:3px}
+.hmc{font-size:.71rem;color:var(--t2);line-height:1.4}
+.hmc.g{color:var(--g);font-style:italic}
+.hbreath{
+  display:flex;align-items:center;gap:5px;font-size:.69rem;color:var(--t2);
+  padding:6px 9px;border-radius:var(--r8);
+  background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);
+}
+
+/* Tags */
+.tg{
+  display:inline-flex;align-items:center;
+  font-size:.58rem;font-weight:700;padding:1px 6px;
+  border-radius:5px;vertical-align:middle;white-space:nowrap;
+}
+.tg.kb {background:rgba(167,139,250,.13);color:var(--pl);border:1px solid rgba(167,139,250,.24)}
+.tg.ha {background:rgba(250,204,21,.10);color:var(--y);border:1px solid rgba(250,204,21,.24)}
+.tg.st {background:rgba(74,222,128,.10);color:var(--g);border:1px solid rgba(74,222,128,.24)}
+.tg.li {background:rgba(96,165,250,.10);color:var(--b);border:1px solid rgba(96,165,250,.24)}
+.tg.ro {background:rgba(34,211,238,.10);color:var(--c);border:1px solid rgba(34,211,238,.24)}
+.tg.rh {background:rgba(74,222,128,.11);color:var(--g);border:1px solid rgba(74,222,128,.25)}
+.tg.rvh{background:rgba(74,222,128,.19);color:#86efac;border:1px solid rgba(74,222,128,.36)}
+
+/* Weight row – egen rad under övningshuvudet (ingen nästlad button) */
+.wr{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;flex-wrap:wrap;
+  padding:4px 6px 10px;
+}
+.wr-in{display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.wi{
+  background:rgba(0,0,0,.42);border:1px solid var(--b0);
+  border-radius:var(--r8);padding:7px 9px;
+  color:var(--c);font-size:.84rem;width:72px;font-weight:700;
+  transition:border-color var(--fast),box-shadow var(--fast);
+  text-align:center;font-variant-numeric:tabular-nums;
+}
+.wi:focus{border-color:var(--c);box-shadow:0 0 0 3px rgba(34,211,238,.16)}
+.wlbl{font-size:.68rem;color:var(--t3);font-weight:600}
+.ws{font-size:.7rem;color:var(--g);font-weight:800;display:none;animation:popIn .25s var(--spring)}
+@keyframes popIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.fixed-lbl{
+  font-size:.66rem;font-weight:700;color:var(--y);
+  background:rgba(250,204,21,.1);border:1px solid rgba(250,204,21,.25);
+  border-radius:var(--r8);padding:2px 8px;
+  display:inline-flex;align-items:center;gap:4px;
+}
+
+/* Quick-add buttons */
+.qa-btns{display:flex;gap:5px;flex-wrap:wrap;flex:1;justify-content:flex-end;min-width:210px}
+.qa-btn{
+  padding:7px 11px;border-radius:var(--r8);font-size:.72rem;font-weight:800;
+  background:rgba(34,211,238,.12);color:var(--cl);
+  border:1px solid rgba(34,211,238,.28);
+  font-variant-numeric:tabular-nums;
+}
+.qa-btn:hover{background:rgba(34,211,238,.24);border-color:rgba(34,211,238,.5)}
+.qa-btn:active{transform:scale(.93)}
+.qa-btn.minus{background:rgba(239,68,68,.1);color:var(--rl);border-color:rgba(239,68,68,.26)}
+.qa-btn.minus:hover{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.5)}
+
+/* ── BALANCE TAB ────────────────────────────── */
+.bal-layout{
+  display:grid;grid-template-columns:1fr;gap:20px;
+  max-width:1120px;margin:0 auto;align-items:start;
+}
+.btimer-card{
+  background:var(--s1);-webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  border:1px solid var(--b1);border-radius:var(--r24);
+  padding:28px 24px;max-width:420px;width:100%;margin:0 auto;text-align:center;
+  box-shadow:0 22px 60px rgba(0,0,0,.32),var(--gC);
+  position:relative;overflow:hidden;
+}
+.btimer-card::before{
+  content:'';position:absolute;top:-55px;right:-55px;width:170px;height:170px;
+  background:radial-gradient(circle,rgba(34,211,238,.2),transparent 70%);pointer-events:none;
+}
+.btimer-card::after{
+  content:'';position:absolute;bottom:-45px;left:-45px;width:140px;height:140px;
+  background:radial-gradient(circle,rgba(124,58,237,.14),transparent 70%);pointer-events:none;
+}
+.bt-lbl{
+  font-size:.66rem;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--c);margin-bottom:13px;position:relative;z-index:1;
+}
+.bt-ring{position:relative;width:148px;height:148px;margin:0 auto 15px}
+.bt-ring svg{transform:rotate(-90deg);width:148px;height:148px}
+.br-bg  {fill:none;stroke:rgba(255,255,255,.06);stroke-width:9}
+.br-fill{
+  fill:none;stroke:url(#timerGrad);stroke-width:9;
+  stroke-linecap:round;stroke-dasharray:408;stroke-dashoffset:0;
+  /* rAF ritar varje sekund – transitionen gör steget mjukt */
+  transition:stroke-dashoffset 1s linear;
+  filter:drop-shadow(0 0 6px rgba(34,211,238,.5));
+}
+body.lowfx .br-fill{filter:none;transition:none}
+.bt-digits{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:1;
+}
+.bt-time{
+  font-size:2.2rem;font-weight:900;letter-spacing:3px;
+  font-variant-numeric:tabular-nums;line-height:1;
+  color:var(--cl);
+  background:linear-gradient(135deg,var(--cl),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.bt-sub{font-size:.59rem;color:var(--t3);margin-top:4px;letter-spacing:.08em}
+.bt-status{
+  font-size:.77rem;color:var(--t2);margin-bottom:15px;min-height:22px;
+  transition:color var(--fast);position:relative;z-index:1;
+}
+.bt-status.run {color:var(--c)}
+.bt-status.done{color:var(--g);font-weight:700}
+.presets{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;position:relative;z-index:1}
+.preset{
+  background:rgba(34,211,238,.09);color:var(--c);
+  border:1px solid rgba(34,211,238,.22);
+  padding:6px 15px;border-radius:var(--rF);font-size:.74rem;font-weight:600;transition:all var(--fast);
+}
+.preset:hover,.preset.on{background:rgba(34,211,238,.2);border-color:var(--c)}
+.tbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.tbtn{
+  padding:13px 22px;border-radius:var(--r12);font-weight:800;font-size:.86rem;
+  transition:transform var(--fast) var(--ease),box-shadow var(--fast) var(--ease);
+  min-width:96px;flex:1;
+}
+.tbtn:hover{transform:translateY(-2px)}
+.tbtn:active{transform:translateY(0) scale(.97)}
+.tbtn.s{background:var(--grad-g);color:#052e16;box-shadow:0 5px 18px rgba(74,222,128,.38)}
+.tbtn.s:hover{box-shadow:0 8px 26px rgba(74,222,128,.55)}
+.tbtn.p{background:var(--grad-o);color:#431407;box-shadow:0 5px 18px rgba(249,115,22,.32)}
+.tbtn.r{background:var(--s1);color:var(--t2);border:1px solid var(--b1)}
+.tbtn.r:hover{background:var(--s2);color:var(--t1)}
+
+.bal-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));
+  gap:13px;width:100%;margin:0 auto;
+}
+.bal-card{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-left:3px solid var(--c);
+  border-radius:var(--r16);padding:19px;transition:all var(--fast);
+  position:relative;overflow:hidden;min-width:0;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.bal-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(135deg,rgba(34,211,238,.07),transparent 55%);
+  transition:opacity var(--fast);
+}
+.bal-card:hover{transform:translateY(-3px);border-color:var(--b1)}
+.bal-card:hover::after{opacity:1}
+.bal-card.stol{border-left-color:var(--g)}
+.bal-card.stol::after{background:linear-gradient(135deg,rgba(74,222,128,.07),transparent 55%)}
+/* Avklarad övning – tydlig grön markering */
+.bal-card.is-done{border-left-color:var(--g);background:rgba(74,222,128,.055)}
+.bal-card.is-done .bc-num{color:var(--g)}
+.bc-tag{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:var(--rF);display:inline-block;margin-bottom:7px;align-self:flex-start}
+.bc-tag.vagg{background:rgba(34,211,238,.1);color:var(--c);border:1px solid rgba(34,211,238,.28)}
+.bc-tag.stol{background:rgba(74,222,128,.1);color:var(--g);border:1px solid rgba(74,222,128,.28)}
+.bc-num{font-size:1.3rem;font-weight:900;color:var(--c);margin-bottom:2px}
+.bc-name{font-weight:700;margin-bottom:4px;overflow-wrap:anywhere}
+.bc-time{font-size:.71rem;font-weight:700;color:var(--o);margin-bottom:7px}
+.bc-desc{font-size:.77rem;color:var(--t2);line-height:1.6}
+.bc-tip{font-size:.71rem;color:var(--g);font-style:italic;margin-top:5px}
+.done-btn{
+  margin-top:12px;padding:12px;width:100%;
+  background:var(--s1);border:1px solid var(--b0);
+  color:var(--t2);border-radius:var(--r12);font-size:.82rem;font-weight:700;
+  transition:background var(--fast) var(--ease),color var(--fast) var(--ease),
+             border-color var(--fast) var(--ease),transform var(--fast) var(--ease);
+}
+.done-btn:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--gl)}
+.done-btn:active{transform:scale(.98)}
+.done-btn.chk{
+  background:var(--grad-g);color:#052e16;border-color:transparent;font-weight:800;
+  box-shadow:0 3px 14px rgba(74,222,128,.32);
+}
+
+/* ── PROGRESS TAB ───────────────────────────── */
+.prog-wrap{max-width:1120px;margin:0 auto}
+.prog-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.prog-card{
+  background:var(--s0);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--b0);border-radius:var(--r16);padding:20px;margin:0;
+  transition:border-color var(--fast);
+  position:relative;overflow:hidden;min-width:0;
+}
+.prog-card:hover{border-color:var(--b1)}
+.prog-card::before{
+  content:'';position:absolute;inset:0 0 auto 0;height:3px;
+  background:var(--grad-c);opacity:.85;
+}
+.prog-card:nth-of-type(2)::before{background:var(--grad-g)}
+.prog-card:nth-of-type(3)::before{background:var(--grad-o)}
+.prog-card:nth-of-type(4)::before{background:var(--grad-p)}
+.prog-card h3{
+  font-size:.7rem;font-weight:800;color:var(--cl);
+  text-transform:uppercase;letter-spacing:.09em;margin-bottom:13px;
+}
+.log-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.81rem;gap:7px;
+}
+.log-row:last-child{border-bottom:none}
+.log-name{color:var(--t1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-val{color:var(--c);font-weight:700;flex-shrink:0}
+.log-date{color:var(--t3);font-size:.67rem;flex-shrink:0}
+.empty-msg{color:var(--t2);font-size:.82rem;font-style:italic}
+.bal-chips{display:flex;gap:6px;flex-wrap:wrap}
+.bal-chip{border-radius:var(--r8);padding:5px 10px;font-size:.71rem;font-weight:600}
+
+/* Progress bar (for total sessions/week) */
+.week-prog-wrap{margin-top:12px}
+.week-prog-bar{
+  height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;
+}
+.week-prog-fill{
+  height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--p),var(--c));
+  transition:width .5s var(--ease);
+}
+.week-prog-lbl{
+  display:flex;justify-content:space-between;
+  font-size:.68rem;color:var(--t3);margin-bottom:5px;
+}
+
+/* ── MOBILE BOTTOM NAV ──────────────────────── */
+#mob-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(6,6,13,.94);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border-top:1px solid var(--b0);
+  display:none;justify-content:space-around;align-items:stretch;
+  height:calc(var(--mob-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  padding-left:env(safe-area-inset-left, 0px);
+  padding-right:env(safe-area-inset-right, 0px);
+  z-index:300;
+  contain:layout style;
+}
+.mn{
+  color:var(--t3);display:flex;flex-direction:column;flex:1;
+  align-items:center;justify-content:center;gap:3px;padding:6px 4px;
+  font-size:.6rem;font-weight:700;position:relative;
+  transition:color var(--fast) var(--ease);
+  -webkit-tap-highlight-color:transparent;
+}
+.mn::before{
+  content:'';position:absolute;top:0;left:50%;
+  width:0;height:3px;border-radius:0 0 3px 3px;
+  background:var(--grad-p);transform:translateX(-50%);
+  transition:width var(--mid) var(--spring);
+}
+.mn.on::before{width:38px}
+.mn:active{background:rgba(255,255,255,.05)}
+.mn .ico{
+  font-size:1.3rem;line-height:1;
+  transition:transform var(--mid) var(--spring),filter var(--fast);
+}
+.mn.on{color:var(--t1)}
+.mn.on .ico{transform:translateY(-2px) scale(1.14)}
+/* Egen färgton per flik */
+.mn:nth-child(1).on{color:var(--pl)}
+.mn:nth-child(1).on::before{background:var(--grad-p)}
+.mn:nth-child(2).on{color:var(--bl)}
+.mn:nth-child(2).on::before{background:var(--grad-b)}
+.mn:nth-child(2).on .ico{filter:drop-shadow(0 0 7px rgba(96,165,250,.7))}
+.mn:nth-child(3).on{color:var(--gl)}
+.mn:nth-child(3).on::before{background:var(--grad-g)}
+.mn:nth-child(3).on .ico{filter:drop-shadow(0 0 7px rgba(74,222,128,.7))}
+.mn:nth-child(4).on{color:var(--ol)}
+.mn:nth-child(4).on::before{background:var(--grad-o)}
+.mn:nth-child(4).on .ico{filter:drop-shadow(0 0 7px rgba(249,115,22,.7))}
+.mn:nth-child(1).on .ico{filter:drop-shadow(0 0 7px rgba(167,139,250,.7))}
+
+/* ── TOAST ──────────────────────────────────── */
+#toast{
+  position:fixed;top:calc(var(--nav-h) + 10px);right:17px;z-index:999;
+  background:rgba(20,16,38,.96);
+  -webkit-backdrop-filter:var(--blurH);backdrop-filter:var(--blurH);
+  color:#fff;padding:12px 18px;border-radius:var(--r12);
+  font-weight:700;font-size:.83rem;
+  opacity:0;pointer-events:none;
+  transform:translateY(-12px) scale(.94);
+  transition:opacity var(--mid) var(--ease),transform var(--mid) var(--spring);
+  border:1px solid rgba(167,139,250,.34);
+  box-shadow:var(--sh3),0 0 28px rgba(124,58,237,.28);
+  max-width:320px;
+}
+#toast::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  border-radius:var(--r12) 0 0 var(--r12);background:var(--grad-hero);
+  background-size:200% 200%;
+}
+#toast.on{opacity:1;transform:none}
+
+/* ── SCHEMA-BYGGARE ── */
+.sch-actions{display:flex;gap:8px;align-items:center}
+.sch-actions .btn-sel{flex:1}
+.btn-del-sch{
+  flex-shrink:0;padding:9px 12px;border-radius:var(--r8);
+  background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.28);
+  color:#f87171;font-size:.85rem;transition:all var(--fast) var(--ease);
+}
+.btn-del-sch:hover{background:rgba(248,113,113,.2)}
+.sch-card.own{border-color:rgba(34,211,238,.3)}
+.sch-card.own .lvl{background:rgba(34,211,238,.14);color:var(--c);border-color:rgba(34,211,238,.3)}
+.add-card{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;text-align:center;min-height:150px;width:100%;
+  border-style:dashed;
+}
+.add-ico{font-size:1.8rem}
+.add-title{font-weight:700;font-size:.92rem;color:var(--pl)}
+.add-sub{font-size:.74rem;color:var(--t2);line-height:1.45;max-width:230px}
+
+#sb-modal{
+  position:fixed;inset:0;z-index:600;display:none;
+  background:rgba(0,0,0,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:16px;
+  animation:fadeIn .2s var(--ease);
+}
+#sb-modal.show{display:flex}
+.sb-card{
+  background:rgba(14,14,24,.98);border:1px solid var(--b1);
+  border-radius:var(--r24);padding:26px 22px 28px;
+  width:100%;max-width:600px;
+  max-height:92vh;max-height:92dvh;
+  overflow-y:auto;
+  position:relative;animation:slideUp .3s var(--spring);
+  -webkit-overflow-scrolling:touch;
+}
+.sb-x{
+  position:absolute;top:14px;right:16px;z-index:2;
+  color:var(--t3);font-size:1.1rem;padding:6px 9px;border-radius:var(--r8);
+  transition:all var(--fast) var(--ease);
+}
+.sb-x:hover{color:var(--t1);background:var(--s0)}
+.sb-step-h{
+  display:flex;align-items:center;gap:9px;
+  font-size:.92rem;font-weight:700;margin:20px 0 11px;
+}
+.sb-num{
+  width:23px;height:23px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--p),var(--c));color:#fff;
+  font-size:.72rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.sb-ta{
+  width:100%;background:rgba(0,0,0,.45);border:1px solid var(--b0);
+  border-radius:var(--r12);padding:13px;color:var(--t1);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.8rem;line-height:1.6;resize:vertical;min-height:150px;
+  transition:border-color var(--fast) var(--ease);
+}
+.sb-ta:focus{outline:none;border-color:rgba(124,58,237,.55)}
+.sb-ta::placeholder{color:var(--t3);opacity:.65}
+.sb-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.sb-btn{
+  padding:11px 17px;border-radius:var(--r12);
+  font-weight:700;font-size:.84rem;
+  transition:transform var(--fast) var(--ease),box-shadow var(--fast) var(--ease);
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+}
+.sb-btn.primary{
+  background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;flex:1;
+  justify-content:center;box-shadow:0 4px 14px rgba(124,58,237,.32);
+}
+.sb-btn.ghost{background:var(--s0);border:1px solid var(--b0);color:var(--t2)}
+.sb-btn:hover{transform:translateY(-1px)}
+.sb-btn.ghost:hover{color:var(--t1);border-color:var(--b1)}
+.sb-hint{font-size:.74rem;color:var(--t3);line-height:1.55;margin-top:10px}
+.sb-hint b{color:var(--t2)}
+.sb-meta{display:grid;grid-template-columns:1fr 90px;gap:10px;margin-bottom:14px}
+.sb-meta label{display:flex;flex-direction:column;gap:5px;font-size:.76rem;color:var(--t2)}
+.sb-in{
+  background:rgba(0,0,0,.45);border:1px solid var(--b0);border-radius:var(--r8);
+  padding:10px 12px;color:var(--t1);font-size:.86rem;width:100%;
+}
+.sb-in:focus{outline:none;border-color:rgba(124,58,237,.55)}
+.sb-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sb-chip{
+  padding:5px 11px;border-radius:var(--rF);font-size:.73rem;font-weight:600;
+  background:var(--s0);border:1px solid var(--b0);color:var(--t2);
+}
+.sb-chip.ok{background:rgba(74,222,128,.12);color:var(--g);border-color:rgba(74,222,128,.26)}
+.sb-chip.warn{background:rgba(251,191,36,.12);color:#fbbf24;border-color:rgba(251,191,36,.26)}
+.sb-warn{
+  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.24);
+  border-radius:var(--r12);padding:11px 13px;margin-bottom:13px;
+  font-size:.77rem;color:#fbbf24;line-height:1.6;
+}
+.sb-preview{display:flex;flex-direction:column;gap:9px;margin-bottom:6px}
+.sb-day{
+  background:var(--s0);border:1px solid var(--b0);
+  border-radius:var(--r12);padding:11px 13px;
+}
+.sb-day.rest{opacity:.5}
+.sb-dh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.sb-dn{font-weight:700;font-size:.84rem}
+.sb-dt{font-size:.68rem;padding:3px 9px;border-radius:var(--rF);background:rgba(255,255,255,.06);color:var(--t2)}
+.sb-dt.gym{background:rgba(96,165,250,.14);color:var(--b)}
+.sb-dt.home{background:rgba(74,222,128,.14);color:var(--g)}
+.sb-ex{
+  display:flex;align-items:center;gap:9px;padding:6px 0;
+  border-top:1px solid rgba(255,255,255,.045);font-size:.79rem;
+}
+.sb-ex:first-of-type{border-top:none}
+.sb-ex-img{width:30px;height:30px;border-radius:7px;object-fit:cover;flex-shrink:0;background:rgba(0,0,0,.3)}
+.sb-ex-emo{
+  width:30px;height:30px;border-radius:7px;flex-shrink:0;font-size:1rem;
+  background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;
+}
+.sb-ex-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-ex-sr{font-size:.72rem;color:var(--t3);flex-shrink:0}
+
+/* ── PWA INSTALL – NAV-KNAPP (ingen banner) ── */
+#nav-inst{
+  display:none;align-items:center;gap:6px;flex-shrink:0;
+  padding:6px 13px;border-radius:var(--rF);
+  background:linear-gradient(135deg,var(--p),var(--pd));
+  color:#fff;font-weight:700;font-size:.72rem;white-space:nowrap;
+  box-shadow:0 3px 12px rgba(124,58,237,.32);
+  transition:transform var(--fast) var(--ease),box-shadow var(--fast) var(--ease);
+}
+#nav-inst.show{display:inline-flex}
+#nav-inst:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(124,58,237,.45)}
+#nav-inst:active{transform:translateY(0)}
+#nav-inst:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+#nav-inst .ni-ico{font-size:.9rem;line-height:1}
+/* Installerad – lugn statuschip istället för knapp */
+#nav-inst.done{
+  background:rgba(74,222,128,.12);color:var(--g);
+  border:1px solid rgba(74,222,128,.28);
+  box-shadow:none;cursor:default;pointer-events:none;
+}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* Knapp på hemsidan (kort) */
+#home-inst{
+  display:none;margin:0;
+  align-items:center;gap:13px;width:100%;text-align:left;
+  background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(34,211,238,.07));
+  border:1px solid rgba(124,58,237,.26);
+  border-radius:var(--r16);padding:14px 16px;
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  transition:transform var(--fast) var(--ease),border-color var(--fast) var(--ease);
+}
+#home-inst.show{display:flex}
+#home-inst:hover{transform:translateY(-2px);border-color:rgba(124,58,237,.5)}
+#home-inst:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.hi-ico{font-size:1.7rem;flex-shrink:0}
+.hi-txt{flex:1;min-width:0}
+.hi-txt b{display:block;color:var(--pl);font-size:.87rem;margin-bottom:2px}
+.hi-txt span{color:var(--t2);font-size:.74rem;line-height:1.45;display:block}
+.hi-arrow{color:var(--t3);font-size:1rem;flex-shrink:0}
+.notif-ico{font-size:1.45rem;flex-shrink:0}
+.sch-lbl-val{color:var(--pl);text-transform:none;letter-spacing:0;font-size:.84rem;font-weight:700}
+
+/* ── INSTALL MODAL ── */
+#install-modal{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.75);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  display:none;align-items:flex-end;justify-content:center;
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  animation:fadeIn .2s var(--ease);
+}
+#install-modal.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-card{
+  background:rgba(14,14,24,.97);
+  border:1px solid var(--b1);
+  border-radius:var(--r24) var(--r24) 0 0;
+  padding:28px 24px 32px;
+  width:100%;max-width:480px;
+  max-height:92vh;max-height:92dvh;overflow-y:auto;
+  animation:slideUp .3s var(--spring);
+  position:relative;
+}
+@keyframes slideUp{from{transform:translateY(40px)}to{transform:none}}
+.modal-handle{
+  width:40px;height:4px;border-radius:2px;
+  background:var(--b1);margin:0 auto 22px;
+}
+.modal-title{
+  font-size:1.15rem;font-weight:800;margin-bottom:6px;text-align:center;
+  color:var(--pl);
+  background:linear-gradient(135deg,var(--pl),var(--c));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.modal-sub{color:var(--t2);font-size:.82rem;text-align:center;margin-bottom:22px}
+
+/* OS tabs */
+.os-tabs{display:flex;gap:6px;margin-bottom:20px;
+  background:rgba(0,0,0,.4);border-radius:var(--r12);padding:4px}
+.os-tab{
+  flex:1;padding:8px;border-radius:var(--r8);
+  color:var(--t2);font-size:.8rem;font-weight:600;
+  transition:all var(--fast);display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.os-tab.on{box-shadow:0 3px 10px rgba(124,58,237,.35)}
+
+/* Steps */
+.install-steps{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.install-step{
+  display:flex;align-items:flex-start;gap:12px;
+  background:var(--s0);border:1px solid var(--b0);
+  border-radius:var(--r12);padding:13px;
+}
+.step-circle{
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p),var(--c));
+  color:#fff;font-size:.72rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-content{flex:1;min-width:0}
+.step-title{font-size:.84rem;font-weight:700;margin-bottom:2px}
+.step-desc{font-size:.75rem;color:var(--t2);line-height:1.5}
+.step-icon{font-size:1.1rem}
+.btn-modal-close{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--p),var(--pd));
+  color:#fff;border-radius:var(--r12);font-weight:700;font-size:.95rem;
+  box-shadow:0 4px 16px rgba(124,58,237,.35);transition:all var(--fast);
+}
+.btn-modal-close:hover{transform:translateY(-1px)}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE & CROSS-BROWSER ANPASSNING
+   Alla skärmar: 320px → Mobil → Surfplatta →
+   Laptop → Stor skärm / 4K + Liggande läge
+══════════════════════════════════════════════ */
+
+/* ── Desktop & Surfplatta (>640px) ── */
+@media(min-width:641px){
+  #mob-nav{display:none}
+  body{padding-bottom:28px}
+  #install-modal{align-items:center;padding:16px}
+  .modal-card{border-radius:var(--r24)}
+  .wk-toolbar{
+    flex-direction:row;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .wk-toolbar .sh{flex:1;margin-bottom:0}
+  .wk-toolbar .wk-toggle{margin:0;width:270px;flex-shrink:0}
+}
+
+/* ── Mellanbredd surfplatta (641px–859px): kompakt nav & 2-kolumns kort ── */
+@media(min-width:641px) and (max-width:859px){
+  .nlink{padding:6px 9px;font-size:.75rem}
+  #nav-inst-lbl{display:none}
+  .prog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ── Surfplatta landskap & Desktop (>=860px): Bento-dashboard ── */
+@media(min-width:860px){
+  .home-bento{
+    max-width:1120px;
+    grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+    gap:18px;align-items:start;
+  }
+  .home-sch-wrap{max-width:1120px}
+  .prog-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+}
+
+/* ── Desktop (>=960px): Sticky balans-timer + 2-kolumns dagsvy ── */
+@media(min-width:960px){
+  .bal-layout{
+    grid-template-columns:340px minmax(0,1fr);
+    gap:22px;
+  }
+  .btimer-card{
+    position:sticky;top:calc(var(--nav-h) + 18px);
+    margin:0;max-width:none;
+  }
+  /* I dagsvy på bred skärm visas dagens övningar i 2 kolumner */
+  .wk-grid.day-view{max-width:1080px}
+  .wk-grid.day-view .ex-ul{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;align-items:start;
+  }
+  .wk-grid.day-view .ex-li{
+    background:rgba(255,255,255,.025);
+    border:1px solid var(--b0);border-radius:var(--r12);
+    padding:4px 10px;
+  }
+}
+
+/* ── Stora skärmar (>=1200px): 3 kolumner i veckovy ── */
+@media(min-width:1200px){
+  .wk-grid:not(.day-view){
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+  }
+}
+
+/* ── Ultrabreda skärmar (>=1500px) ── */
+@media(min-width:1500px){
+  .page-shell,.home-bento,.home-sch-wrap,.wk-grid,.bal-layout,.prog-wrap{max-width:1360px}
+  .wk-grid:not(.day-view){grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+}
+
+/* ── Mobil (<=640px) ── */
+@media(max-width:640px){
+  #nav .nav-links{display:none}
+  #mob-nav{display:flex}
+  .pg{padding:14px 12px}
+
+  #toast{
+    left:12px;right:12px;max-width:none;text-align:center;
+    top:calc(var(--nav-h) + 8px);
+  }
+
+  .hero{padding:18px 0 14px}
+  .hero-greet{font-size:.72rem;padding:5px 12px}
+
+  .today-hero{padding:15px;gap:12px;border-radius:var(--r16)}
+  .th-ico{font-size:1.8rem}
+  .th-name{font-size:.96rem}
+  .th-meta{font-size:.71rem}
+  .th-go{padding:8px 12px;font-size:.73rem}
+
+  .wk-grid,.bal-grid,.sch-grid,.prog-grid{grid-template-columns:1fr}
+  .stats-row{gap:8px}
+  .stat{padding:14px 6px 12px}
+  .stat-lbl{font-size:.63rem}
+  .qotd{padding:14px 16px 14px 40px;font-size:.81rem}
+  .btimer-card{padding:22px 16px}
+  .hmeta,.time-row{grid-template-columns:1fr}
+  .activity-dots{gap:4px}
+  .adot-circle{width:30px;height:30px;font-size:.68rem}
+
+  .ex-name{font-size:.87rem}
+  .ex-head-btn{padding:11px 4px}
+  .dc{padding:16px 13px}
+  .dn{font-size:.98rem}
+
+  /* Viktrad på mobil: input-rad + 5 jämna knappar */
+  .wr{flex-direction:column;align-items:stretch;gap:7px;padding:2px 2px 10px}
+  .qa-btns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;min-width:0}
+  .qa-btn{padding:9px 4px;font-size:.73rem;min-width:0}
+  .wi{width:80px;font-size:16px;padding:8px}
+
+  .tbtn{flex:1;min-width:0;padding:13px 10px;font-size:.84rem}
+  .tbtns{gap:7px}
+
+  .sb-card{padding:22px 15px 24px;max-height:94vh;max-height:94dvh;border-radius:var(--r16)}
+  .sb-meta{grid-template-columns:1fr 76px}
+  .sb-btn.primary{flex:1 1 100%}
+
+  #nav-inst{padding:7px 10px}
+  #nav-inst-lbl{display:none}
+  #nav-inst .ni-ico{font-size:1rem}
+  .nav-right{gap:6px}
+  #home-inst{padding:13px 14px;gap:11px}
+  .hi-ico{font-size:1.5rem}
+}
+
+/* ── Riktigt små skärmar (<=360px, t.ex. SE / Fold) ── */
+@media(max-width:360px){
+  #nav{padding:0 10px}
+  .pg{padding:10px 9px}
+  .stat-lbl{font-size:.58rem}
+  .th-go{display:none}
+  .qa-btn{font-size:.67rem;padding:8px 2px}
+  .mn{font-size:.55rem}
+  .mn .ico{font-size:1.18rem}
+  .adot-circle{width:26px;height:26px;font-size:.63rem}
+  .presets{gap:4px}
+  .preset{padding:6px 10px;font-size:.7rem}
+}
+
+/* ── Liggande läge på mobil ── */
+@media(max-height:500px) and (orientation:landscape){
+  :root{--nav-h:48px;--mob-h:50px}
+  .hero{padding:10px 0 8px}
+  .hero-greet{display:none}
+  .today-hero{padding:10px 14px}
+  .btimer-card{padding:16px}
+  .bt-ring{width:116px;height:116px;margin-bottom:10px}
+  .bt-ring svg{width:116px;height:116px}
+  .bt-time{font-size:1.75rem}
+  .sb-card,.modal-card{max-height:94vh;max-height:94dvh;padding:16px}
+}
+
+/* ── Fallback för webbläsare utan backdrop-filter ── */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #nav,#mob-nav{background:rgba(8,8,18,.98)}
+  .dc,.stat,.sch-card,.bal-card,.prog-card,.btimer-card,.activity-wrap,.notif-box,.today-hero,#home-inst,.ext-link{
+    background:rgba(16,16,30,.95);
+  }
+}
+
+/* ── Windows / Edge High Contrast Mode ── */
+@media(forced-colors:active){
+  .nav-logo,.hero h1 em,.grad-txt,.stat-val,.bt-time,.modal-title{
+    -webkit-text-fill-color:currentColor;color:CanvasText;background:none;
+  }
+  .dc,.stat,.sch-card,.bal-card,.prog-card,.btimer-card{border:1px solid CanvasText}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #nav-inst,#home-inst{transition:none}
+  #nav-inst:hover,#home-inst:hover{transform:none}
+}
+
+/* Säkerhetskopiering: lokalt först, Google Drive endast på användarens begäran */
+.backup-card{padding:18px;border:1px solid rgba(167,139,250,.28);border-radius:20px;background:rgba(24,19,43,.82);color:var(--t);margin:0}
+.backup-card h2{font-size:1rem;margin:0 0 6px}.backup-card p{color:var(--t2);font-size:.79rem;line-height:1.5;margin:5px 0 10px}
+.backup-card details{margin-top:10px}.backup-card summary{cursor:pointer;font-weight:700;color:#ddd6fe;padding:8px 0}
+.backup-card label{display:block;color:var(--t2);font-size:.78rem;margin:12px 0 5px}
+.backup-card input,.backup-card select{width:100%;min-width:0;min-height:44px;border:1px solid rgba(167,139,250,.35);border-radius:10px;background:#171329;color:#fff;padding:9px;font:inherit}
+.backup-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.backup-actions button{min-height:44px;flex:1 1 145px;border:1px solid rgba(167,139,250,.35);border-radius:11px;padding:9px 12px;color:#fff;background:#393067;cursor:pointer;font:inherit;font-size:.8rem;font-weight:700}
+.backup-actions button:disabled{opacity:.45;cursor:not-allowed}.backup-actions button:focus-visible,.backup-card summary:focus-visible{outline:2px solid #c4b5fd;outline-offset:3px}
+.backup-card a{color:#c4b5fd}.backup-status{min-height:1.5em;overflow-wrap:anywhere}
+
+</style>
+</head>
+<body>
+
+<div id="bg" aria-hidden="true">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav" aria-label="Huvudnavigation">
+  <div class="nav-logo">💪 GymApp</div>
+  <div class="nav-links" role="tablist">
+    <button class="nlink on" role="tab" data-act="goTab" data-tab="home" data-i="0">🏠 Hem</button>
+    <button class="nlink"    role="tab" data-act="goTab" data-tab="workout" data-i="1">🏋️ Schema</button>
+    <button class="nlink"    role="tab" data-act="goTab" data-tab="balance" data-i="2">⚖️ Balans</button>
+    <button class="nlink"    role="tab" data-act="goTab" data-tab="progress" data-i="3">📈 Framsteg</button>
+  </div>
+  <div class="nav-right">
+    <!-- Installera-knapp (visas bara om appen INTE är installerad) -->
+    <button id="nav-inst" type="button" data-act="install"
+            title="Installera GymApp på hemskärmen" aria-label="Installera GymApp">
+      <span class="ni-ico" aria-hidden="true">📲</span><span id="nav-inst-lbl">Installera</span>
+    </button>
+    <!-- Today's type badge -->
+    <div class="nav-day" id="nav-day"></div>
+  </div>
+</nav>
+
+<!-- ── HOME ── -->
+<section id="tab-home" class="pg on" aria-label="Hem">
+  <div class="page-shell">
+    <div class="hero">
+      <div class="hero-greet"><span class="hg-dot" aria-hidden="true"></span><span id="greet-txt">Välkommen</span></div>
+      <h1>💪 <em>GymApp</em></h1>
+      <p id="hero-sub">Välj ett schema och börja träna!</p>
+    </div>
+
+    <!-- Bento-dashboard: 1 kolumn på mobil, 2 kolumner på surfplatta/desktop -->
+    <div class="home-bento">
+      <div class="hb-col">
+        <!-- Dagens pass – genväg rakt in i träningen -->
+        <button class="today-hero" id="today-hero" data-act="openToday" hidden>
+          <span class="th-ico" id="th-ico" aria-hidden="true">🏋️</span>
+          <span class="th-txt">
+            <span class="th-lbl">Dagens pass</span>
+            <span class="th-name" id="th-name">—</span>
+            <span class="th-meta" id="th-meta"></span>
+          </span>
+          <span class="th-go">Kör →</span>
+        </button>
+
+        <!-- Stats -->
+        <div class="stats-row" aria-label="Din statistik">
+          <div class="stat s-streak" title="Dagar i rad med träning">
+            <div class="stat-val" id="s-streak">0</div>
+            <div class="stat-lbl">🔥 Streak</div>
+          </div>
+          <div class="stat s-sess" title="Totalt antal pass">
+            <div class="stat-val" id="s-sess">0</div>
+            <div class="stat-lbl">💪 Pass</div>
+          </div>
+          <div class="stat s-bal" title="Balansövningar idag">
+            <div class="stat-val" id="s-bal">0/6</div>
+            <div class="stat-lbl">⚖️ Balans</div>
+          </div>
+        </div>
+
+        <!-- Weekly activity -->
+        <div class="activity-wrap">
+          <div class="activity-header">
+            <div class="activity-title">📅 Denna vecka</div>
+            <div class="streak-badge" id="streak-badge" style="display:none">🔥 <span id="streak-num">0</span> dagar</div>
+          </div>
+          <div class="activity-dots" id="activity-dots"></div>
+        </div>
+      </div>
+
+      <div class="hb-col">
+        <!-- Installera appen – knapp (döljs automatiskt när appen är installerad) -->
+        <button id="home-inst" type="button" data-act="install" aria-label="Installera GymApp på hemskärmen">
+          <span class="hi-ico" aria-hidden="true">📲</span>
+          <span class="hi-txt">
+            <b id="home-inst-title">Installera GymApp</b>
+            <span id="home-inst-sub">Lägg till på hemskärmen – öppnas i helskärm och funkar offline.</span>
+          </span>
+          <span class="hi-arrow" aria-hidden="true">›</span>
+        </button>
+
+        <section class="backup-card" aria-labelledby="backup-title">
+          <h2 id="backup-title">💾 Säkerhetskopia</h2>
+          <p>Spara scheman, viktlogg och balanshistorik. Google Drive är frivilligt och kräver internet.</p>
+          <div class="backup-actions"><button id="backup-export" type="button">⬇️ Ladda ner kopia</button><button id="backup-import" type="button">📂 Återställ från fil</button></div>
+          <input id="backup-import-file" type="file" accept="application/json,.json" hidden>
+          <details id="backup-drive-panel">
+            <summary>☁️ Säkerhetskopiera till Google Drive</summary>
+            <p>Anslut ditt Google-konto endast för säkerhetskopiering. Appen får tillgång till filer den skapar eller som du uttryckligen väljer, inte hela din Drive. Kopiorna lagras i din Google Drive och kan innehålla personlig träningsdata.</p>
+            <p>Använd samma Google-konto även på din nya telefon. <a href="./google-drive-setup.html">Guide för appens ägare</a>.</p>
+            <div class="backup-actions"><button id="backup-connect" type="button" disabled>🔗 Anslut Google Drive</button></div>
+            <details id="backup-settings">
+              <summary>⚙️ Inställningar för appens ägare</summary>
+              <p>Google Drive behöver konfigureras en gång för appen. Ett ID som sparas här gäller bara den här enheten. För alla enheter ska ägaren lägga in ID:t i appens konfiguration.</p>
+              <label for="backup-client">Google OAuth-klient-ID (publikt)</label><input id="backup-client" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="…apps.googleusercontent.com">
+              <div class="backup-actions"><button id="backup-save-client" type="button">Spara klient-ID på enheten</button></div>
+            </details>
+            <div class="backup-actions"><button id="backup-upload" type="button" disabled>☁️ Spara i Drive</button><button id="backup-list" type="button" disabled>🔍 Visa mina kopior</button></div>
+            <label for="backup-files">Välj en säkerhetskopia att återställa</label><select id="backup-files"><option value="">Välj säkerhetskopia</option></select>
+            <div class="backup-actions"><button id="backup-restore" type="button" disabled>♻️ Återställ vald kopia</button><button id="backup-disconnect" type="button" disabled>🔌 Koppla från Google</button></div>
+          </details>
+          <p class="backup-status" id="backup-status" role="status" aria-live="polite">Ingen Google-anslutning behövs för lokal fil.</p>
+        </section>
+
+        <!-- Quote of the day -->
+        <div class="qotd" id="qotd-wrap" style="display:none">
+          <span id="qotd-text"></span>
+          <b id="qotd-author"></b>
+        </div>
+
+        <!-- Notifications -->
+        <div class="notif-wrap">
+          <div class="notif-banner" role="region" aria-label="Påminnelser">
+            <span class="notif-ico" aria-hidden="true">🔔</span>
+            <div class="notif-text"><b>Påminnelser</b><p>Daglig notis om träning &amp; balans</p></div>
+            <button class="btn-notif off" id="notif-btn" data-act="togNotif">Aktivera</button>
+          </div>
+          <div class="notif-box" id="notif-box">
+            <div class="notif-box-title">⏰ Mina påminnelsetider</div>
+            <div class="time-row">
+              <div><label for="n-bt">⚖️ Balansrutin kl</label><input id="n-bt" type="time" value="08:00"/></div>
+              <div><label for="n-wt">🏋️ Träning kl</label><input id="n-wt" type="time" value="17:00"/></div>
+            </div>
+            <button class="btn-save" data-act="saveNotif">💾 Spara tider</button>
+            <span class="saved-lbl" id="n-saved" aria-live="polite">✅ Sparat!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule -->
+    <div class="home-sch-wrap">
+      <div class="sh">📋 Välj träningsschema</div>
+      <div class="sch-grid" id="sch-grid" role="list"></div>
+      <div class="sel-info" id="sel-info">
+        <div class="sel-info-name" id="sel-name"></div>
+        <div class="sel-info-sub">✅ Aktivt – gå till Schema-fliken!</div>
+      </div>
+
+      <a class="ext-link" href="../träningsschema.html">
+        <span class="ext-ico" aria-hidden="true">📖</span>
+        <span class="ext-txt">
+          <b>Detaljerat träningsschema</b>
+          <span>Alla övningar med zoombara bilder och 100-reps-räknare</span>
+        </span>
+        <span class="ext-arrow" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORKOUT ── -->
+<section id="tab-workout" class="pg" style="display:none" aria-label="Träningsschema">
+  <div class="page-shell">
+    <div class="wk-toolbar">
+      <div class="sh" id="wk-head">📍 Dagens pass – <span id="sch-lbl" class="sch-lbl-val">Inget valt</span></div>
+
+      <!-- Växla mellan dagens pass och hela veckan -->
+      <div class="wk-toggle" id="wk-toggle" role="group" aria-label="Välj vy">
+        <button class="wk-tg" id="wk-tg-day"  data-act="wkView" data-v="day"  aria-pressed="true">📍 Idag</button>
+        <button class="wk-tg" id="wk-tg-week" data-act="wkView" data-v="week" aria-pressed="false">🗓️ Hela veckan</button>
+      </div>
+    </div>
+
+    <div class="wk-grid" id="wk-grid" role="list"></div>
+  </div>
+</section>
+
+<!-- ── BALANCE ── -->
+<section id="tab-balance" class="pg" style="display:none" aria-label="Balansrutin">
+  <div class="page-shell">
+    <div class="sh">⚖️ Daglig balansrutin</div>
+    <div class="bal-layout">
+      <div class="btimer-card" role="timer" aria-label="Balans-timer">
+        <div class="bt-lbl">⏱ TIMER</div>
+        <div class="bt-ring">
+          <svg viewBox="0 0 150 150" aria-hidden="true">
+            <circle class="br-bg"   cx="75" cy="75" r="65"/>
+            <circle class="br-fill" cx="75" cy="75" r="65" id="br-fill"/>
+          </svg>
+          <div class="bt-digits">
+            <span class="bt-time" id="bt-time" aria-live="polite">00:20</span>
+            <span class="bt-sub"  id="bt-sub">SEKUNDER</span>
+          </div>
+        </div>
+        <div class="bt-status" id="bt-status">Välj tid och tryck Start</div>
+        <div class="presets" role="group" aria-label="Välj tid">
+          <button class="preset on" data-act="bSet" data-s="20">20 sek</button>
+          <button class="preset"    data-act="bSet" data-s="30">30 sek</button>
+          <button class="preset"    data-act="bSet" data-s="60">60 sek</button>
+          <button class="preset"    data-act="bSet" data-s="90">90 sek</button>
+        </div>
+        <div class="tbtns">
+          <button class="tbtn s" data-act="bStart">▶ Start</button>
+          <button class="tbtn p" data-act="bStop">⏸ Pausa</button>
+          <button class="tbtn r" data-act="bReset">↺ Reset</button>
+        </div>
+      </div>
+      <div>
+        <div class="bal-grid" id="bal-grid" role="list"></div>
+
+        <a class="ext-link" href="../balansrutin.html">
+          <span class="ext-ico" aria-hidden="true">🧘</span>
+          <span class="ext-txt">
+            <b>Balansrutin i fullversion</b>
+            <span>Steg-för-steg med bilder, andning och egen timer</span>
+          </span>
+          <span class="ext-arrow" aria-hidden="true">›</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROGRESS ── -->
+<section id="tab-progress" class="pg" style="display:none" aria-label="Framsteg">
+  <div class="prog-wrap">
+    <div class="sh">📈 Dina framsteg</div>
+    <div class="prog-grid">
+      <div class="prog-card"><h3>🏋️ Senaste vikterna</h3><div id="p-weights"></div></div>
+      <div class="prog-card" id="prog-week-card">
+        <h3>📊 Denna vecka</h3>
+        <div id="p-week"></div>
+      </div>
+      <div class="prog-card"><h3>⚖️ Balans idag</h3><div id="p-balance"></div></div>
+      <div class="prog-card"><h3>📅 Träningslogg</h3><div id="p-sessions"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Uppdateringsnotis (B14) -->
+<div class="sw-update" id="sw-update" role="status" aria-live="polite">
+  <span class="swu-ico" aria-hidden="true">✨</span>
+  <span class="swu-txt"><b>Ny version finns</b>Ladda om för att uppdatera appen</span>
+  <button class="swu-btn" data-act="swReload">Ladda om</button>
+  <button class="swu-x" data-act="swDismiss" aria-label="Stäng">✕</button>
+</div>
+
+<!-- ── SCHEMA-BYGGARE ── -->
+<div id="sb-modal" role="dialog" aria-modal="true" aria-labelledby="sb-title">
+  <div class="sb-card">
+    <button class="sb-x" data-act="closeBuilder" aria-label="Stäng">✕</button>
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="sb-title">➕ Skapa eget schema</div>
+    <p class="modal-sub">Klistra in text – appen tolkar dagar, set, reps och matchar bilder automatiskt.</p>
+
+    <!-- STEG 1 -->
+    <div class="sb-step-h"><span class="sb-num">1</span> Klistra in ditt schema</div>
+    <textarea id="sb-raw" class="sb-ta" rows="9" spellcheck="false"
+      placeholder="Måndag (hemma)&#10;Squat 4x15&#10;Armhävningar 4x20&#10;KB deadlift 4x15 16kg&#10;&#10;Tisdag - gym&#10;Bänkpress 5x10 60kg&#10;Latsdrag 4x12&#10;&#10;Fredag: vila"></textarea>
+    <div class="sb-row">
+      <button class="sb-btn primary" data-act="analyze">🔍 Analysera schemat</button>
+      <button class="sb-btn ghost" data-act="fillExample">💡 Exempel</button>
+      <button class="sb-btn ghost" data-act="loadTemplate" data-i="0">🔥 Ladda mall</button>
+      <label class="sb-btn ghost">📂 JSON
+        <input type="file" id="sb-file" accept=".json,application/json" hidden/>
+      </label>
+    </div>
+    <p class="sb-hint">Funkar med punktlistor, tabbar och inklistrad HTML. Vardagsnamn startar en ny dag – skriv <b>gym</b>, <b>hemma</b> eller <b>vila</b> efter dagen.</p>
+
+    <!-- STEG 2 -->
+    <div id="sb-result" hidden>
+      <div class="sb-step-h"><span class="sb-num">2</span> Kontrollera &amp; justera</div>
+      <div class="sb-meta">
+        <label>Namn på schemat
+          <input id="sb-name" class="sb-in" type="text" maxlength="40" placeholder="Mitt egna schema"/>
+        </label>
+        <label>Emoji
+          <input id="sb-emoji" class="sb-in" type="text" maxlength="4" value="⭐"/>
+        </label>
+      </div>
+      <div id="sb-stats" class="sb-stats"></div>
+      <div id="sb-warn" class="sb-warn" hidden></div>
+      <div id="sb-preview" class="sb-preview"></div>
+      <div class="sb-row">
+        <button class="sb-btn primary" data-act="saveSchema">💾 Spara schemat</button>
+        <button class="sb-btn ghost" data-act="exportSchema">⬇️ Ladda ner JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PWA Install Modal -->
+<div id="install-modal" role="dialog" aria-modal="true" aria-label="Installationsguide">
+  <div class="modal-card">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📲 Installera GymApp</div>
+    <p class="modal-sub">Lägg till på hemskärmen – öppnas som en riktig app!</p>
+    <div class="os-tabs" role="tablist">
+      <button class="os-tab on" id="tab-ios"     role="tab" data-act="switchOS" data-os="ios">🍎 iPhone / iPad</button>
+      <button class="os-tab"    id="tab-android" role="tab" data-act="switchOS" data-os="android">🤖 Android</button>
+    </div>
+    <!-- iOS -->
+    <div id="steps-ios" class="install-steps">
+      <div class="install-step"><div class="step-circle">1</div><div class="step-content"><div class="step-title">Öppna i Safari 🧭</div><div class="step-desc">Måste öppnas i <b>Safari</b> – inte Chrome eller annan webbläsare.</div></div></div>
+      <div class="install-step"><div class="step-circle">2</div><div class="step-content"><div class="step-title">Tryck Dela-knappen ⬆️</div><div class="step-desc">Tryck på <b>⬆️</b> längst ned i Safari (eller längst upp på iPad).</div></div></div>
+      <div class="install-step"><div class="step-circle">3</div><div class="step-content"><div class="step-title">Välj "Lägg till på hemskärmen" ➕</div><div class="step-desc">Scrolla ned i menyn och tryck <b>"Lägg till på hemskärmen"</b>.</div></div></div>
+      <div class="install-step"><div class="step-circle">4</div><div class="step-content"><div class="step-title">Tryck "Lägg till" ✅</div><div class="step-desc">Appen dyker nu upp på hemskärmen som en riktig app!</div></div></div>
+    </div>
+    <!-- Android -->
+    <div id="steps-android" class="install-steps" style="display:none">
+      <div class="install-step"><div class="step-circle">1</div><div class="step-content"><div class="step-title">Öppna i Chrome 🌐</div><div class="step-desc">Måste öppnas i <b>Chrome</b> för Android.</div></div></div>
+      <div class="install-step"><div class="step-circle">2</div><div class="step-content"><div class="step-title">Tryck på menyn ⋮</div><div class="step-desc">Tryck på de tre prickarna <b>⋮</b> uppe till höger.</div></div></div>
+      <div class="install-step"><div class="step-circle">3</div><div class="step-content"><div class="step-title">Välj "Lägg till på startskärmen" 📲</div><div class="step-desc">Tryck <b>"Lägg till på startskärmen"</b> eller <b>"Installera app"</b>.</div></div></div>
+      <div class="install-step"><div class="step-circle">4</div><div class="step-content"><div class="step-title">Tryck "Installera" ✅</div><div class="step-desc">Appen installeras direkt – utan App Store!</div></div></div>
+    </div>
+    <button class="btn-modal-close" data-act="closeInstall">Stäng ✓</button>
+  </div>
+</div>
+
+<!-- Mobile nav -->
+<nav id="mob-nav" aria-label="Mobilnavigation">
+  <button class="mn on" data-act="goTab" data-tab="home" data-i="0"><span class="ico">🏠</span>Hem</button>
+  <button class="mn"    data-act="goTab" data-tab="workout" data-i="1"><span class="ico">🏋️</span>Schema</button>
+  <button class="mn"    data-act="goTab" data-tab="balance" data-i="2"><span class="ico">⚖️</span>Balans</button>
+  <button class="mn"    data-act="goTab" data-tab="progress" data-i="3"><span class="ico">📈</span>Framsteg</button>
+</nav>
+
+<script>
+/* ════════════════════════════════════════════════
+   GymApp v7  ·  No-login  ·  Firebase-ready
+   ──────────────────────────────────────────────
+   Konton: förberedda, ej aktiverade → firebase.js
+════════════════════════════════════════════════ */
+'use strict';
+
+/* ── DOM ─────────────────────────────────────── */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+/* HTML-escape – all användartext går genom denna */
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+/* ════════════════════════════════════════════════
+   LOG · tyst diagnostik
+   Ingen console-utskrift i normalläge. Felen sparas
+   i en ringbuffert och kan hämtas med  ?debug=1
+   eller  GymApp.log()  i konsolen vid felsökning.
+════════════════════════════════════════════════ */
+const LOG = (() => {
+  const BUF = [];
+  const MAX = 40;
+  const DEV = /[?&]debug=1/.test(location.search);
+
+  const push = (lvl, tag, detail) => {
+    BUF.push({ t: Date.now(), lvl, tag, d: String(detail ?? '').slice(0, 200) });
+    if (BUF.length > MAX) BUF.shift();
+    if (DEV) (console[lvl] || console.log)(`[${tag}]`, detail);
+  };
+
+  return {
+    warn:  (tag, d) => push('warn',  tag, d),
+    error: (tag, d) => push('error', tag, d),
+    info:  (tag, d) => push('info',  tag, d),
+    dump:  () => BUF.slice(),
+    dev:   DEV,
+    /* Kör fn skyddat – fel loggas men kraschar aldrig appen */
+    safe(tag, fn, fallback) {
+      try { return fn(); }
+      catch (e) { push('error', tag, e?.message || e); return fallback; }
+    },
+  };
+})();
+
+/* Fånga allt som ändå slinker igenom */
+addEventListener('error', e => LOG.error('window', e.message), { passive: true });
+addEventListener('unhandledrejection', e => LOG.error('promise', e.reason?.message || e.reason), { passive: true });
+
+/* Haptik – tyst no-op där det saknas stöd */
+const _canVib = 'vibrate' in navigator
+  && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const vib = p => { if (_canVib) { try { navigator.vibrate(p); } catch {} } };
+
+/* ════════════════════════════════════════════════
+   O1 · EVENT DELEGATION
+   En lyssnare för hela appen istället för ~50 inline
+   onclick. Dynamiskt innehåll behöver ingen
+   ombindning → mindre minne, ingen läcka.
+════════════════════════════════════════════════ */
+const ACTIONS = Object.create(null);   // fylls på längre ner
+
+function handleAct(e) {
+  /* Stoppa bubbling i markerade zoner (viktinput, greppval …) */
+  if (e.target.closest?.('[data-stop]') && e.type === 'click') {
+    const host = e.target.closest('[data-act]');
+    if (!host || host.closest('[data-stop]')) e.stopPropagation();
+  }
+  const el = e.target.closest?.('[data-act]');
+  /* Klick i inputfält ska bara sätta fokus – sparas vid change/Enter */
+  if (!el || (el.tagName === 'INPUT' && e.type === 'click')) return;
+  const fn = ACTIONS[el.dataset.act];
+  if (!fn) return;
+  LOG.safe('act:' + el.dataset.act, () => fn(el.dataset, el, e));
+}
+
+/* En enda lyssnare på hela dokumentet */
+document.addEventListener('click', handleAct);
+document.addEventListener('change', e => {
+  if (e.target?.id === 'sb-file') {
+    LOG.safe('importJSON', () => importJSON(e));
+    return;
+  }
+  const el = e.target.closest?.('[data-act][data-key]');
+  if (el && el.tagName === 'INPUT') {
+    e.stopPropagation();
+    LOG.safe('change', () => ACTIONS.saveW?.(el.dataset, el, e));
+  }
+});
+/* Delegerad bildfelshanterare – ingen inline onerror behövs */
+document.addEventListener('error', e => {
+  const img = e.target;
+  if (img?.tagName === 'IMG' && img.classList.contains('ex-img2')) {
+    const ph = document.createElement('div');
+    ph.className = 'no-img';
+    const emo = document.createElement('span');
+    emo.className = 'ni-emo';
+    emo.textContent = img.dataset.emo || '🏋️';
+    const lbl = document.createElement('span');
+    lbl.textContent = img.alt || '';
+    ph.append(emo, lbl);
+    img.replaceWith(ph);
+  }
+}, true);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target?.classList?.contains('wi')) {
+    e.preventDefault();
+    e.target.blur();
+  }
+});
+
+/* ── STORAGE ──────────────────────────────────
+   O4: debounce – 5 snabba tryck = 1 skrivning
+   O8: wLog trimmas så kvoten aldrig tar slut     */
+const LOG_MAX  = 200;   // senaste loggposterna behålls
+const SAVE_MS  = 350;   // fördröjning innan skrivning
+
+const LS = {
+  data: () => {
+    try { return JSON.parse(localStorage.getItem('ga_data') ?? '{}') ?? {}; }
+    catch { return {}; }
+  },
+  /* Synkron skrivning – används vid pagehide/visibilitychange */
+  flush: d => {
+    try {
+      localStorage.setItem('ga_data', JSON.stringify(d));
+      return true;
+    } catch (e) {
+      /* Kvoten full → trimma hårdare och försök igen en gång */
+      try {
+        if (Array.isArray(d.wLog) && d.wLog.length > 50) {
+          d.wLog = d.wLog.slice(-50);
+          localStorage.setItem('ga_data', JSON.stringify(d));
+          return true;
+        }
+      } catch {}
+      LOG.warn('storage', e.name);
+      toast('⚠️ Lagringen är full – exportera och rensa');
+      return false;
+    }
+  },
+};
+
+/* Trimma data innan skrivning (O8) */
+function trimData(d) {
+  if (Array.isArray(d.wLog) && d.wLog.length > LOG_MAX)
+    d.wLog = d.wLog.slice(-LOG_MAX);
+  if (Array.isArray(d.balDays) && d.balDays.length > 400)
+    d.balDays = d.balDays.slice(-400);
+  if (d.setsOk) {
+    for (const k in d.setsOk) {
+      const v = d.setsOk[k];
+      if (Array.isArray(v)) {
+        if (v.length > 40) d.setsOk[k] = v.slice(-40);
+      } else delete d.setsOk[k];
+    }
+  }
+  return d;
+}
+
+/* ── STATE ───────────────────────────────────── */
+let UD  = {};   // user data
+let SCH = 0;    // active schedule index
+
+/* ── TIMER ───────────────────────────────────── */
+const T = {
+  sec:20, left:20, raf:0, running:false,
+  startTime:0, startLeft:0,
+  CIRC: 2 * Math.PI * 65,  // ≈ 408.4
+};
+
+/* ── QUOTES ──────────────────────────────────── */
+const QUOTES = [
+  { text:'Det spelar ingen roll hur långsamt du går, så länge du inte stannar.', by:'Konfucius' },
+  { text:'Smärta är tillfällig. Att ge upp är för alltid.', by:'Lance Armstrong' },
+  { text:'Ta hand om din kropp – det är det enda stället du måste leva i.', by:'Jim Rohn' },
+  { text:'Träning är en hyllning till vad din kropp kan göra.', by:'Okänd' },
+  { text:'Framgång börjar dagen du bestämmer dig för att börja.', by:'Harvey MacKay' },
+  { text:'Du behöver inte vara bra för att börja, men du måste börja för att bli bra.', by:'Zig Ziglar' },
+  { text:'Kroppen uppnår vad sinnet tror.', by:'Napoleon Hill' },
+  { text:'Stark är vad du blir när du är klar med att vara svag.', by:'Okänd' },
+  { text:'Din enda gräns är du själv.', by:'Okänd' },
+  { text:'Träning handlar inte om att vara bättre än någon annan – det handlar om att vara bättre än du var igår.', by:'Okänd' },
+  { text:'En timmes träning är 4% av din dag. Inga ursäkter.', by:'Okänd' },
+  { text:'Det är lättare att vakna tidigt och träna, än att leva med skam av att aldrig ha försökt.', by:'Okänd' },
+  { text:'Varje rep, varje set, varje droppe svett räknas.', by:'Okänd' },
+  { text:'Discipline is the bridge between goals and accomplishment.', by:'Jim Rohn' },
+  { text:'Drömmar är inte för de som sover.', by:'Okänd' },
+];
+
+/* ── DATA ────────────────────────────────────── */
+/* ════════════════════════════════════════════════
+   SCHEMAN
+   Inga färdiga scheman ligger i appen – listan börjar
+   tom och fylls bara med det du själv skapar.
+   TEMPLATES nedan kan laddas in med ett tryck från
+   byggaren, men räknas inte som ett befintligt schema.
+════════════════════════════════════════════════ */
+const SCHED = [];
+
+/* Färdig mall – syns bara inne i schemabyggaren */
+const TEMPLATES = [
+  { name:'🔥 Mitt Schema', lv:'adv', days:[
+    { n:'Måndag',  t:'home', ex:[
+      { n:'Squat vid diskbänken (ryggsäck)',  s:'4×',r:'15–20',   img:'images/counter-squat.png',      muscles:'Quad, gluteus, hamstrings, core',   steps:['Stå framför diskbänken, händerna på kanten för stöd','Ryggsäcken på ryggen med önskad vikt','Fötterna höftbrett, tår lätt utåt','Sänk höfterna rakt ned – knäna följer tårna','Lår parallella med golvet eller djupare','Pressa upp explosivt – hälarnas i golvet'],                breath:'IN ned, UT upp' },
+      { n:'KB Deadlift (tvåhands)',          s:'4×',r:'15–20',kb:1, img:'images/kb-deadlift.png',     muscles:'Hamstrings, gluteus, rygg',         steps:['Fötterna höftbrett, KB mellan','Böj med rak rygg – bröst uppe','Grip KB med båda händer','Pressa hälarnas i golvet','Sträck ut – gluteus kniper','Sänk kontrollerat'],                                      breath:'IN ned (håll), UT upp' },
+      { n:'Armhävningar (på knäna)',         s:'4×',r:'20–25',       img:'images/pushup-knees.png',    muscles:'Bröst, triceps, deltoideus',        steps:['Händer bredare än axelbredd','Knäna i golvet – kroppen rak','Sänk kontrollerat mot golvet','Armbågarna pekar lätt bakåt','Stopp strax innan bröstet nuddar','Pressa explosivt upp'],                      breath:'IN ned, UT upp' },
+      { n:'Hantel shoulder press (sit.)',   s:'4×',r:'20–25',ha:1,st:1, img:'images/shoulder-press.png', muscles:'Deltoideus, triceps, trapezius',  steps:['Sitt rak rygg, fötterna i golvet','Hantlar i axelhöjd, handflatorna framåt','Pressa rakt upp','Sänk kontrollerat till axelhöjd'],                                                                    breath:'UT upp, IN ned' },
+      { n:'Glute bridge + KB på höfter',    s:'4×',r:'20–30',kb:1,li:1, img:'images/glute-bridge.png',  muscles:'Gluteus, hamstrings, core',        steps:['Ligg på rygg, knäna böjda','KB på höfterna – håll','Pressa fötterna i golvet','Lyft höfterna rakt upp','Knip gluteus hårt – 1 sek','Sänk nästan till golvet'],                                        breath:'UT upp, IN ned' },
+    ]},
+    { n:'Tisdag',  t:'gym', ex:[
+      { n:'Bänkpress',                        s:'6×',r:'15–20', img:'images/benchpress.png',    muscles:'Pectoralis, triceps, deltoideus',   steps:['Ligg på bänken, ögon under stången','Tag lite bredare än axelbredd','Sänk kontrollerat till bröstet','Pressa explosivt upp','Skulderblad hålls ihop'],                                                        breath:'IN ned, UT upp' },
+      { n:'Cable flyes – maskin, bröstmitt',  s:'6×',r:'20–25', img:'images/cable-flyes.png',   muscles:'Pectoralis (insida), deltoideus',   steps:['Pulley i midjeposition','Lätt framåtlutning','Drag i bred bågrörelse','Håll 1 sek i mitten','Kontrollerat tillbaka'],                                                                                       breath:'UT ihop, IN ut' },
+      { n:'Axelpress maskin',                 s:'4×',r:'15–20', img:'images/lateral-raise.png', muscles:'Deltoideus, triceps, trapezius',    steps:['Säte i axelhöjd','Rak rygg','Pressa rakt upp','Sänk kontrollerat'],                                                                                                                                         breath:'UT upp, IN ned' },
+      { n:'Lateral raises',                   s:'4×',r:'20–30', img:'images/lateral-raise.png', muscles:'Deltoideus (mitten)',               steps:['Hantlar längs sidorna, lätt böjda armbågar','Lyft rakt ut åt sidorna','Till axelhöjd – tummen lätt ned','Sänk LÅNGSAMT – 3 sek'],                                                                           breath:'UT upp, IN ned' },
+      { n:'Tricepspress kabel',               s:'4×',r:'20–25', img:'images/tricep-press.png',  muscles:'Triceps brachii (alla 3)',          steps:['Kabel i övre position','Armbågarna intill – rör sig EJ','Pressa ned till raka armar','Håll 1 sek i botten'],                                                                                                breath:'UT ned, IN upp' },
+      { n:'Facepull – bakre delta',           s:'4×',r:'20–25', img:'images/facepull.png',      muscles:'Bakre delta, rotatorkuff, rhomboids', steps:['Kabel i ögonhöjd, rephandtag','Dra mot ansiktet – armbågar ut','Händerna förbi öronen','Håll 1 sek – skulderblad ihop'],                                                                              breath:'UT drag, IN ut' },
+    ]},
+    { n:'Onsdag',  t:'home', ex:[
+      { n:'KB Sumo squat',               s:'4×',r:'15–20',kb:1,   img:'images/sumo-squat.png',        muscles:'Quad, gluteus, adduktorer',       steps:['Brett ben – tår 45°','KB hängande','Sänk rakt ned','Knäna följer tårna','Pressa upp'],                    breath:'IN ned, UT upp' },
+      { n:'Seated KB press (sittande)',  s:'4×',r:'15–20',kb:1,st:1, img:'images/shoulder-press.png',  muscles:'Deltoideus, triceps, serratus',   steps:['Sitt på golv – rak rygg','KB mot bröstet','Pressa rakt upp','Sänk kontrollerat'],                         breath:'UT upp, IN ned' },
+      { n:'Hantel lateral raise (sit.)', s:'4×',r:'20–30',ha:1,st:1, img:'images/lateral-raise.png',   muscles:'Deltoideus (mitten)',             steps:['Sitt på stol – rak rygg','Hantlar längs sidorna','Lyft ut till axelhöjd','Sänk LÅNGSAMT'],                breath:'UT upp, IN ned' },
+      { n:'Ab roller (från knäna)',      s:'4×',r:'15–20',ro:1,       img:'images/ab-roller.png',        muscles:'Rectus abdominis, obliques, lat', steps:['Knäna i golvet','Spänn magen HÅRT','Rulla framåt – kroppen rak','Dra tillbaka med magkraft'],             breath:'IN framåt, UT tillbaka' },
+      { n:'Bicycle crunches (liggande)', s:'4×',r:'25–30',li:1,       img:'images/bicycle-crunches.png', muscles:'Obliques, rectus abdominis',      steps:['Ligg på rygg – axlar uppe','Dra ett knä mot bröstet','Rotera mot knät','Byt sida kontrollerat'],       breath:'Andas rytmiskt' },
+    ]},
+    { n:'Torsdag', t:'gym', ex:[
+      { n:'Knäböj (Smith-maskin)',        s:'5×',r:'15–20', img:'images/smith-squat.png',           muscles:'Quad, gluteus, hamstrings',        steps:['Stång på övre ryggen','Fötterna axelbredd','Sänk – knän trackear tårna','Lår parallella','Pressa upp'],      breath:'IN ned, UT upp' },
+      { n:'Benpress',                     s:'5×',r:'15–20', img:'images/leg-press.png',             muscles:'Quad, gluteus, hamstrings',        steps:['Fötterna axelbredd, midthöjd','Rygg mot kudden','Sänk till 90°','Pressa upp – lås EJ knäna'],                 breath:'IN ned, UT upp' },
+      { n:'Latsdrag',                     s:'4×',r:'15–20', img:'images/lat-pulldown.png',          muscles:'Latissimus, biceps, bakre delta',  steps:['Grip bredare än axelbredd','Lätt bakåtlutning','Drag till övre bröstet','Håll 1 sek – rygg kniper'],          breath:'UT ned, IN upp' },
+      { n:'Sittande rodd',                s:'4×',r:'15–20', img:'images/seated-row.png',            muscles:'Rhomboids, trapezius, lat, biceps', steps:['Rak rygg – lätt framåtlutning','Drag mot nedre magen','Armbågar längs kroppen','Skulderblad bakåt'],       breath:'UT drag, IN sträck' },
+      { n:'Bicepscurl maskin (dropset)',  s:'4×',r:'20→15→10', img:'images/bicep-curl-machine.png', muscles:'Biceps brachii, brachialis',       steps:['Kör 20 reps','Sänk vikten direkt – kör 15','Sänk igen – kör 10','Ingen vila mellan','Sänk LÅNGSAMT – 3 sek'], breath:'UT upp, IN ned' },
+      { n:'Kabeldrag raka armar',         s:'4×',r:'20–25', img:'images/cable-straight-arm.png',   muscles:'Latissimus, serratus, teres major', steps:['Kabel högt – raka armar','Lätt framåtlutning','Drag ned mot låren','Håll 1 sek'],                           breath:'UT ned, IN upp' },
+    ]},
+    { n:'Fredag',  t:'rest', ex:[] },
+    { n:'Lördag',  t:'home', ex:[
+      { n:'KB bent-over row (bordsstöd)', s:'4×',r:'15–20/sida',kb:1, img:'images/lat-pulldown.png',       muscles:'Latissimus, rhomboids, bakre delta', steps:['Luta ena handen mot bord','Rak rygg – parallell med golvet','Drag KB mot revbenen','Skulderblad bakåt'],           breath:'UT upp, IN ned' },
+      { n:'Hantel bicepscurl (sittande)', s:'4×',r:'20–30',ha:1,st:1, img:'images/bicep-curl-machine.png', muscles:'Biceps brachii, brachialis',         steps:['Sitt rak – armbågar intill','Curl upp till axelhöjd','Sänk LÅNGSAMT – 3 sek'],                                   breath:'UT upp, IN ned' },
+      { n:'Tricepsdips (stol)',           s:'4×',r:'20–25',st:1,       img:'images/tricep-press.png',       muscles:'Triceps brachii, deltoideus',        steps:['Grip stolkanten','Benen böjda 90°','Sänk rakt ned – armbågar bakåt','Pressa upp med triceps'],               breath:'IN ned, UT upp' },
+      { n:'KB chest press (liggande)',    s:'4×',r:'15–20',kb:1,li:1,  img:'images/kb-chest-press.png',     muscles:'Pectoralis, triceps, deltoideus',    steps:['Ligg på rygg – KB mot bröstet','Pressa rakt upp','Sänk – armbågar rör golvet'],                              breath:'UT upp, IN ned' },
+      { n:'Ab roller (från knäna)',       s:'4×',r:'15–20',ro:1,        img:'images/ab-roller.png',          muscles:'Rectus abdominis, obliques, lat',    steps:['Knäna i golvet','Spänn magen HÅRT','Rulla framåt – rak kropp','Dra tillbaka med magkraft'],               breath:'IN framåt, UT tillbaka' },
+    ]},
+    { n:'Söndag',  t:'rest', ex:[] },
+  ]},
+];
+
+/* ════════════════════════════════════════════════
+   BILDBANK + SMART MATCHNING
+   Matchar valfritt övningsnamn mot befintliga bilder.
+   Hittas ingen bild → emoji-ikon efter muskelgrupp.
+════════════════════════════════════════════════ */
+const IMG_BANK = [
+  { f:'pullup.png',             kw:['chins','chin up','chinup','pull up','pullup','pull-up','räckhäv','hängande','bar hang','muscle up'] },
+  { f:'hip-thrust.png',         kw:['hip thrust','hipthrust','höftlyft','höftstöt','thrust','bänk höft','frog pump'] },
+  { f:'skullcrusher.png',       kw:['skullcrusher','skull crusher','franska press','french press','liggande tricepspress','ez-curl triceps','overhead extension'] },
+  { f:'tricep-kickback.png',    kw:['kickback','kick back','tricepskickback','bakåtspark arm','triceps kickback'] },
+  { f:'counter-squat.png',      kw:['diskbänk','counter','squat vid','ryggsäck','bänksquat'] },
+  { f:'goblet-squat.png',       kw:['goblet','kb squat','kettlebell squat','frontsquat'] },
+  { f:'sumo-squat.png',         kw:['sumo','bred squat','adduktor','plie'] },
+  { f:'smith-squat.png',        kw:['smith','knäböj','benböj','back squat','squat','utfall','lunge','step up','bulgarian','split squat'] },
+  { f:'leg-press.png',          kw:['benpress','leg press','legpress','benmaskin'] },
+  { f:'kb-deadlift.png',        kw:['deadlift','marklyft','rdl','höftfällning','good morning','hip hinge'] },
+  { f:'glute-bridge.png',       kw:['glute bridge','bäckenlyft','bridge','clamshell','donkey kick','benspark','höftlyft golv'] },
+  { f:'benchpress.png',         kw:['bänkpress','bench','bänk press','chest press','bröstpress'] },
+  { f:'kb-chest-press.png',     kw:['kb chest','floor press','golvpress','hantelpress bröst'] },
+  { f:'cable-flyes.png',        kw:['flyes','fly','kabelkryss','pec deck','pecdeck','bröstmitt','crossover'] },
+  { f:'pushup-knees.png',       kw:['armhävning','push up','pushup','push-up','armhävningar'] },
+  { f:'shoulder-press.png',     kw:['shoulder press','axelpress','militärpress','overhead','skulderpress','kb press'] },
+  { f:'lateral-raise.png',      kw:['lateral','sidolyft','sidlyft','axellyft','raises','delta','shrug','axelryck','upright'] },
+  { f:'facepull.png',           kw:['facepull','face pull','bakre delta','rotatorkuff','reverse fly'] },
+  { f:'lat-pulldown.png',       kw:['latsdrag','pulldown','lat pull','dragmaskin','lats'] },
+  { f:'seated-row.png',         kw:['rodd','row','sittande rodd','skivstångsrodd','hantelrodd','t-bar','superman','ryggresning','hyperextension','face down'] },
+  { f:'cable-straight-arm.png', kw:['straight arm','raka armar','pullover','lat pushdown'] },
+  { f:'bicep-curl-machine.png', kw:['curl','biceps','bicep','hammer','skivstångscurl','armcurl'] },
+  { f:'tricep-press.png',       kw:['triceps','tricep','pushdown','dips','dip','nedpress','tricepspress','kabelpress'] },
+  { f:'ab-roller.png',          kw:['ab roller','abroller','hjul','wheel','ab wheel'] },
+  { f:'bicycle-crunches.png',   kw:['crunch','sit-up','situp','sit up','mage','magövning','bicycle','plankvrid','russian','planka','plank','core','hollow','v-up'] },
+  { f:'bal-one-leg.png',        kw:['ett ben','enbens','one leg','stå på ett'] },
+  { f:'bal-heel-toe.png',       kw:['häl-till-tå','häl till tå','linjegång','tandem'] },
+  { f:'bal-leg-lift.png',       kw:['benlyft','leg lift','benlyftar'] },
+  { f:'bal-side-lean.png',      kw:['sidolutning','side lean','sidoböj'] },
+  { f:'bal-calf-raise.png',     kw:['tålyft','vadpress','calf','vader','hällyft','tåhävning'] },
+  { f:'bal-head-rotation.png',  kw:['huvudrotation','blickfokus','nackrörlighet','vestibular'] },
+];
+
+/* Emoji-fallback när ingen bild matchar */
+const EMOJI_BANK = [
+  { e:'🦵', kw:['ben','lår','quad','vad','knä','squat','lunge','utfall','hamstring','glute','säte','höft'] },
+  { e:'🫸', kw:['bröst','chest','press','armhävning','fly'] },
+  { e:'🎽', kw:['rygg','lat','rodd','row','drag','pull'] },
+  { e:'💪', kw:['biceps','triceps','arm','curl','axel','delta','shoulder'] },
+  { e:'🧘', kw:['balans','stretch','rörlighet','yoga','core','plank','mage','ab'] },
+  { e:'🏃', kw:['kondition','cardio','löp','cykel','rodd­maskin','hopp','burpee'] },
+];
+
+/* Normalisera för matchning: gemener, å/ä/ö kvar, skräptecken bort */
+function _norm(t) {
+  return String(t || '').toLowerCase()
+    .replace(/[×x]\s*\d+/g, ' ')
+    .replace(/[^a-zà-ÿ0-9åäö\s-]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+
+/* Hitta bästa bild för ett övningsnamn. Returnerar sökväg eller null. */
+function matchImage(name, extra) {
+  const hay = _norm(name + ' ' + (extra || ''));
+  if (!hay) return null;
+  let best = null, bestScore = 0;
+  for (const item of IMG_BANK) {
+    for (const kw of item.kw) {
+      if (!hay.includes(kw)) continue;
+      // längre nyckelord = mer specifik träff
+      const score = kw.length + (hay.startsWith(kw) ? 3 : 0);
+      if (score > bestScore) { bestScore = score; best = item.f; }
+    }
+  }
+  return best ? 'images/' + best : null;
+}
+
+/* Emoji-fallback */
+function matchEmoji(name, extra) {
+  const hay = _norm(name + ' ' + (extra || ''));
+  for (const item of EMOJI_BANK)
+    for (const kw of item.kw)
+      if (hay.includes(kw)) return item.e;
+  return '🏋️';
+}
+
+const BAL = [
+  { num:'01', name:'Häl-till-tå gång',     tag:'vagg', tagL:'🧱 väggstöd', time:'30 sek',       desc:'Stå nära väggen, hand lätt mot den. Lyft hälen och ställ framför tårna – som att gå på lina.', tip:'💡 Fokusera blicken på en fast punkt' },
+  { num:'02', name:'Sittande benlyftar',   tag:'stol', tagL:'🪑 sittande',  time:'20 reps/ben',  desc:'Rak rygg. Lyft ben rakt ut 2 sek, håll 1 sek, sänk kontrollerat.',                             tip:'💡 Luta dig inte bakåt' },
+  { num:'03', name:'Stå på ett ben',        tag:'vagg', tagL:'🧱 väggstöd', time:'20 sek × 2',   desc:'Fingertopparna mot väggen. Lyft ena foten lite, håll balansen. Öka tid varje vecka!',           tip:'💡 Börja med bara fingertopparna' },
+  { num:'04', name:'Sittande sidolutning',  tag:'stol', tagL:'🪑 sittande',  time:'10 reps/sida', desc:'Stolkant utan ryggstöd. Luta åt sidan och räta upp med coremusklerna.',                        tip:'💡 Fötterna stadigt i golvet' },
+  { num:'05', name:'Häl & tålyftar',        tag:'vagg', tagL:'🧱 väggstöd', time:'15 reps',       desc:'Händerna mot väggen. Res upp på tårna, håll 1 sek, sänk ned kontrollerat.',                   tip:'💡 Prova utan händer när det känns lätt' },
+  { num:'06', name:'Blickfokus rotation',   tag:'stol', tagL:'🪑 sittande',  time:'10 reps/sida', desc:'Tummen framför, följ med blicken medan du roterar huvudet. Tränar vestibularsystemet!',        tip:'💡 Alltid långsamt – inga snabba rörelser' },
+];
+
+/* ── CONSTS ──────────────────────────────────── */
+/* ════════════════════════════════════════════════
+   EGNA SCHEMAN – parser, lagring, redigering
+════════════════════════════════════════════════ */
+const DAY_FULL = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+
+/* Alla scheman = inbyggda + egna (egna sparas i UD.mySched) */
+function allSched() {
+  return SCHED.concat(Array.isArray(UD.mySched) ? UD.mySched : []);
+}
+
+/* Textparser – tolererar fritext, listor, tabbar, HTML-klipp.
+   Känner igen:
+     "Måndag (hemma)" / "Tisdag - gym" / "Fredag: vila"   → ny dag
+     "Bänkpress 4x12 60kg" / "- Squat 3 set 15 reps"      → övning
+*/
+function parseSchemaText(raw) {
+  const warn = [];
+  let txt = String(raw || '');
+
+  // Klipp bort HTML om användaren klistrat in kod
+  if (/<[a-z][\s\S]*>/i.test(txt)) {
+    txt = txt.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ')
+             .replace(/<\/(p|div|li|tr|h[1-6]|br)>/gi, '\n')
+             .replace(/<br\s*\/?>/gi, '\n')
+             .replace(/<[^>]+>/g, ' ');
+    const ta = document.createElement('textarea');
+    ta.innerHTML = txt; txt = ta.value;
+  }
+  txt = txt.replace(/\u00a0/g, ' ').replace(/\r/g, '');
+
+  const lines = txt.split('\n').map(l => l.replace(/\s+/g,' ').trim()).filter(Boolean);
+  const days = [];
+  let cur = null;
+
+  const dayRe = new RegExp('^(?:[-•*\\d.\\s]*)?(' + DAY_FULL.join('|') + '|mån|tis|ons|tor|fre|lör|sön)(?:dag)?\\b', 'i');
+
+  for (const line of lines) {
+    const dm = line.match(dayRe);
+    if (dm) {
+      const low = line.toLowerCase();
+      let t = 'home';
+      if (/\bgym|styrkelokal|träningscenter\b/.test(low))      t = 'gym';
+      else if (/\bvila|rest|ledig|återhämt|off\b/.test(low))   t = 'rest';
+      else if (/\bhemma|home|hem\b/.test(low))                 t = 'home';
+      const idx = DAY_FULL.findIndex(d => d.toLowerCase().startsWith(dm[1].toLowerCase().slice(0,3)));
+      cur = { n: DAY_FULL[idx < 0 ? days.length % 7 : idx], t, ex: [] };
+      days.push(cur);
+      continue;
+    }
+    if (!cur) { cur = { n: DAY_FULL[0], t:'home', ex: [] }; days.push(cur); }
+    if (cur.t === 'rest') continue;
+
+    // Övningsrad
+    let l = line.replace(/^[-•*·–—]+\s*/, '').replace(/^\d+[.)]\s*/, '');
+    if (l.length < 2) continue;
+    if (/^(ingredienser|övningar|pass|vecka|schema|uppvärmning|nedvarvning)\b[: ]*$/i.test(l)) continue;
+
+    // set × reps
+    let sets = '', reps = '';
+    let m = l.match(/(\d+)\s*(?:×|x|\*)\s*(\d+\s*[–-]\s*\d+|\d+)/i);
+    if (m) { sets = m[1]; reps = m[2].replace(/\s/g,''); l = l.replace(m[0], ' '); }
+    else {
+      const ms = l.match(/(\d+)\s*(?:set|serier|sets)\b/i);
+      const mr = l.match(/(\d+\s*[–-]\s*\d+|\d+)\s*(?:reps?|rep|gånger|ggr)\b/i);
+      if (ms) { sets = ms[1]; l = l.replace(ms[0], ' '); }
+      if (mr) { reps = mr[1].replace(/\s/g,''); l = l.replace(mr[0], ' '); }
+    }
+    // tid istället för reps
+    const mt = l.match(/(\d+)\s*(sek|sekunder|min|minuter)\b/i);
+    if (mt && !reps) { reps = mt[1] + ' ' + (/^m/i.test(mt[2]) ? 'min' : 'sek'); l = l.replace(mt[0], ' '); }
+    // vikt
+    let kg = '';
+    const mk = l.match(/(\d+(?:[.,]\d+)?)\s*kg\b/i);
+    if (mk) { kg = mk[1].replace(',', '.'); l = l.replace(mk[0], ' '); }
+
+    const name = l.replace(/[,;:|]+/g,' ').replace(/\s+/g,' ').trim()
+                  .replace(/^[-–—\s]+|[-–—\s]+$/g,'');
+    if (!name || name.length < 2) continue;
+    if (cur.ex.length >= 15) { warn.push(`${cur.n}: max 15 övningar – resten hoppades över`); continue; }
+
+    const ex = { n:name, s:(sets||'3')+'×', r:reps||'10–12' };
+    const img = matchImage(name);
+    if (img) ex.img = img;
+    if (kg)  ex.kg  = kg;
+    // utrustningsflaggor
+    const low = name.toLowerCase();
+    if (/kettlebell|\bkb\b/.test(low))          ex.kb = 1;
+    if (/hantel|dumbbell|\bdb\b/.test(low))     ex.ha = 1;
+    if (/sittande|sit\.|\bstol\b/.test(low))    ex.st = 1;
+    if (/liggande|golv|rygg\b/.test(low))       ex.li = 1;
+    if (/roller|hjul|wheel/.test(low))          ex.ro = 1;
+    cur.ex.push(ex);
+  }
+
+  // Fyll ut till 7 dagar med vila
+  const used = days.map(d => DAY_FULL.indexOf(d.n));
+  const full = DAY_FULL.map((n, i) => {
+    const hit = days.find(d => DAY_FULL.indexOf(d.n) === i);
+    return hit || { n, t:'rest', ex:[] };
+  });
+  const exCount = days.reduce((a,d) => a + d.ex.length, 0);
+  if (!exCount) warn.push('Inga övningar hittades – kolla formatet.');
+  const noImg = days.flatMap(d => d.ex).filter(e => !e.img).length;
+
+  return { days: full, warn, exCount, dayCount: days.filter(d=>d.ex.length).length, noImg };
+}
+
+/* Spara eget schema */
+function saveMySched(obj) {
+  if (!Array.isArray(UD.mySched)) UD.mySched = [];
+  if (UD.mySched.length >= 10) return { ok:false, msg:'Max 10 egna scheman.' };
+  UD.mySched.push(obj);
+  save();
+  return { ok:true, idx: SCHED.length + UD.mySched.length - 1 };
+}
+
+const TABS     = ['home','workout','balance','progress'];
+const TYPE_ICO = { gym:'🏋️', home:'🏠', rest:'😴' };
+const DAY_NAMES= ['Mån','Tis','Ons','Tor','Fre','Lör','Sön'];
+const LVL_MAP  = { adv:'Avancerat', med:'Medel', beg:'Nybörjare' };
+const DESC_MAP  = {
+  adv:'Hög volym, high rep, kettlebell hemma + gym. Balans- & lägenhetsanpassat.',
+  med:'3 dagar gym, 2 hemma. Push/Pull/Ben med måttlig volym.',
+  beg:'2 dagar gym, 2 hemma. Enkel helkroppsträning.',
+};
+
+/* ════════════════════════════════════════════════
+   BOOT
+════════════════════════════════════════════════ */
+/* Sanera inläst data – en plats, tydliga regler */
+function sanitize(d) {
+  const o = (d && typeof d === 'object' && !Array.isArray(d)) ? d : {};
+  const arr = v => Array.isArray(v) ? v : [];
+  const obj = v => (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+  o.mySched = arr(o.mySched)
+    .filter(x => x && typeof x === 'object' && Array.isArray(x.days))
+    .slice(0, 10);
+  o.wLog    = arr(o.wLog);
+  o.balDays = arr(o.balDays);
+  o.weights = obj(o.weights);
+  o.grips   = obj(o.grips);
+  o.setsOk  = obj(o.setsOk);
+  return o;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const t0 = performance.now();
+
+  /* 1 · Läs och sanera */
+  UD  = LOG.safe('load', () => sanitize(LS.data()), sanitize(null));
+  SCH = Math.max(0, Math.min(UD.sch | 0, allSched().length - 1));
+
+  /* 2 · Rita det som syns direkt – resten väntar till nästa frame */
+  const critical = [
+    ['updNavDay',     updNavDay],
+    ['showQotd',      showQotd],
+    ['updStats',      updStats],
+    ['renderSchGrid', renderSchGrid],
+  ];
+  const deferred = [
+    ['renderWorkout',      renderWorkout],
+    ['renderBalance',      renderBalance],
+    ['renderActivityDots', renderActivityDots],
+    ['updNotifUI',         updNotifUI],
+  ];
+  critical.forEach(([n, f]) => LOG.safe(n, f));
+
+  /* Låt första bilden målas innan tyngre arbete körs */
+  const runDeferred = () => deferred.forEach(([n, f]) => LOG.safe(n, f));
+  ('requestIdleCallback' in window)
+    ? requestIdleCallback(runDeferred, { timeout: 800 })
+    : setTimeout(runDeferred, 60);
+
+  /* 3 · Djuplänkar från manifestets genvägar */
+  const urlTab = new URLSearchParams(location.search).get('tab');
+  if (urlTab && TABS.includes(urlTab)) goTab(urlTab, TABS.indexOf(urlTab));
+
+  /* 4 · Service worker + uppdateringsbevakning (B14) */
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        /* Ny version redan i vänteläge */
+        if (reg.waiting) showSWUpdate(reg.waiting);
+
+        /* Ny version upptäckt medan appen är öppen */
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener('statechange', () => {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller)
+              showSWUpdate(nw);
+          });
+        });
+
+        /* Leta efter uppdatering varje timme och vid återkomst till appen */
+        const check = () => reg.update().catch(() => {});
+        setInterval(check, 3_600_000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+      }).catch(e => LOG.warn('sw', e.message));
+
+      /* Ladda om en gång när den nya versionen tagit över */
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloaded) return;
+        reloaded = true;
+        location.reload();
+      });
+    }, { once: true });
+  }
+
+  LOG.info('boot', `${Math.round(performance.now() - t0)} ms`);
+});
+
+/* Debouncad spara – skriver max var 350:e ms (O4) */
+let _saveT = 0, _dirty = false;
+const save = () => {
+  _dirty = true;
+  clearTimeout(_saveT);
+  _saveT = setTimeout(saveNow, SAVE_MS);
+};
+/* Omedelbar skrivning – vid appbyte, stängning eller kritiska moment */
+function saveNow() {
+  clearTimeout(_saveT);
+  if (!_dirty) return;
+  _dirty = false;
+  LS.flush(trimData(UD));
+}
+/* Garantera att inget tappas när appen lämnas */
+addEventListener('pagehide', saveNow);
+addEventListener('beforeunload', saveNow);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { saveNow(); document.body.classList.add('idle'); }
+  else document.body.classList.remove('idle');
+});
+
+/* ════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════ */
+/* Cachade nodlistor – slipper querySelectorAll vid varje flikbyte */
+let _navBtns = null, _tabEls = null, _curTab = 'home';
+
+window.goTab = (tab, idx) => {
+  if (!TABS.includes(tab) || tab === _curTab) return;   // ingen omritning i onödan
+  _curTab = tab;
+
+  _tabEls  ??= TABS.map(t => $(`#tab-${t}`));
+  _navBtns ??= { top: $$('.nlink'), bot: $$('.mn') };
+
+  TABS.forEach((t, i) => {
+    const el = _tabEls[i];
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  _navBtns.top.forEach((b, i) => b.classList.toggle('on', i === idx));
+  _navBtns.bot.forEach((b, i) => b.classList.toggle('on', i === idx));
+
+  /* Progress ritas bara när fliken faktiskt öppnas */
+  if (tab === 'progress') LOG.safe('renderProgress', renderProgress);
+
+  scrollTo({ top: 0, behavior: 'instant' });
+  vib(8);
+};
+
+/* Svep mellan flikar – bara horisontella, tydliga svep räknas */
+LOG.safe('swipe', () => {
+  let x0 = 0, y0 = 0, t0 = 0, active = false;
+  addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) { active = false; return; }
+    /* Ignorera svep som startar i scrollbara/interaktiva element */
+    if (e.target.closest('input,textarea,.sb-ta,.qa-btns,#sb-modal,#install-modal')) {
+      active = false; return;
+    }
+    const t = e.touches[0];
+    x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); active = true;
+  }, { passive: true });
+
+  addEventListener('touchend', e => {
+    if (!active) return;
+    active = false;
+    const t  = e.changedTouches[0];
+    const dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Date.now() - t0 > 600) return;              // för långsamt
+    if (Math.abs(dx) < 70 || Math.abs(dy) > 50) return;  // inte horisontellt nog
+    const i = TABS.indexOf(_curTab);
+    const n = dx < 0 ? i + 1 : i - 1;
+    if (n >= 0 && n < TABS.length) goTab(TABS[n], n);
+  }, { passive: true });
+});
+
+/* ════════════════════════════════════════════════
+   NAV DAY BADGE  –  shows today's workout type
+════════════════════════════════════════════════ */
+function updNavDay() {
+  const dow = (new Date().getDay() + 6) % 7;      // 0 = måndag
+  const sch = allSched()[SCH];
+  const day = sch?.days?.[dow];
+
+  /* Badge i toppnavet */
+  const el = $('#nav-day');
+  if (el) {
+    if (!day) el.style.display = 'none';
+    else {
+      const labels = { gym:'🏋️ Gymdag', home:'🏠 Hemmadag', rest:'😴 Vilodag' };
+      el.textContent   = labels[day.t] || '';
+      el.className     = `nav-day ${day.t}-day`;
+      el.style.display = '';
+    }
+  }
+
+  /* Hälsning efter tid på dygnet */
+  const g = $('#greet-txt');
+  if (g) {
+    const h = new Date().getHours();
+    g.textContent = h < 5  ? 'Sent uppe 🌙'
+                  : h < 10 ? 'God morgon ☀️'
+                  : h < 14 ? 'God förmiddag 👋'
+                  : h < 18 ? 'God eftermiddag 💪'
+                  : h < 23 ? 'God kväll 🌆'
+                  :          'God natt 🌙';
+  }
+
+  /* Dagens pass-kort */
+  const card = $('#today-hero');
+  if (!card) return;
+  if (!day) { card.hidden = true; return; }
+
+  const ICO  = { gym:'🏋️', home:'🏠', rest:'😴' };
+  const META = {
+    gym:  '25–35 min · 30–45 sek vila',
+    home: '13–15 min · 40 sek på / 20 sek vila',
+    rest: 'Promenad, stretch eller yoga',
+  };
+  const n  = day.ex?.length || 0;
+  const ni = $('#th-ico'), nn = $('#th-name'), nm = $('#th-meta');
+  if (ni) ni.textContent = ICO[day.t] || '💪';
+  if (nn) nn.textContent = day.t === 'rest'
+    ? `${day.n} – vilodag`
+    : `${day.n} – ${day.t === 'gym' ? 'Gym' : 'Hemma'}`;
+  if (nm) nm.textContent = day.t === 'rest' ? META.rest : `${n} övningar · ${META[day.t]}`;
+
+  card.className = `today-hero ${day.t}`;
+  card.hidden = false;
+
+  card.dataset.rest = day.t === 'rest' ? '1' : '';
+
+  const sub = $('#hero-sub');
+  if (sub) sub.textContent = day.t === 'rest'
+    ? 'Vila idag – kroppen bygger sig starkare nu 🌿'
+    : 'Dags att träna – du klarar det! 💪';
+}
+
+/* ════════════════════════════════════════════════
+   QUOTE OF THE DAY
+════════════════════════════════════════════════ */
+function showQotd() {
+  const wrap = $('#qotd-wrap');
+  const text = $('#qotd-text');
+  const auth = $('#qotd-author');
+  if (!wrap) return;
+  // Deterministic daily quote based on day-of-year
+  const doy = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const q   = QUOTES[doy % QUOTES.length];
+  if (text) text.textContent = `"${q.text}"`;
+  if (auth) auth.textContent = `– ${q.by}`;
+  wrap.style.display = '';
+}
+
+/* ════════════════════════════════════════════════
+   ACTIVITY DOTS
+════════════════════════════════════════════════ */
+function renderActivityDots() {
+  const el = $('#activity-dots');
+  if (!el) return;
+  const now       = new Date();
+  const dow       = (now.getDay() + 6) % 7;
+  const logs      = new Set((UD.wLog || []).map(w => w.d));
+  const todayStr  = now.toLocaleDateString('sv-SE');
+  const streak    = calcStreak();
+
+  // Show streak badge
+  const sb = $('#streak-badge');
+  const sn = $('#streak-num');
+  if (sb && sn) {
+    sn.textContent   = streak;
+    sb.style.display = streak > 1 ? '' : 'none';
+  }
+
+  el.innerHTML = DAY_NAMES.map((day, i) => {
+    const d = new Date(now);
+    d.setDate(now.getDate() - dow + i);
+    const ds      = d.toLocaleDateString('sv-SE');
+    const done    = logs.has(ds);
+    const isToday = ds === todayStr;
+    const isPast  = d < now && !isToday;
+    const isFuture= d > now;
+
+    let cls = 'adot-circle';
+    let emoji = '';
+
+    if (done)         { cls += ' active'; emoji = '✅'; }
+    else if (isToday) { cls += ' today';  emoji = '👈'; }
+    else if (isPast)  { cls += ' missed'; emoji = '–'; }
+
+    return `<div class="adot">
+      <div class="${cls}" title="${ds}">${emoji}</div>
+      <span class="adot-lbl">${day}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════
+   RENDER — SCHEDULE GRID
+════════════════════════════════════════════════ */
+function renderSchGrid() {
+  const grid = $('#sch-grid');
+  if (!grid) return;
+
+  const nBuiltIn = SCHED.length;
+  const list = allSched();
+
+  /* Inga scheman än – visa ett inbjudande tomt läge */
+  if (!list.length) {
+    grid.innerHTML = `
+      <button class="sch-card add-card first" data-act="openBuilder" aria-label="Skapa ditt första schema">
+        <span class="add-ico">➕</span>
+        <span class="add-title">Skapa ditt första schema</span>
+        <span class="add-sub">Klistra in text, ladda en mall eller importera JSON – bilder matchas automatiskt</span>
+      </button>`;
+    const si = $('#sel-info');
+    if (si) si.style.display = 'none';
+    return;
+  }
+
+  grid.innerHTML = list.map((s, i) => {
+    const own = i >= nBuiltIn;
+    const lv  = ['own','adv','med','beg'].includes(s.lv) ? s.lv : 'med';
+    return `
+    <div class="sch-card lv-${lv}${i === SCH ? ' sel' : ''}${own ? ' own' : ''}" id="sc${i}" role="listitem" data-act="selSch" data-i="${i}">
+      <div class="sch-head">
+        <span class="sch-name">${esc(s.name)}</span>
+        <span class="lvl ${lv}">${own ? '✏️ Eget' : LVL_MAP[lv]}</span>
+      </div>
+      <p class="sch-desc">${own ? esc(s.desc || 'Ditt egna schema') : DESC_MAP[lv]}</p>
+      <div class="sch-days" aria-label="Dagupplägg">
+        ${(s.days||[]).map(d => `<span class="sday ${esc(d.t)}">${esc(d.n.slice(0,3))} ${TYPE_ICO[d.t] || ''}</span>`).join('')}
+      </div>
+      <div class="sch-actions">
+        <button class="btn-sel">${i === SCH ? '✓ Valt schema' : 'Välj detta schema'}</button>
+        ${own ? `<button class="btn-del-sch" title="Radera schemat" data-stop
+                   data-act="delMySched" data-i="${i - nBuiltIn}">🗑</button>` : ''}
+      </div>
+    </div>`;
+  }).join('') + `
+    <button class="sch-card add-card" id="sch-add" data-act="openBuilder" aria-label="Skapa eget schema">
+      <span class="add-ico">➕</span>
+      <span class="add-title">Skapa eget schema</span>
+      <span class="add-sub">Klistra in text eller bygg själv – bilder matchas automatiskt</span>
+    </button>`;
+
+  const si = $('#sel-info');
+  const sn = $('#sel-name');
+  if (si) si.style.display = list.length ? 'block' : 'none';
+  if (sn) sn.textContent   = (allSched()[SCH]?.name || '') + ' valt!';
+}
+
+/* ════════════════════════════════════════════════
+   RENDER — WORKOUT
+════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════
+   K5 · AUTO-PROGRESSION
+   Föreslår +2,5 kg när alla set klarats två pass i rad.
+   Endast förslag – ändrar aldrig vikten automatiskt.
+════════════════════════════════════════════════ */
+const PROG_STEP     = 2.5;   // kg som föreslås
+const PROG_NEEDED   = 2;     // antal lyckade pass i rad som krävs
+const PROG_MAX_DAYS = 45;    // äldre resultat räknas inte
+
+/* Alla lyckade set-loggar: UD.setsOk = { key: [{d, w}] } */
+function progList(key) {
+  const all = (UD.setsOk || {})[key];
+  return Array.isArray(all) ? all : [];
+}
+
+/* Hur många pass i rad har alla set klarats på nuvarande vikt? */
+function progStreak(key, curW) {
+  const list = progList(key);
+  if (!list.length || !curW) return 0;
+  const cutoff = Date.now() - PROG_MAX_DAYS * 86_400_000;
+  let n = 0;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const e = list[i];
+    if (!e || e.ts < cutoff) break;
+    // Måste vara samma vikt – höjde man vikten nollställs räkningen
+    if (Math.abs((e.w || 0) - curW) > 0.01) break;
+    n++;
+  }
+  return n;
+}
+
+/* Ska ett förslag visas? */
+function progReady(key, curW) {
+  if (!curW) return false;
+  return progStreak(key, curW) >= PROG_NEEDED;
+}
+
+/* Markera "alla set klarade" för dagens pass */
+window.markSetsOk = (key, name) => {
+  const curW = parseFloat((UD.weights || {})[key]) || 0;
+  if (!curW) { toast('⚖️ Ange vikten först'); return; }
+
+  if (typeof UD.setsOk !== 'object' || UD.setsOk === null || Array.isArray(UD.setsOk)) UD.setsOk = {};
+  const list  = Array.isArray(UD.setsOk[key]) ? UD.setsOk[key] : [];
+  const today = new Date().toLocaleDateString('sv-SE');
+
+  const last = list[list.length - 1];
+  if (last && last.d === today) {
+    // Ångra dagens markering
+    list.pop();
+    UD.setsOk[key] = list;
+    save();
+    renderProgRow(key, name);
+    toast('↩️ Markering borttagen');
+    return;
+  }
+
+  list.push({ d: today, w: curW, ts: Date.now() });
+  if (list.length > 40) list.splice(0, list.length - 40);
+  UD.setsOk[key] = list;
+  save();
+  renderProgRow(key, name);
+
+  const n = progStreak(key, curW);
+  if (n >= PROG_NEEDED) {
+    toast(`🎉 ${n} pass i rad – dags att öka!`);
+    vib([90, 60, 90]);
+  } else {
+    toast(`✅ Klart! ${n}/${PROG_NEEDED} pass mot nästa ökning`);
+  }
+};
+
+/* Acceptera förslaget – höjer vikten och nollställer räkningen */
+window.acceptProg = (key, name) => {
+  const curW = parseFloat((UD.weights || {})[key]) || 0;
+  if (!curW) return;
+  const nw = Math.round((curW + PROG_STEP) * 10) / 10;
+
+  UD.weights ??= {};
+  UD.wLog    ??= [];
+  UD.weights[key] = nw;
+  UD.wLog.push({ ex: name, w: nw, d: new Date().toLocaleDateString('sv-SE'), ts: Date.now() });
+  if (UD.setsOk) UD.setsOk[key] = [];   // ny vikt → börja om
+  save();
+
+  const inp = $(`#w_${key}`);
+  if (inp) inp.value = nw;
+  renderProgRow(key, name);
+  updStats();
+  renderActivityDots();
+  toast(`⬆️ ${nw} kg – lycka till!`);
+  vib(60);
+};
+
+/* Avvisa förslaget – behåll vikten, nollställ räkningen */
+window.dismissProg = (key, name) => {
+  if (UD.setsOk) UD.setsOk[key] = [];
+  save();
+  renderProgRow(key, name);
+  toast('👌 Vi kör vidare på samma vikt');
+};
+
+/* HTML för progressionsraden (knapp + ev. förslag) */
+function progRowHTML(key, ex) {
+  const curW = parseFloat((UD.weights || {})[key]) || 0;
+  const list = progList(key);
+  const today = new Date().toLocaleDateString('sv-SE');
+  const doneToday = list.length > 0 && list[list.length - 1].d === today;
+  const n = progStreak(key, curW);
+  const safeN = (ex.n || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+  if (progReady(key, curW)) {
+    const nw = Math.round((curW + PROG_STEP) * 10) / 10;
+    return `
+      <div class="prog-box" data-stop>
+        <div class="prog-msg">
+          <span class="prog-ico">⬆️</span>
+          <span><b>Dags att öka!</b> ${n} pass i rad med alla set klara på ${curW} kg.</span>
+        </div>
+        <div class="prog-acts">
+          <button class="prog-yes" data-act="acceptProg"  data-key="${key}" data-ex="${safeN}">Höj till ${nw} kg</button>
+          <button class="prog-no"  data-act="dismissProg" data-key="${key}" data-ex="${safeN}">Behåll</button>
+        </div>
+      </div>`;
+  }
+
+  const dots = curW
+    ? Array.from({ length: PROG_NEEDED }, (_, i) =>
+        `<span class="pdot${i < n ? ' on' : ''}"></span>`).join('')
+    : '';
+
+  return `
+    <div class="prog-row" data-stop>
+      <button class="prog-btn${doneToday ? ' done' : ''}"
+              data-act="markSetsOk" data-key="${key}" data-ex="${safeN}"
+              aria-pressed="${doneToday}"
+              title="Markera att du klarade alla set idag">
+        ${doneToday ? '✅ Alla set klara' : '☐ Klarade alla set'}
+      </button>
+      ${dots ? `<span class="pdots" title="${n}/${PROG_NEEDED} pass mot nästa ökning">${dots}</span>` : ''}
+    </div>`;
+}
+
+/* Rita om bara progressionsraden – ingen full omritning */
+function renderProgRow(key, name) {
+  const host = $(`#prog_${key}`);
+  if (!host) return;
+  const ex = { n: name };
+  host.innerHTML = progRowHTML(key, ex);
+}
+
+/* ── GREPP-VÄLJARE (bild-i-bild) ──────────────
+   Visas för övningar där greppet spelar roll.
+   Val sparas per övning i UD.grips. */
+const GRIP_EX = /skullcrusher|franska|tricepspress|nedpress|pushdown|curl|biceps|latsdrag|pulldown|chins|pull.?up|rodd|row|bänkpress|bench|skivstång|ez-?curl/i;
+
+function gripDefault(name) {
+  // Undergrepp är standard för curl/chins, annars överhandsgrepp
+  return /curl|biceps|chins|chin.?up|underhand|omvänd/i.test(name || '') ? 'under' : 'over';
+}
+
+function gripPip(key, ex) {
+  if (!GRIP_EX.test(ex.n || '')) return '';
+  const cur = (UD.grips || {})[key] || gripDefault(ex.n);
+  const under = cur === 'under';
+  return `
+    <div class="grip-pip" id="gpip_${key}" aria-hidden="true">
+      <img id="gimg_${key}" src="images/grip-${under ? 'under' : 'over'}.png" alt="" loading="lazy" decoding="async"/>
+      <div class="grip-cap" id="gcap_${key}">${under ? 'Handflatorna upp' : 'Knogarna upp'}</div>
+    </div>
+    <div class="grip-sel" data-stop role="group" aria-label="Välj grepp">
+      <button class="grip-tab${under ? '' : ' on'}" id="gto_${key}"
+              data-act="setGrip" data-key="${key}" data-m="over"  aria-pressed="${!under}">Över</button>
+      <button class="grip-tab${under ? ' on' : ''}" id="gtu_${key}"
+              data-act="setGrip" data-key="${key}" data-m="under" aria-pressed="${under}">Under</button>
+    </div>`;
+}
+
+/* Timers per övning så flera paneler kan vara öppna samtidigt */
+const _gripT = new Map();
+
+window.setGrip = (key, mode) => {
+  if (mode !== 'over' && mode !== 'under') return;
+  if (typeof UD.grips !== 'object' || UD.grips === null || Array.isArray(UD.grips)) UD.grips = {};
+  UD.grips[key] = mode;
+  save();
+
+  const under = mode === 'under';
+  const cap   = under ? 'Handflatorna upp' : 'Knogarna upp';
+  const img   = $(`#gimg_${key}`);
+  const capEl = $(`#gcap_${key}`);
+  const pip   = $(`#gpip_${key}`);
+  const bo    = $(`#gto_${key}`);
+  const bu    = $(`#gtu_${key}`);
+
+  if (img)   img.src = under ? 'images/grip-under.png' : 'images/grip-over.png';
+  if (capEl) capEl.textContent = cap;
+  if (bo) { bo.classList.toggle('on', !under); bo.setAttribute('aria-pressed', String(!under)); }
+  if (bu) { bu.classList.toggle('on',  under); bu.setAttribute('aria-pressed', String(under)); }
+
+  // Visa handbilden som bekräftelse, dölj efter 2,5 s
+  if (pip) {
+    pip.classList.add('show');
+    pip.setAttribute('aria-hidden', 'false');
+    clearTimeout(_gripT.get(key));
+    _gripT.set(key, setTimeout(() => {
+      pip.classList.remove('show');
+      pip.setAttribute('aria-hidden', 'true');
+      _gripT.delete(key);          // O5: släpp referensen
+    }, 2500));
+  }
+};
+
+/* Vyläge: 'day' = bara dagens pass, 'week' = hela veckan.
+   Dagsvy är standard – man vill oftast bara se vad som gäller nu. */
+let WK_VIEW = 'day';
+
+window.wkView = v => {
+  if (v !== 'day' && v !== 'week') return;
+  WK_VIEW = v;
+  $('#wk-tg-day')?.setAttribute('aria-pressed',  String(v === 'day'));
+  $('#wk-tg-week')?.setAttribute('aria-pressed', String(v === 'week'));
+  const h = $('#wk-head');
+  if (h) h.firstChild.textContent = v === 'day' ? '📍 Dagens pass – ' : '🗓️ Veckans träning – ';
+  LOG.safe('renderWorkout', renderWorkout);
+  vib(8);
+};
+
+function renderWorkout() {
+  const lbl  = $('#sch-lbl');
+  const grid = $('#wk-grid');
+  if (!grid) return;
+
+  const sch = allSched()[SCH];
+  if (lbl) lbl.textContent = sch?.name || 'Inget valt';
+
+  /* Inget schema skapat än */
+  if (!sch) {
+    $('#wk-toggle')?.style.setProperty('display', 'none');
+    grid.className = 'wk-grid';
+    grid.innerHTML = `
+      <div class="wk-empty">
+        <span class="we-ico" aria-hidden="true">🗓️</span>
+        <h3>Inget schema än</h3>
+        <p>Skapa ditt eget träningsschema så visas dagens pass här.
+           Du kan klistra in text, ladda en färdig mall eller importera en JSON-fil.</p>
+        <button class="we-btn" data-act="openBuilder">➕ Skapa schema</button>
+      </div>`;
+    return;
+  }
+  $('#wk-toggle')?.style.setProperty('display', 'flex');
+
+  const BADGE = { gym:'🏋️ Gym', home:'🏠 Hemma', rest:'😴 Vila' };
+  const DTL   = t => t === 'gym'
+    ? '⏱ 25–35 min · 30–45 sek vila'
+    : '⏱ 13–15 min · 40 sek på / 20 sek vila';
+
+  // Today's weekday index (0=Mon)
+  const todayDow = (new Date().getDay() + 6) % 7;
+  grid.className = 'wk-grid' + (WK_VIEW === 'day' ? ' day-view' : '');
+
+  /* O3: bygg utanför DOM → en enda insättning, inga mellanliggande reflows */
+  const frag = document.createDocumentFragment();
+  (sch.days || []).forEach((day, di) => {
+    const isToday = di === todayDow;
+    /* Dagsvy → hoppa över alla dagar utom idag */
+    if (WK_VIEW === 'day' && !isToday) return;
+    const el = document.createElement('div');
+    el.className = `dc ${day.t}-d${isToday ? ' today-card' : ''}`;
+
+    const todayTag = isToday ? '<span class="today-tag">📍 Idag</span>' : '';
+
+    let h = `<div class="dh">
+      <span class="dn">${esc(day.n)}${todayTag}</span>
+      <span class="dbadge ${esc(day.t)}">${BADGE[day.t]}</span>
+    </div>`;
+
+    if (day.t === 'rest') {
+      h += `<p class="rest-txt">Aktiv återhämtning – promenera, stretcha eller yoga 🌿</p>`;
+    } else {
+      h += `<div class="dtl">${DTL(day.t)}</div><ul class="ex-ul">`;
+      day.ex.forEach((ex, ei) => {
+        const key  = `s${SCH}_d${di}_e${ei}`;
+        const val  = (UD.weights || {})[key] || '';
+
+        // Equipment tags
+        const tags = [
+          ex.kb ? '<span class="tg kb">16kg KB</span>' : '',
+          ex.ha ? '<span class="tg ha">5kg×2</span>'   : '',
+          ex.st ? '<span class="tg st">🪑</span>'       : '',
+          ex.li ? '<span class="tg li">🛏</span>'       : '',
+          ex.ro ? '<span class="tg ro">🎡</span>'       : '',
+        ].join('');
+
+        // Rep badge – parse range correctly e.g. "15–20" → min=15, max=20
+        const repNums = (ex.r || '').match(/\d+/g)?.map(Number) ?? [0];
+        const repMin  = Math.min(...repNums);
+        const repCls  = repMin >= 20 ? 'rvh' : 'rh';
+        const repTag  = ex.r ? `<span class="tg ${repCls}">${esc(ex.r)}</span>` : '';
+
+        // Steps HTML
+        const stepsH = ex.steps ? `
+          <div class="htitle">📋 Utförande</div>
+          <ol class="hsteps">
+            ${ex.steps.map((s,i) => `<li class="hstep"><span class="hsnum">${i+1}</span><span>${esc(s)}</span></li>`).join('')}
+          </ol>
+          <div class="hmeta">
+            <div class="hmb"><div class="hmt">💪 Muskler</div><div class="hmc">${esc(ex.muscles || '')}</div></div>
+            <div class="hmb"><div class="hmt">🫁 Andning</div><div class="hmc g">${esc(ex.breath || '')}</div></div>
+          </div>` : '';
+
+        // Fixed vs editable weight – separerad från <button class="ex-head-btn"> för 100% giltig HTML5 i alla webbläsare
+        const isHome    = day.t === 'home';
+        const fixedLbl  = ex.kb ? '<span class="fixed-lbl">📌 16kg KB</span>'
+                        : ex.ha ? '<span class="fixed-lbl">📌 5kg×2</span>'
+                        :         '<span class="fixed-lbl">📌 Kroppsvikt</span>';
+        const safeExN   = esc(ex.n);
+        const gymWeightBar = isHome ? '' : `
+          <div class="wr" data-stop>
+            <div class="wr-in">
+              <input class="wi" type="number" id="w_${key}" placeholder="kg" inputmode="decimal"
+                     value="${esc(val)}" step="0.5" min="0" max="500" aria-label="Vikt för ${esc(ex.n)}"
+                     data-act="saveW" data-key="${key}" data-ex="${safeExN}"/>
+              <span class="wlbl">kg</span>
+              <span class="ws" id="ws_${key}" aria-live="polite">✓</span>
+            </div>
+            <div class="qa-btns">
+              <button type="button" class="qa-btn minus" data-act="adjW" data-key="${key}" data-d="-5"   data-ex="${safeExN}">−5</button>
+              <button type="button" class="qa-btn minus" data-act="adjW" data-key="${key}" data-d="-2.5" data-ex="${safeExN}">−2.5</button>
+              <button type="button" class="qa-btn"       data-act="adjW" data-key="${key}" data-d="2.5"  data-ex="${safeExN}">+2.5</button>
+              <button type="button" class="qa-btn"       data-act="adjW" data-key="${key}" data-d="5"    data-ex="${safeExN}">+5</button>
+              <button type="button" class="qa-btn"       data-act="adjW" data-key="${key}" data-d="10"   data-ex="${safeExN}">+10</button>
+            </div>
+          </div>`;
+
+        h += `
+          <li class="ex-li" id="eli_${key}">
+            <button type="button" class="ex-head-btn" data-act="togEx" data-id="eli_${key}" aria-expanded="false">
+              <div class="ex-left">
+                <span class="ex-name">${esc(ex.n)}${tags}</span>
+                <div class="ex-sub">
+                  ${repTag}
+                  ${isHome ? fixedLbl : ''}
+                </div>
+              </div>
+              <div class="ex-right2">
+                <span class="ex-sets">${esc(ex.s)}</span>
+                <span class="ex-chev">▼</span>
+              </div>
+            </button>
+            ${gymWeightBar}
+            <div class="ex-panel2">
+              <div class="ex-img-wrap">
+                ${ex.img && /^images\/[\w-]+\.png$/.test(ex.img)
+                  ? `<img class="ex-img2" src="${esc(ex.img)}" alt="${esc(ex.n)}" data-emo="${matchEmoji(ex.n, ex.muscles)}" loading="lazy" decoding="async"/>`
+                  : `<div class="no-img"><span class="ni-emo">${matchEmoji(ex.n, ex.muscles)}</span><span>${esc(ex.n)}</span></div>`}
+                ${gripPip(key, ex)}
+              </div>
+              <div id="prog_${key}">${isHome ? '' : progRowHTML(key, ex)}</div>
+              ${stepsH}
+            </div>
+          </li>`;
+      });
+      h += '</ul>';
+    }
+
+    el.innerHTML = h;
+    frag.appendChild(el);
+  });
+  grid.replaceChildren(frag);
+
+  /* I dagsvy fälls dagens övningar ut direkt – inga extra tryck */
+  if (WK_VIEW === 'day') {
+    const first = grid.querySelector('.dc');
+    if (first && !first.querySelector('.ex-li')) {
+      /* vilodag – inget att fälla ut */
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   RENDER — BALANCE
+════════════════════════════════════════════════ */
+function renderBalance() {
+  const grid = $('#bal-grid');
+  if (!grid) return;
+  const today = new Date().toDateString();
+  grid.innerHTML = BAL.map((ex, i) => {
+    const done = (UD.balDays || []).includes(`${today}_${i}`);
+    return `
+      <div class="bal-card${ex.tag === 'stol' ? ' stol' : ''}${done ? ' is-done' : ''}" id="bc${i}" role="listitem">
+        <div>
+          <span class="bc-tag ${ex.tag}">${ex.tagL}</span>
+          <div class="bc-num">${ex.num}.</div>
+          <div class="bc-name">${ex.name}</div>
+          <div class="bc-time">⏱ ${ex.time}</div>
+          <p class="bc-desc">${ex.desc}</p>
+          <p class="bc-tip">${ex.tip}</p>
+        </div>
+        <button class="done-btn${done ? ' chk' : ''}"
+                id="bd${i}" data-act="togBal" data-i="${i}" aria-pressed="${done}">
+          ${done ? '✅ Gjord!' : '○ Markera som klar'}
+        </button>
+      </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════
+   ACTIONS
+════════════════════════════════════════════════ */
+window.togEx = id => {
+  const li  = document.getElementById(id);
+  if (!li) return;
+  const btn  = li.querySelector('.ex-head-btn');
+  const open = li.classList.toggle('open');
+  if (btn) btn.setAttribute('aria-expanded', open);
+};
+
+window.selSch = i => {
+  const list = allSched();
+  if (i < 0 || i >= list.length || i === SCH) {
+    if (i === SCH) toast('✓ Redan valt');
+    return;
+  }
+  SCH = i; UD.sch = i; save();
+  $$('.sch-card').forEach((c, j) => {
+    const on = j === i;
+    c.classList.toggle('sel', on);
+    const b = c.querySelector('.btn-sel');
+    if (b) b.textContent = on ? '✓ Valt schema' : 'Välj detta schema';
+  });
+  const sn = $('#sel-name');
+  if (sn) sn.textContent = list[i].name + ' valt!';
+  LOG.safe('renderWorkout', renderWorkout);
+  updNavDay();
+  vib(20);
+  toast(`✅ ${list[i].name}`);
+};
+
+/* O2: rita om EN övningsrad istället för hela veckan */
+function refreshEx(key, name) {
+  const host = $(`#prog_${key}`);
+  if (host) host.innerHTML = progRowHTML(key, { n: name });
+}
+
+/* Timers per övning – städas så de inte ackumuleras (O5) */
+const _wsT = new Map();
+
+window.saveW = (key, name) => {
+  const inp = $(`#w_${key}`);
+  if (!inp) return;
+  let val = parseFloat(inp.value);
+  if (!val || isNaN(val) || val <= 0) return;
+  val = Math.min(500, Math.round(val * 10) / 10);
+  inp.value = val;
+
+  UD.weights ??= {};
+  UD.wLog    ??= [];
+  UD.weights[key] = val;
+
+  /* Slå ihop med dagens post istället för en rad per tryck (O8) */
+  const today = new Date().toLocaleDateString('sv-SE');
+  const last  = UD.wLog[UD.wLog.length - 1];
+  if (last && last.ex === name && last.d === today) {
+    last.w = val; last.ts = Date.now();
+  } else {
+    UD.wLog.push({ ex: name, w: val, d: today, ts: Date.now() });
+  }
+
+  save();
+
+  const ws = $(`#ws_${key}`);
+  if (ws) {
+    ws.style.display = 'inline';
+    clearTimeout(_wsT.get(key));
+    _wsT.set(key, setTimeout(() => { ws.style.display = 'none'; _wsT.delete(key); }, 1800));
+  }
+  refreshEx(key, name);   // O2: bara denna rad
+  updStats();
+};
+
+/* Snabbknappar: fältet uppdateras direkt, sparas samlat efter 400 ms (O4) */
+const _adjT = new Map();
+window.adjW = (key, delta, name) => {
+  const inp = $(`#w_${key}`);
+  if (!inp) return;
+  const cur = parseFloat(inp.value) || 0;
+  const nxt = Math.min(500, Math.max(0, Math.round((cur + delta) * 10) / 10));
+  inp.value = nxt;
+  vib(15);
+  clearTimeout(_adjT.get(key));
+  _adjT.set(key, setTimeout(() => { _adjT.delete(key); if (nxt > 0) saveW(key, name); }, 400));
+};
+
+window.togBal = i => {
+  const today = new Date().toDateString();
+  const key   = `${today}_${i}`;
+  if (!Array.isArray(UD.balDays)) UD.balDays = [];
+  const ix = UD.balDays.indexOf(key);
+  if (ix === -1) UD.balDays.push(key);
+  else           UD.balDays.splice(ix, 1);
+  save();
+  const done = UD.balDays.includes(key);
+  const btn  = $(`#bd${i}`);
+  if (btn) {
+    btn.className   = `done-btn${done ? ' chk' : ''}`;
+    btn.textContent = done ? '✅ Gjord!' : '○ Markera som klar';
+    btn.setAttribute('aria-pressed', String(done));
+  }
+  $(`#bc${i}`)?.classList.toggle('is-done', done);
+  vib(done ? 18 : 8);
+  updStats();
+};
+
+/* ════════════════════════════════════════════════
+   STATS
+════════════════════════════════════════════════ */
+/* Räknar upp siffran mjukt istället för att hoppa (F25) */
+function countTo(el, to) {
+  if (!el) return;
+  const from = parseInt(el.dataset.v ?? el.textContent) || 0;
+  el.dataset.v = to;
+  if (from === to || document.hidden || document.body.classList.contains('lowfx')) {
+    el.textContent = to;
+    return;
+  }
+  const dur = Math.min(700, 180 + Math.abs(to - from) * 45);
+  const t0  = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);          // ease-out
+    el.textContent = Math.round(from + (to - from) * e);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function updStats() {
+  const today = new Date().toDateString();
+  const bal   = (UD.balDays || []).filter(d => d.startsWith(today)).length;
+  const sess  = new Set((UD.wLog || []).map(w => w.d)).size;
+  const str   = calcStreak();
+
+  const sb = $('#s-bal');   if (sb) sb.textContent = `${bal}/6`;
+  countTo($('#s-sess'),   sess);
+  countTo($('#s-streak'), str);
+
+  /* Firande när alla balansövningar är klara */
+  if (bal >= 6 && UD._celebBal !== today) {
+    UD._celebBal = today;
+    save();
+    confetti();
+    toast('🎉 Alla balansövningar klara idag!');
+  }
+}
+
+/* ── KONFETTI (F22) – ren canvas, inget bibliotek ── */
+function confetti() {
+  if (document.body.classList.contains('lowfx')) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const cv = document.createElement('canvas');
+  cv.className = 'confetti-cv';
+  document.body.appendChild(cv);
+  const ctx = cv.getContext('2d');
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  const W = cv.width  = innerWidth  * dpr;
+  const H = cv.height = innerHeight * dpr;
+  cv.style.width = innerWidth + 'px';
+  cv.style.height = innerHeight + 'px';
+
+  const COLORS = ['#a78bfa','#22d3ee','#4ade80','#facc15','#f9a8d4','#fb923c'];
+  const N = 90;
+  const bits = Array.from({ length: N }, () => ({
+    x: W / 2 + (Math.random() - .5) * W * .5,
+    y: H * .28 + (Math.random() - .5) * 60,
+    vx: (Math.random() - .5) * 9 * dpr,
+    vy: (Math.random() * -9 - 4) * dpr,
+    w: (5 + Math.random() * 6) * dpr,
+    h: (8 + Math.random() * 8) * dpr,
+    rot: Math.random() * Math.PI,
+    vr: (Math.random() - .5) * .3,
+    col: COLORS[(Math.random() * COLORS.length) | 0],
+  }));
+
+  const G = .32 * dpr;
+  const t0 = performance.now();
+  const draw = now => {
+    const age = now - t0;
+    ctx.clearRect(0, 0, W, H);
+    let alive = 0;
+    for (const b of bits) {
+      b.vy += G; b.x += b.vx; b.y += b.vy; b.rot += b.vr; b.vx *= .995;
+      if (b.y < H + 40) alive++;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - age / 2600);
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.rot);
+      ctx.fillStyle = b.col;
+      ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+      ctx.restore();
+    }
+    if (alive && age < 2600) requestAnimationFrame(draw);
+    else cv.remove();
+  };
+  requestAnimationFrame(draw);
+  vib([40, 40, 80]);
+}
+
+function calcStreak() {
+  const dates = new Set((UD.wLog || []).map(w => w.d));
+  if (!dates.size) return 0;
+  let n = 0;
+  const d = new Date();
+  // Start from today; if not trained today, start from yesterday
+  if (!dates.has(d.toLocaleDateString('sv-SE'))) d.setDate(d.getDate() - 1);
+  for (let i = 0; i < 365; i++) {
+    if (dates.has(d.toLocaleDateString('sv-SE'))) { n++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return n;
+}
+
+/* ════════════════════════════════════════════════
+   PROGRESS
+════════════════════════════════════════════════ */
+function renderProgress() {
+  const logs = UD.wLog || [];
+
+  /* Weight log */
+  const pw = $('#p-weights');
+  if (pw) pw.innerHTML = logs.length
+    ? [...logs].sort((a,b) => b.ts - a.ts).slice(0, 12).map(w => `
+        <div class="log-row">
+          <span class="log-name">${esc(w.ex)}</span>
+          <span class="log-val">${esc(w.w)} kg</span>
+          <span class="log-date">${esc(w.d)}</span>
+        </div>`).join('')
+    : `<p class="empty-msg">Inga vikter loggade ännu – börja träna! 💪</p>`;
+
+  /* This week's progress bar */
+  const pw2 = $('#p-week');
+  if (pw2) {
+    const now    = new Date();
+    const dow    = (now.getDay() + 6) % 7;
+    const weekDates = Array.from({length:7}, (_,i) => {
+      const d = new Date(now); d.setDate(now.getDate() - dow + i);
+      return d.toLocaleDateString('sv-SE');
+    });
+    const doneThisWeek = weekDates.filter(d => new Set(logs.map(w=>w.d)).has(d)).length;
+    // Only count gym/home days, not rest days
+    const sch   = allSched()[SCH];
+    const plannedThisWeek = sch.days.filter(d => d.t !== 'rest').length;
+    const pct   = plannedThisWeek > 0 ? Math.round((doneThisWeek / plannedThisWeek) * 100) : 0;
+    pw2.innerHTML = `
+      <div class="week-prog-lbl">
+        <span>${doneThisWeek} av ${plannedThisWeek} planerade pass gjorda</span>
+        <span>${pct}%</span>
+      </div>
+      <div class="week-prog-bar">
+        <div class="week-prog-fill" style="width:${pct}%"></div>
+      </div>`;
+  }
+
+  /* Balance today */
+  const today = new Date().toDateString();
+  const pb = $('#p-balance');
+  if (pb) pb.innerHTML = `<div class="bal-chips">${
+    BAL.map((ex,i) => {
+      const done = (UD.balDays||[]).includes(`${today}_${i}`);
+      return `<div class="bal-chip" style="
+        background:${done ? 'rgba(74,222,128,.14)' : 'rgba(255,255,255,.05)'};
+        color:${done ? 'var(--g)' : 'var(--t2)'};
+        border:1px solid ${done ? 'rgba(74,222,128,.3)' : 'var(--b0)'}">
+        ${done ? '✅' : '○'} ${ex.name}
+      </div>`;
+    }).join('')
+  }</div>`;
+
+  /* Session log */
+  const ps = $('#p-sessions');
+  if (ps) {
+    const sess = [...new Set(logs.map(w => w.d))].sort().reverse().slice(0, 8);
+    ps.innerHTML = sess.length
+      ? sess.map(d => `
+          <div class="log-row">
+            <span class="log-name">📅 ${esc(d)}</span>
+            <span class="log-val" style="color:var(--g)">✅ Pass loggat</span>
+          </div>`).join('')
+      : `<p class="empty-msg">Inga pass loggade ännu.</p>`;
+  }
+}
+
+/* ════════════════════════════════════════════════
+   BALANCE TIMER  –  drift-corrected, lock-free
+════════════════════════════════════════════════ */
+window.bSet = (s, btn) => {
+  bStop(); T.sec = s; T.left = s; T.running = false;
+  $$('.preset').forEach(b => b.classList.remove('on'));
+  btn?.classList.add('on');
+  updTimer(); setBtSt('Tryck Start för att börja', '');
+};
+
+/* Wake Lock – skärmen slocknar inte under pågående timer */
+let _wl = null;
+async function wakeOn() {
+  try { _wl = await navigator.wakeLock?.request('screen') ?? null; } catch {}
+}
+function wakeOff() { try { _wl?.release(); } catch {} _wl = null; }
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && T.running && !_wl) wakeOn();
+});
+
+/* requestAnimationFrame istället för setInterval:
+   pausas automatiskt när fliken är dold, och DOM skrivs
+   bara när sekunden faktiskt ändras (tidigare 4×/s alltid). */
+let _lastShown = -1;
+
+window.bStart = () => {
+  if (T.running) return;
+  if (T.raf) { cancelAnimationFrame(T.raf); T.raf = 0; }
+  if (T.left <= 0) T.left = T.sec;
+  T.running   = true;
+  T.startTime = Date.now();
+  T.startLeft = T.left;
+  _lastShown  = -1;
+  setBtSt('Kör på! 💪', 'run');
+  wakeOn();
+
+  const tick = () => {
+    if (!T.running) return;
+    const elapsed = (Date.now() - T.startTime) / 1000;
+    T.left = Math.max(0, T.startLeft - elapsed);
+    const whole = Math.ceil(T.left);
+
+    if (whole !== _lastShown) {   // skriv bara vid faktisk förändring
+      _lastShown = whole;
+      updTimer();
+    }
+
+    if (T.left <= 0) {
+      bStop();
+      setBtSt('✅ Klart! Byt övning!', 'done');
+      vib([150, 75, 150]);
+      toast('✅ Tid ute! Byt övning!');
+      return;
+    }
+    T.raf = requestAnimationFrame(tick);
+  };
+  T.raf = requestAnimationFrame(tick);
+};
+
+window.bStop = () => {
+  if (T.raf) cancelAnimationFrame(T.raf);
+  T.raf = 0;
+  T.running = false;
+  wakeOff();
+};
+
+window.bReset = () => {
+  bStop();
+  T.left = T.sec;
+  _lastShown = -1;
+  updTimer();
+  setBtSt('Tryck Start för att börja', '');
+};
+
+function updTimer() {
+  const left = Math.max(0, Math.ceil(T.left));
+  const m = String(Math.floor(left / 60)).padStart(2, '0');
+  const sc = String(left % 60).padStart(2, '0');
+  const bt = $('#bt-time'); if (bt) bt.textContent = `${m}:${sc}`;
+  const bs = $('#bt-sub');  if (bs) bs.textContent = left >= 60 ? 'MIN : SEK' : 'SEKUNDER';
+  const r  = $('#br-fill');
+  if (r) {
+    const prog = T.sec > 0 ? T.left / T.sec : 0;
+    r.style.strokeDashoffset = T.CIRC * (1 - Math.min(1, Math.max(0, prog)));
+  }
+}
+
+function setBtSt(msg, cls) {
+  const el = $('#bt-status');
+  if (el) { el.textContent = msg; el.className = `bt-status ${cls}`; }
+}
+
+/* ════════════════════════════════════════════════
+   NOTIFICATIONS
+════════════════════════════════════════════════ */
+let notifOn = localStorage.getItem('ga-notif') === 'true';
+
+function updNotifUI() {
+  const btn = $('#notif-btn');
+  const box = $('#notif-box');
+  if (!btn) return;
+  if (notifOn) {
+    btn.textContent   = '✅ Påminnelser på';
+    btn.className     = 'btn-notif';
+    if (box) { box.style.display = 'block'; box.setAttribute('aria-hidden', 'false'); }
+    const nbt = $('#n-bt'); if (nbt) nbt.value = localStorage.getItem('ga-bt') || '08:00';
+    const nwt = $('#n-wt'); if (nwt) nwt.value = localStorage.getItem('ga-wt') || '17:00';
+  } else {
+    btn.textContent   = 'Aktivera';
+    btn.className     = 'btn-notif off';
+    if (box) { box.style.display = 'none'; box.setAttribute('aria-hidden', 'true'); }
+  }
+}
+
+window.togNotif = async () => {
+  if (!('Notification' in window)) { toast('❌ Notiser stöds ej'); return; }
+  if (notifOn) {
+    notifOn = false;
+    localStorage.setItem('ga-notif', 'false');
+    updNotifUI(); toast('🔕 Påminnelser avstängda');
+  } else {
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      notifOn = true;
+      localStorage.setItem('ga-notif', 'true');
+      new Notification('💪 GymApp', { body:'Påminnelser aktiverade!', icon:'./icons/icon-192.png' });
+      schedNotifs(); updNotifUI(); toast('🔔 Påminnelser aktiverade!');
+    } else toast('❌ Tillstånd nekat av webbläsaren');
+  }
+};
+
+window.saveNotif = () => {
+  const nbt = $('#n-bt');
+  const nwt = $('#n-wt');
+  if (nbt) localStorage.setItem('ga-bt', nbt.value);
+  if (nwt) localStorage.setItem('ga-wt', nwt.value);
+  schedNotifs();
+  const l = $('#n-saved');
+  if (l) { l.style.display = 'inline'; setTimeout(() => l.style.display = 'none', 2000); }
+  toast('⏰ Tider sparade!');
+};
+
+function schedNotifs() {
+  const [wh, wm] = (localStorage.getItem('ga-wt') || '17:00').split(':').map(Number);
+  const [bh, bm] = (localStorage.getItem('ga-bt') || '08:00').split(':').map(Number);
+  schedDaily(wh, wm, () => {
+    const today = new Date().toLocaleDateString('sv-SE');
+    if (!(UD.wLog || []).some(w => w.d === today) && notifOn)
+      new Notification('🏋️ Dags att träna!', { body:'Du har inte loggat något pass idag 💪', icon:'./icons/icon-192.png', tag:'wo' });
+  });
+  schedDaily(bh, bm, () => {
+    const t = new Date().toDateString();
+    if ((UD.balDays || []).filter(d => d.startsWith(t)).length < 6 && notifOn)
+      new Notification('⚖️ Balansrutin!', { body:'Glöm inte din dagliga balansrutin – 2–3 min!', icon:'./icons/icon-192.png', tag:'bal' });
+  });
+}
+
+function schedDaily(h, m, cb) {
+  const now = new Date(), next = new Date();
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  setTimeout(function r() { cb(); setTimeout(r, 86_400_000); }, next - now);
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════ */
+let _tt;
+window.toast = msg => {
+  const el = $('#toast');
+  if (!el) return;
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.classList.remove('on'), 2800);
+};
+
+/* ════════════════════════════════════════════════
+   SCHEMA-BYGGARE – UI
+════════════════════════════════════════════════ */
+let _draft = null;   // senaste analyserade schemat
+
+window.openBuilder = () => {
+  const m = $('#sb-modal');
+  if (!m) return;
+  m.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => $('#sb-raw')?.focus(), 80);
+};
+
+window.closeBuilder = () => {
+  const m = $('#sb-modal');
+  if (!m || !m.classList.contains('show')) return;
+  m.classList.remove('show');
+  document.body.style.overflow = '';
+};
+
+window.fillExample = () => {
+  const ta = $('#sb-raw');
+  if (!ta) return;
+  ta.value =
+`Måndag (hemma)
+Squat vid diskbänken 4x15
+Armhävningar på knäna 4x20
+KB deadlift 4x15 16kg
+Glute bridge 4x20
+
+Tisdag - gym
+Bänkpress 5x12 50kg
+Latsdrag 4x12 40kg
+Lateral raises 4x20 5kg
+Tricepspress kabel 4x15
+
+Onsdag hemma
+Sumo squat 4x15
+Ab roller 3x12
+Bicycle crunches 4x25
+
+Torsdag: gym
+Benpress 5x15 80kg
+Sittande rodd 4x12
+Bicep curl 4x15
+
+Fredag vila
+Lördag hemma
+Höftlyft 4x20
+Plankan 3x45 sek
+
+Söndag vila`;
+  analyzeSchema();
+};
+
+window.analyzeSchema = () => {
+  const raw = $('#sb-raw')?.value || '';
+  if (raw.trim().length < 5) { toast('✍️ Klistra in ditt schema först'); return; }
+
+  let res;
+  try { res = parseSchemaText(raw); }
+  catch { toast('⚠️ Kunde inte tolka texten'); return; }
+
+  if (!res.exCount) {
+    const box = $('#sb-warn');
+    $('#sb-result').hidden = false;
+    if (box) { box.hidden = false; box.innerHTML = '⚠️ Inga övningar hittades. Skriv en vardag på egen rad, sedan en övning per rad – t.ex. <b>Bänkpress 4x12</b>.'; }
+    $('#sb-preview').innerHTML = '';
+    $('#sb-stats').innerHTML   = '';
+    return;
+  }
+
+  _draft = res;
+  $('#sb-result').hidden = false;
+
+  const nameIn = $('#sb-name');
+  if (nameIn && !nameIn.value.trim()) nameIn.value = 'Mitt egna schema';
+
+  renderDraft();
+  $('#sb-result')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+};
+
+/* O7: EN renderare för förhandsvisningen – användes tidigare
+   i två nästan identiska kopior (analyze + import). */
+function renderDraft() {
+  const res = _draft;
+  if (!res) return;
+
+  const withImg = res.exCount - res.noImg;
+  const stats = $('#sb-stats');
+  if (stats) stats.innerHTML =
+    `<span class="sb-chip ok">📅 ${res.dayCount} träningsdagar</span>
+     <span class="sb-chip ok">🏋️ ${res.exCount} övningar</span>
+     <span class="sb-chip ${res.noImg ? 'warn' : 'ok'}">🖼 ${withImg}/${res.exCount} bilder matchade</span>`;
+
+  const box = $('#sb-warn');
+  if (box) {
+    const has = res.warn?.length > 0;
+    box.hidden = !has;
+    if (has) box.innerHTML = res.warn.map(esc).join('<br>');
+  }
+
+  const prev = $('#sb-preview');
+  if (prev) prev.innerHTML = res.days.map(d => {
+    if (d.t === 'rest' || !d.ex.length)
+      return `<div class="sb-day rest"><div class="sb-dh"><span class="sb-dn">${esc(d.n)}</span><span class="sb-dt">😴 Vila</span></div></div>`;
+    return `<div class="sb-day">
+      <div class="sb-dh">
+        <span class="sb-dn">${esc(d.n)}</span>
+        <span class="sb-dt ${d.t}">${TYPE_ICO[d.t]} ${d.t === 'gym' ? 'Gym' : 'Hemma'}</span>
+      </div>
+      ${d.ex.map(e => `<div class="sb-ex">
+        ${e.img
+          ? `<img class="sb-ex-img" src="${e.img}" alt="" loading="lazy" decoding="async"/>`
+          : `<span class="sb-ex-emo">${matchEmoji(e.n)}</span>`}
+        <span class="sb-ex-n">${esc(e.n)}</span>
+        <span class="sb-ex-sr">${esc(e.s)}${esc(e.r)}${e.kg ? ' · ' + esc(e.kg) + 'kg' : ''}</span>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+/* Ladda färdig mall in i byggaren – granskas innan den sparas */
+window.loadTemplate = i => {
+  const t = TEMPLATES[+i || 0];
+  if (!t) { toast('⚠️ Mallen hittades inte'); return; }
+
+  const days = t.days.map(d => ({
+    n: d.n,
+    t: d.t,
+    ex: (d.ex || []).map(e => ({ ...e })),
+  }));
+  const exCount  = days.reduce((a, d) => a + d.ex.length, 0);
+  const dayCount = days.filter(d => d.ex.length).length;
+  _draft = { days, warn: [], exCount, dayCount,
+             noImg: days.flatMap(d => d.ex).filter(e => !e.img).length };
+
+  const nb = $('#sb-name');
+  if (nb) nb.value = t.name.replace(/^\S*\s/, '');
+  const em = $('#sb-emoji');
+  if (em) em.value = t.name.split(' ')[0] || '🔥';
+  const ta = $('#sb-raw'); if (ta) ta.value = '';
+
+  $('#sb-result').hidden = false;
+  renderDraft();
+  $('#sb-result')?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  toast('🔥 Mall inläst – granska och spara');
+};
+
+window.saveSchema = () => {
+  if (!_draft) { toast('🔍 Analysera schemat först'); return; }
+  const emoji = ($('#sb-emoji')?.value || '⭐').trim().slice(0, 4);
+  const nm    = ($('#sb-name')?.value  || '').trim().slice(0, 40) || 'Mitt egna schema';
+
+  const obj = {
+    name: `${emoji} ${nm}`.trim(),
+    lv:   'own',
+    own:  true,
+    desc: `${_draft.dayCount} träningsdagar · ${_draft.exCount} övningar`,
+    created: new Date().toISOString().slice(0, 10),
+    days: _draft.days,
+  };
+
+  const r = saveMySched(obj);
+  if (!r.ok) { toast('⚠️ ' + r.msg); return; }
+
+  closeBuilder();
+  selSch(r.idx);
+  try { renderSchGrid(); } catch {}
+  toast(`✅ "${nm}" sparat och aktiverat!`);
+
+  // Rensa formuläret
+  _draft = null;
+  const ta = $('#sb-raw'); if (ta) ta.value = '';
+  const nb = $('#sb-name'); if (nb) nb.value = '';
+  const rs = $('#sb-result'); if (rs) rs.hidden = true;
+};
+
+window.delMySched = i => {
+  if (!Array.isArray(UD.mySched) || !UD.mySched[i]) return;
+  const nm = UD.mySched[i].name || 'schemat';
+  if (!confirm(`Radera "${nm}"?`)) return;
+  UD.mySched.splice(i, 1);
+  const total = allSched().length;
+  if (SCH >= total) SCH = 0;
+  UD.sch = SCH;
+  save();
+  try { renderSchGrid(); renderWorkout(); updNavDay(); } catch {}
+  toast('🗑 Schemat raderat');
+};
+
+window.exportSchema = () => {
+  if (!_draft) { toast('🔍 Analysera schemat först'); return; }
+  const emoji = ($('#sb-emoji')?.value || '⭐').trim();
+  const nm    = ($('#sb-name')?.value  || 'Mitt egna schema').trim();
+  const data  = { app:'GymApp', v:1, name:`${emoji} ${nm}`, lv:'own', own:true, days:_draft.days };
+  try {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = nm.toLowerCase().replace(/[^a-z0-9åäö]+/gi, '-').replace(/^-|-$/g, '') + '.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast('⬇️ JSON nedladdad');
+  } catch { toast('⚠️ Nedladdning misslyckades'); }
+};
+
+window.importJSON = ev => {
+  const f = ev?.target?.files?.[0];
+  if (!f) return;
+  if (f.size > 1_000_000) { toast('⚠️ Filen är för stor'); ev.target.value = ''; return; }
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const j = JSON.parse(rd.result);
+      if (!j || !Array.isArray(j.days)) throw 0;
+      // Sanera + matcha bilder på nytt
+      const days = j.days.slice(0, 7).map((d, i) => ({
+        n: String(d.n || DAY_FULL[i] || 'Dag').slice(0, 20),
+        t: ['gym','home','rest'].includes(d.t) ? d.t : 'home',
+        ex: (Array.isArray(d.ex) ? d.ex : []).slice(0, 15).map(e => {
+          const o = {
+            n: String(e.n || 'Övning').slice(0, 60),
+            s: String(e.s || '3×').slice(0, 8),
+            r: String(e.r || '10–12').slice(0, 14),
+          };
+          const img = e.img && /^images\/[\w-]+\.png$/.test(e.img) ? e.img : matchImage(o.n);
+          if (img) o.img = img;
+          ['kb','ha','st','li','ro'].forEach(k => { if (e[k]) o[k] = 1; });
+          if (e.kg) o.kg = String(e.kg).slice(0, 6);
+          if (Array.isArray(e.steps)) o.steps = e.steps.slice(0, 10).map(x => String(x).slice(0, 140));
+          if (e.muscles) o.muscles = String(e.muscles).slice(0, 80);
+          if (e.breath)  o.breath  = String(e.breath).slice(0, 60);
+          return o;
+        }),
+      }));
+      const exCount  = days.reduce((a, d) => a + d.ex.length, 0);
+      const dayCount = days.filter(d => d.ex.length).length;
+      _draft = { days, warn:[], exCount, dayCount, noImg: days.flatMap(d => d.ex).filter(e => !e.img).length };
+
+      const nb = $('#sb-name');
+      if (nb) nb.value = String(j.name || 'Importerat schema').replace(/^\S*\s/, '').slice(0, 40);
+      $('#sb-raw').value = '';
+      // Rendera förhandsvisning via samma väg
+      const keep = _draft;
+      $('#sb-result').hidden = false;
+      _draft = keep;
+      renderDraft();
+      toast('📂 Schema importerat – granska och spara');
+    } catch { toast('⚠️ Ogiltig JSON-fil'); }
+    ev.target.value = '';
+  };
+  rd.onerror = () => { toast('⚠️ Kunde inte läsa filen'); ev.target.value = ''; };
+  rd.readAsText(f);
+};
+
+/* Stäng byggaren: bakgrundsklick + ESC */
+$('#sb-modal')?.addEventListener('click', e => {
+  if (e.target === $('#sb-modal')) closeBuilder();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeBuilder();
+});
+
+/* ════════════════════════════════════════════════
+   PWA INSTALL GUIDE
+════════════════════════════════════════════════ */
+
+/* Plattform (defensiv – UA kan saknas i exotiska webbvyer) */
+const _UA       = navigator.userAgent || '';
+const isIOS     = /iPhone|iPad|iPod/.test(_UA)
+               || (/Macintosh/.test(_UA) && navigator.maxTouchPoints > 1); // iPadOS 13+
+const isAndroid = /Android/.test(_UA);
+const isMobile  = isIOS || isAndroid;
+
+/* Är appen redan installerad / körs den fristående?
+   Kollas LIVE varje gång (inte en gång vid start) så knappen
+   försvinner direkt om läget ändras. */
+function isStandalone() {
+  try {
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: fullscreen)').matches
+        || window.matchMedia('(display-mode: minimal-ui)').matches
+        || window.matchMedia('(display-mode: window-controls-overlay)').matches
+        || window.navigator.standalone === true
+        || document.referrer.startsWith('android-app://');
+  } catch { return window.navigator.standalone === true; }
+}
+
+/* Extra kontroll via Chrome-API: appen kan vara installerad
+   även om vi just nu kör i webbläsarfliken. */
+let _relatedInstalled = false;
+async function checkRelatedApps() {
+  try {
+    if (!navigator.getInstalledRelatedApps) return;
+    const apps = await navigator.getInstalledRelatedApps();
+    _relatedInstalled = Array.isArray(apps) && apps.length > 0;
+  } catch { /* tyst */ }
+}
+
+/* Native install-prompt (Android/desktop Chrome & Edge) */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;   // finns → installation är möjlig
+  updInstallUI();
+});
+
+/* Klar installation → knapparna byter läge direkt */
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  _relatedInstalled = true;
+  updInstallUI();
+  toast('✅ GymApp installerad!');
+});
+
+/* Ingen banner – bara knapp i nav (uppe till höger) + kort på hemsidan.
+   Visas på ALLA plattformar, döljs när appen redan är installerad. */
+function updInstallUI() {
+  const installed = isStandalone() || _relatedInstalled;
+  const navBtn    = $('#nav-inst');
+  const homeBtn   = $('#home-inst');
+
+  if (navBtn) {
+    navBtn.classList.toggle('show', !installed);
+    navBtn.classList.toggle('done', installed);
+    navBtn.setAttribute('aria-hidden', installed ? 'true' : 'false');
+  }
+  if (homeBtn) {
+    homeBtn.classList.toggle('show', !installed);
+    homeBtn.setAttribute('aria-hidden', installed ? 'true' : 'false');
+    const sub = $('#home-inst-sub');
+    if (sub) {
+      sub.textContent = deferredPrompt
+        ? 'Ett tryck – appen installeras direkt utan App Store.'
+        : (isIOS
+            ? 'Safari → Dela ⬆️ → "Lägg till på hemskärmen". Guide öppnas här.'
+            : 'Lägg till på hemskärmen – öppnas i helskärm och funkar offline.');
+    }
+  }
+}
+
+/* Reagera direkt när appen startas i standalone-läge */
+try {
+  window.matchMedia('(display-mode: standalone)')
+        .addEventListener('change', updInstallUI);
+} catch { /* äldre Safari saknar addEventListener på MQL */ }
+window.addEventListener('focus',      updInstallUI);
+window.addEventListener('pageshow',   updInstallUI);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) updInstallUI();
+});
+
+window.showInstallGuide = async () => {
+  /* 1. Äkta systemprompt om webbläsaren erbjuder den */
+  if (deferredPrompt) {
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') { updInstallUI(); return; }
+      updInstallUI();
+      return;
+    } catch { deferredPrompt = null; }
+  }
+  /* 2. Annars manuell guide (iOS/Safari/Firefox m.fl.) */
+  const modal = $('#install-modal');
+  if (!modal) { toast('📲 Lägg till sidan på hemskärmen via webbläsarens meny'); return; }
+  switchOS(isAndroid ? 'android' : 'ios');
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  $('#install-modal .btn-modal-close')?.focus();
+};
+
+window.closeInstallGuide = () => {
+  const modal = $('#install-modal');
+  if (!modal || !modal.classList.contains('show')) return;
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+};
+
+window.switchOS = os => {
+  const ios = os === 'ios';
+  $('#tab-ios')?.classList.toggle('on', ios);
+  $('#tab-android')?.classList.toggle('on', !ios);
+  const si = $('#steps-ios'), sa = $('#steps-android');
+  if (si) si.style.display = ios ? 'flex' : 'none';
+  if (sa) sa.style.display = ios ? 'none' : 'flex';
+};
+
+/* Init – ingen fördröjning, ingen banner, ingen "avfärda"-logik */
+checkRelatedApps().then(updInstallUI);
+updInstallUI();
+
+/* Stäng modal: bakgrundsklick + ESC */
+$('#install-modal')?.addEventListener('click', e => {
+  if (e.target === $('#install-modal')) closeInstallGuide();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeInstallGuide();
+});
+
+/* ════════════════════════════════════════════════
+   B14 · UPPDATERINGSBOT
+   Upptäcker ny version och erbjuder omladdning.
+   Utan denna kan man sitta kvar på gammal cache.
+════════════════════════════════════════════════ */
+let _swWaiting = null;
+
+function showSWUpdate(worker) {
+  _swWaiting = worker;
+  if (sessionStorage.getItem('ga-sw-dismissed') === '1') return;
+  $('#sw-update')?.classList.add('show');
+  LOG.info('sw', 'ny version tillgänglig');
+}
+
+window.swReload = () => {
+  saveNow();                                  // tappa inget osparat
+  if (_swWaiting) _swWaiting.postMessage({ type: 'SKIP_WAITING' });
+  else location.reload();
+  $('#sw-update')?.classList.remove('show');
+};
+
+window.swDismiss = () => {
+  $('#sw-update')?.classList.remove('show');
+  try { sessionStorage.setItem('ga-sw-dismissed', '1'); } catch {}
+};
+
+/* ════════════════════════════════════════════════
+   ACTION-REGISTER  (O1)
+   Kopplar data-act="namn" → funktion.
+   All dynamisk HTML använder detta istället för
+   inline onclick.
+════════════════════════════════════════════════ */
+Object.assign(ACTIONS, {
+  goTab:        d => goTab(d.tab, +d.i || 0),
+  wkView:       d => wkView(d.v),
+  openToday:    d => {
+    /* Vilodag → balansrutinen är det som gäller */
+    if (d.rest) { goTab('balance', 2); return; }
+    WK_VIEW = 'day';
+    $('#wk-tg-day')?.setAttribute('aria-pressed', 'true');
+    $('#wk-tg-week')?.setAttribute('aria-pressed', 'false');
+    const h = $('#wk-head');
+    if (h) h.firstChild.textContent = '📍 Dagens pass – ';
+    goTab('workout', 1);
+    LOG.safe('renderWorkout', renderWorkout);
+  },
+  togEx:        d => togEx(d.id),
+  selSch:       d => selSch(+d.i),
+  delMySched:   d => delMySched(+d.i),
+  togBal:       d => togBal(+d.i),
+  saveW:        d => saveW(d.key, d.ex),
+  adjW:         d => adjW(d.key, +d.d, d.ex),
+  setGrip:      d => setGrip(d.key, d.m),
+  markSetsOk:   d => markSetsOk(d.key, d.ex),
+  acceptProg:   d => acceptProg(d.key, d.ex),
+  dismissProg:  d => dismissProg(d.key, d.ex),
+  bSet:         (d, el) => bSet(+d.s, el),
+  bStart:       () => bStart(),
+  bStop:        () => bStop(),
+  bReset:       () => bReset(),
+  togNotif:     () => togNotif(),
+  saveNotif:    () => saveNotif(),
+  openBuilder:  () => openBuilder(),
+  closeBuilder: () => closeBuilder(),
+  fillExample:  () => fillExample(),
+  loadTemplate: d => loadTemplate(d.i),
+  analyze:      () => analyzeSchema(),
+  saveSchema:   () => saveSchema(),
+  exportSchema: () => exportSchema(),
+  install:      () => showInstallGuide(),
+  closeInstall: () => closeInstallGuide(),
+  switchOS:     d => switchOS(d.os),
+  swReload:     () => swReload(),
+  swDismiss:    () => swDismiss(),
+});
+
+/* ════════════════════════════════════════════════
+   PRESTANDA-PROFIL
+   Anpassar effekter efter enhetens kapacitet.
+════════════════════════════════════════════════ */
+LOG.safe('perf', () => {
+  const mem   = navigator.deviceMemory || 4;         // GB
+  const cores = navigator.hardwareConcurrency || 4;
+  const slow  = mem <= 2 || cores <= 2;
+  const saveData = navigator.connection?.saveData === true;
+  if (slow || saveData) document.body.classList.add('lowfx');
+  LOG.info('perf', `mem=${mem} cores=${cores} lowfx=${slow || saveData}`);
+});
+
+/* Backup använder enbart de tre kända lagringsnycklarna. Inga notisinställningar eller tokens. */
+window.GYMAPP_GOOGLE_CLIENT_ID = ''; // Valfritt: fyll i projektets publika OAuth-klient-ID vid publicering.
+window.GymBackupHost = {
+  flush: () => {
+    clearTimeout(_saveT);
+    if (_dirty && !LS.flush(trimData(UD))) throw new Error('Kunde inte spara aktuell data lokalt före säkerhetskopiering.');
+    _dirty = false;
+  },
+  restored: raw => {
+    clearTimeout(_saveT); _dirty = false;
+    UD = raw ? JSON.parse(raw) : {};
+  },
+};
+
+/* Publikt felsöks-API – tyst tills det efterfrågas */
+window.GymApp = {
+  log:     () => LOG.dump(),
+  data:    () => structuredClone(UD),
+  version: 'v8',
+  storage: () => {
+    const b = new Blob([JSON.stringify(UD)]).size;
+    return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };
+  },
+  save:    () => { saveNow(); return 'sparat'; },
+};
+
+/*
+  🔐 KONTO-KOD – FÖRBEREDD, EJ AKTIVERAD
+  Se gymapp/firebase.js för fullständig implementation.
+  Aktivera: FIREBASE_ENABLED = true i firebase.js
+*/
+</script>
+<script src="./backup.js" defer></script>
+</body>
+</html>
