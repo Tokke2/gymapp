@@ -506,6 +506,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 14 | 2026-10-31 | **Städning** – dubblettkopior i rotmappen borttagna, oanvända logotyper borttagna, appikonerna beskurna/optimerade (2,1 MB → 51 kB), manifest utan falska skärmbilder och felaktig monochrome-ikon, service worker v9. Ett citat borttaget. |
 | 15 | 2026-10-31 | **Standardpass + kortare README** – "🔥 Mitt Schema" läggs in och väljs automatiskt vid första start, dagsvyn ritas om vid dygnsbyte så bara dagens pass visas, copyright tillagd, README kortad och den interna manualen flyttad till `docs/PROJEKT.md`. Service worker v10. |
 | 16 | 2026-10-31 | **Egna scheman** – knappen "➕ Eget schema" i Schema-fliken, redigeringsknapp (✏️) på egna schema-kort som sparar över befintligt schema, import av JSON blir alltid ett nytt schema. Service worker v11. |
+| 17 | 2026-10-31 | **Bilder & bildbot** – bildtumme på varje övningsrad, automatisk bildmatchning även för äldre/importerade scheman, emoji-fallback om filen saknas, samt `tools/bildbot.cjs` (B4) som kontrollerar bilder, sw.js-listan och IMG_BANK. Service worker v12. |
 
 ---
 

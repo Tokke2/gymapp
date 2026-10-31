@@ -1,0 +1,13 @@
+{
+  "name": "gymapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GymApp – personlig träningsapp som PWA (schema, vikter, balans och framsteg)",
+  "author": "Rickard Längkvist",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node tests/backup.test.cjs",
+    "bildbot": "node tools/bildbot.cjs",
+    "bildbot:fix": "node tools/bildbot.cjs --fix"
+  }
+}

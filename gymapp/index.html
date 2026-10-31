@@ -638,6 +638,20 @@ body.lowfx .hg-dot{animation:none}
   background:rgba(34,211,238,.06);border-left-color:var(--c);
 }
 .ex-li.open .ex-name{color:var(--cl)}
+.ex-thumb{
+  flex-shrink:0;width:46px;height:46px;border-radius:var(--r8);
+  object-fit:cover;display:block;background:rgba(0,0,0,.32);
+  border:1px solid var(--b0);
+}
+.ex-thumb-emo{
+  flex-shrink:0;width:46px;height:46px;border-radius:var(--r8);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.25rem;background:rgba(255,255,255,.05);
+  border:1px solid var(--b0);
+}
+@media(max-width:380px){
+  .ex-thumb,.ex-thumb-emo{width:40px;height:40px;border-radius:7px}
+}
 .ex-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 .ex-name{
   font-size:.86rem;font-weight:600;line-height:1.38;
@@ -1969,7 +1983,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v11  ·  No-login  ·  Firebase-ready
+   GymApp v12  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2060,7 +2074,10 @@ document.addEventListener('change', e => {
 /* Delegerad bildfelshanterare – ingen inline onerror behövs */
 document.addEventListener('error', e => {
   const img = e.target;
-  if (img?.tagName === 'IMG' && img.classList.contains('ex-img2')) {
+  if (!img || img.tagName !== 'IMG') return;
+
+  /* Stor bild i övningspanelen */
+  if (img.classList.contains('ex-img2')) {
     const ph = document.createElement('div');
     ph.className = 'no-img';
     const emo = document.createElement('span');
@@ -2070,6 +2087,25 @@ document.addEventListener('error', e => {
     lbl.textContent = img.alt || '';
     ph.append(emo, lbl);
     img.replaceWith(ph);
+    return;
+  }
+
+  /* Liten tumme i övningsraden */
+  if (img.classList.contains('ex-thumb')) {
+    const sp = document.createElement('span');
+    sp.className = 'ex-thumb-emo';
+    sp.setAttribute('aria-hidden', 'true');
+    sp.textContent = img.dataset.emo || '🏋️';
+    img.replaceWith(sp);
+    return;
+  }
+
+  /* Bild i schemaförhandsvisningen */
+  if (img.classList.contains('sb-ex-img')) {
+    const sp = document.createElement('span');
+    sp.className = 'sb-ex-emo';
+    sp.textContent = img.dataset.emo || '🏋️';
+    img.replaceWith(sp);
   }
 }, true);
 document.addEventListener('keydown', e => {
@@ -2308,6 +2344,14 @@ function matchEmoji(name, extra) {
     for (const kw of item.kw)
       if (hay.includes(kw)) return item.e;
   return '🏋️';
+}
+
+/* Bild till en övning. Sparad bild vinner, annars matchas namnet
+   automatiskt – så att även äldre/importerade scheman får bild. */
+function exImage(ex) {
+  const saved = typeof ex?.img === 'string' ? ex.img : '';
+  if (/^images\/[\w-]+\.png$/.test(saved)) return saved;
+  return matchImage(ex?.n, ex?.muscles) || '';
 }
 
 const BAL = [
@@ -3088,6 +3132,8 @@ function renderWorkout() {
       day.ex.forEach((ex, ei) => {
         const key  = `s${SCH}_d${di}_e${ei}`;
         const val  = (UD.weights || {})[key] || '';
+        const emo  = matchEmoji(ex.n, ex.muscles);
+        const img  = exImage(ex);
 
         // Equipment tags
         const tags = [
@@ -3142,6 +3188,9 @@ function renderWorkout() {
         h += `
           <li class="ex-li" id="eli_${key}">
             <button type="button" class="ex-head-btn" data-act="togEx" data-id="eli_${key}" aria-expanded="false">
+              ${img
+                ? `<img class="ex-thumb" src="${esc(img)}" alt="" data-emo="${emo}" loading="lazy" decoding="async"/>`
+                : `<span class="ex-thumb-emo" aria-hidden="true">${emo}</span>`}
               <div class="ex-left">
                 <span class="ex-name">${esc(ex.n)}${tags}</span>
                 <div class="ex-sub">
@@ -3157,9 +3206,9 @@ function renderWorkout() {
             ${gymWeightBar}
             <div class="ex-panel2">
               <div class="ex-img-wrap">
-                ${ex.img && /^images\/[\w-]+\.png$/.test(ex.img)
-                  ? `<img class="ex-img2" src="${esc(ex.img)}" alt="${esc(ex.n)}" data-emo="${matchEmoji(ex.n, ex.muscles)}" loading="lazy" decoding="async"/>`
-                  : `<div class="no-img"><span class="ni-emo">${matchEmoji(ex.n, ex.muscles)}</span><span>${esc(ex.n)}</span></div>`}
+                ${img
+                  ? `<img class="ex-img2" src="${esc(img)}" alt="${esc(ex.n)}" data-emo="${emo}" loading="lazy" decoding="async"/>`
+                  : `<div class="no-img"><span class="ni-emo">${emo}</span><span>${esc(ex.n)}</span></div>`}
                 ${gripPip(key, ex)}
               </div>
               <div id="prog_${key}">${isHome ? '' : progRowHTML(key, ex)}</div>
@@ -3847,13 +3896,17 @@ function renderDraft() {
         <span class="sb-dn">${esc(d.n)}</span>
         <span class="sb-dt ${d.t}">${TYPE_ICO[d.t]} ${d.t === 'gym' ? 'Gym' : 'Hemma'}</span>
       </div>
-      ${d.ex.map(e => `<div class="sb-ex">
-        ${e.img
-          ? `<img class="sb-ex-img" src="${e.img}" alt="" loading="lazy" decoding="async"/>`
-          : `<span class="sb-ex-emo">${matchEmoji(e.n)}</span>`}
+      ${d.ex.map(e => {
+        const emo = matchEmoji(e.n, e.muscles);
+        const img = exImage(e);
+        return `<div class="sb-ex">
+        ${img
+          ? `<img class="sb-ex-img" src="${img}" alt="" data-emo="${emo}" loading="lazy" decoding="async"/>`
+          : `<span class="sb-ex-emo">${emo}</span>`}
         <span class="sb-ex-n">${esc(e.n)}</span>
         <span class="sb-ex-sr">${esc(e.s)}${esc(e.r)}${e.kg ? ' · ' + esc(e.kg) + 'kg' : ''}</span>
-      </div>`).join('')}
+      </div>`;
+      }).join('')}
     </div>`;
   }).join('');
 }
@@ -4263,7 +4316,7 @@ window.GymBackupHost = {
 window.GymApp = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v11',
+  version: 'v12',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };

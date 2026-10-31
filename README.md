@@ -52,6 +52,23 @@ Under **Schema** finns knappen **➕ Eget schema** (och korten på hemskärmen):
 
 Upp till 10 egna scheman. Det valda schemat styr vilket pass som visas i dagsvyn.
 
+## Bilder & bildbot
+
+Varje övningsrad visar en bild bredvid namnet, och den stora bilden finns i
+övningspanelen. Bilden matchas automatiskt på övningsnamnet om schemat saknar
+en sparad bild – annars visas en emoji i stället, så inget blir tomt.
+
+**Bildboten** kontrollerar hela kedjan:
+
+```bash
+npm run bildbot        # kontroll: referenser, sw.js, IMG_BANK och standardpasset
+npm run bildbot:fix    # lägger till nya bilder i service workerns lista
+```
+
+Den felar om en bild saknas, om en övning i standardpasset inte har bild,
+eller om `sw.js`/`IMG_BANK` pekar på filer som inte finns. Nya bilder i
+`gymapp/images/` fångas upp och kan läggas till offline-cachen automatiskt.
+
 ## Filstruktur
 
 ```
