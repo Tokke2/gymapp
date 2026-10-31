@@ -29,8 +29,8 @@
    ①  VERSION & CACHE-NAMN
    ── Öka VERSION vid varje deploy för att rensa gamla cacher ──
 ═══════════════════════════════════════════════════════════════ */
-const VERSION   = 'gymapp-v12';
-const BUILT_AT  = '2026-10-31f';          // uppdateras vid deploy
+const VERSION   = 'gymapp-v13';
+const BUILT_AT  = '2026-10-31g';          // uppdateras vid deploy
 const CACHE_APP = `${VERSION}-app`;      // HTML, manifest, ikoner
 const CACHE_IMG = `${VERSION}-img`;      // Bilder (långa TTL)
 const ALL_CACHES = [CACHE_APP, CACHE_IMG];
@@ -60,39 +60,43 @@ const EXTRA_PAGES = [
    ── Alla träningsbilder så de finns offline ──
 ═══════════════════════════════════════════════════════════════ */
 const EXERCISE_IMAGES = [
-  './images/grip-over.png',
-  './images/grip-under.png',
-  './images/counter-squat.png',
-  './images/pullup.png',
-  './images/hip-thrust.png',
-  './images/skullcrusher.png',
-  './images/tricep-kickback.png',
-  './images/goblet-squat.png',
-  './images/kb-deadlift.png',
-  './images/pushup-knees.png',
-  './images/shoulder-press.png',
-  './images/glute-bridge.png',
-  './images/benchpress.png',
-  './images/cable-flyes.png',
-  './images/lateral-raise.png',
-  './images/tricep-press.png',
-  './images/facepull.png',
-  './images/sumo-squat.png',
   './images/ab-roller.png',
-  './images/bicycle-crunches.png',
-  './images/smith-squat.png',
-  './images/leg-press.png',
-  './images/lat-pulldown.png',
-  './images/seated-row.png',
-  './images/bicep-curl-machine.png',
-  './images/cable-straight-arm.png',
-  './images/kb-chest-press.png',
+  './images/bal-calf-raise.png',
+  './images/bal-head-rotation.png',
   './images/bal-heel-toe.png',
   './images/bal-leg-lift.png',
   './images/bal-one-leg.png',
   './images/bal-side-lean.png',
-  './images/bal-calf-raise.png',
-  './images/bal-head-rotation.png',
+  './images/benchpress.png',
+  './images/bicep-curl-machine.png',
+  './images/bicycle-crunches.png',
+  './images/cable-flyes.png',
+  './images/cable-straight-arm.png',
+  './images/counter-squat.png',
+  './images/dumbbell-curl.png',
+  './images/facepull.png',
+  './images/glute-bridge.png',
+  './images/goblet-squat.png',
+  './images/grip-over.png',
+  './images/grip-under.png',
+  './images/hip-thrust.png',
+  './images/kb-bent-over-row.png',
+  './images/kb-chest-press.png',
+  './images/kb-deadlift.png',
+  './images/lat-pulldown.png',
+  './images/lateral-raise.png',
+  './images/leg-press.png',
+  './images/machine-shoulder-press.png',
+  './images/pullup.png',
+  './images/pushup-knees.png',
+  './images/seated-row.png',
+  './images/shoulder-press.png',
+  './images/skullcrusher.png',
+  './images/smith-squat.png',
+  './images/sumo-squat.png',
+  './images/tricep-kickback.png',
+  './images/tricep-press.png',
+  './images/triceps-dips.png',
 ];
 
 /* ═══════════════════════════════════════════════════════════════

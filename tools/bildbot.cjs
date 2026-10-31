@@ -2,11 +2,11 @@
 'use strict';
 
 /*
-  Bildboten – kontrollerar att alla bilder finns, syns och är med offline.
+  Bildboten – kontrollerar att alla bilder finns, syns, är rätt och är med offline.
 
   Kör:
     node tools/bildbot.cjs         kontrollera
-    node tools/bildbot.cjs --fix   lägg till nya bilder i service workerns lista
+    node tools/bildbot.cjs --fix   rätta fel bild + lägg nya bilder i sw.js
 
   Kontrollerar:
    1. Alla bildreferenser i HTML pekar på filer som finns
@@ -14,10 +14,13 @@
    3. sw.js och IMG_BANK pekar inte på bilder som saknas
    4. Alla övningsbilder har en post i IMG_BANK (namnmatchning)
    5. Alla övningar i standardpasset/mallarna har en bild
+   6. Bilden stämmer med övningsnamnet – t.ex. ingen latsdrag-bild
+      på en KB bent-over row. --fix byter till rätt bild automatiskt.
 */
 
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const ROOT   = path.resolve(__dirname, '..');
 const IMGDIR = path.join(ROOT, 'gymapp', 'images');
@@ -27,7 +30,6 @@ const PAGES  = ['gymapp/index.html', 'balansrutin.html', 'träningsschema.html']
 
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 const uniq = a => [...new Set(a)].sort();
-const basename = f => path.basename(f);
 
 const fix = process.argv.includes('--fix');
 const errors = [];
@@ -77,9 +79,10 @@ if (!listMatch) {
 }
 
 /* ── 4. IMG_BANK (namnmatchning) ───────────────────────────────── */
-const appSrc = fs.readFileSync(APP, 'utf8');
+let appSrc = fs.readFileSync(APP, 'utf8');
 const bankRe = /const IMG_BANK = \[([\s\S]*?)\n\];/;
 const bankMatch = appSrc.match(bankRe);
+let bankEntries = [];
 if (!bankMatch) {
   errors.push('Hittade inte IMG_BANK i gymapp/index.html');
 } else {
@@ -96,19 +99,83 @@ if (!bankMatch) {
       warnings.push(`images/${f} saknar post i IMG_BANK (matchas inte automatiskt)`);
     }
   }
+
+  /* Samma nyckelordstabell som appen använder – ingen egen gissning */
+  try {
+    bankEntries = vm.runInNewContext(`${bankMatch[0]}\n;IMG_BANK;`, {});
+  } catch (e) {
+    errors.push(`Kunde inte läsa IMG_BANK: ${e.message}`);
+  }
 }
 
-/* ── 5. Alla övningar i mallarna har bild ──────────────────────── */
-const templatesRe = /const TEMPLATES = \[([\s\S]*?)\n\];/;
+/* Samma normalisering som appen */
+function norm(t) {
+  return String(t || '').toLowerCase()
+    .replace(/[×x]\s*\d+/g, ' ')
+    .replace(/[^a-zà-ÿ0-9åäö\s-]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+
+/* Samma poängsättning som appens matchImage() */
+function matchImage(name, extra) {
+  const nameHay = norm(name);
+  const hay = norm(`${name} ${extra || ''}`);
+  if (!hay) return null;
+  let best = null, bestScore = 0;
+  for (const item of bankEntries) {
+    for (const kw of item.kw) {
+      if (!hay.includes(kw)) continue;
+      const inName = nameHay.includes(kw);
+      const score = (kw.length + (nameHay.startsWith(kw) ? 3 : 0)) * (inName ? 2 : 1);
+      if (score > bestScore) { bestScore = score; best = item.f; }
+    }
+  }
+  return best ? `images/${best}` : null;
+}
+
+/* ── 5. Övningarna i standardpasset/mallarna ───────────────────── */
+const templatesRe = /const TEMPLATES = \[[\s\S]*?\n\];/;
 const templatesMatch = appSrc.match(templatesRe);
 if (templatesMatch) {
-  const exBlocks = templatesMatch[1].match(/\n\s*\{ n:'[^']*',[^\n]*\}/g) || [];
-  for (const block of exBlocks) {
-    /* Vilodagar har inga övningar och behöver ingen bild */
-    if (/t:'rest'|ex:\s*\[\]/.test(block)) continue;
-    const name = block.match(/n:'([^']*)'/)?.[1] || '?';
-    if (!/img:\s*'images\/[\w-]+\.png'/.test(block)) {
-      errors.push(`Övningen "${name}" i standardpasset/mallen saknar bild`);
+  let templates = null;
+  try {
+    templates = vm.runInNewContext(`${templatesMatch[0]}\n;TEMPLATES;`, {});
+  } catch (e) {
+    warnings.push(`Kunde inte läsa TEMPLATES: ${e.message}`);
+  }
+
+  if (templates) {
+    const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const setTemplateImage = (src, name, img) => {
+      const re = new RegExp(`(\\{ n:'${escRe(name)}'[^\\n]*?)img:'[^']*'`, 'g');
+      return src.replace(re, `$1img:'${img}'`);
+    };
+
+    for (const t of templates) {
+      for (const day of (t.days || [])) {
+        if (day.t === 'rest' || !Array.isArray(day.ex)) continue;
+        for (const ex of day.ex) {
+          const name = ex.n || '?';
+          if (!ex.img) {
+            errors.push(`Övningen "${name}" i standardpasset/mallen saknar bild`);
+            continue;
+          }
+
+          const expected = matchImage(name, ex.muscles);
+          if (!expected || expected === ex.img) continue;
+
+          if (fix) {
+            appSrc = setTemplateImage(appSrc, name, expected);
+            fixed.push(`"${name}": ${ex.img} → ${expected}`);
+          } else {
+            errors.push(`Fel bild: "${name}" använder ${ex.img} men namnet matchar ${expected} – kör --fix`);
+          }
+        }
+      }
+    }
+
+    if (fix && fixed.some(f => f.includes('→'))) {
+      fs.writeFileSync(APP, appSrc, 'utf8');
     }
   }
 } else {
@@ -119,12 +186,12 @@ if (templatesMatch) {
 console.log('\n🖼  Bildboten');
 console.log(`   ${onDisk.length} bilder på disk · ${refs.size} referenser i HTML · ${fix ? 'fix-läge' : 'kontroll'}\n`);
 
-for (const f of fixed)   console.log(`   ✅ ${f}`);
+for (const f of fixed)    console.log(`   ✅ ${f}`);
 for (const w of warnings) console.log(`   ⚠️  ${w}`);
 for (const e of errors)   console.log(`   ❌ ${e}`);
 
 if (!fixed.length && !warnings.length && !errors.length) {
-  console.log('   ✅ Alla bilder finns, refereras korrekt och är med offline.\n');
+  console.log('   ✅ Alla bilder finns, är rätt kopplade och fungerar offline.\n');
 } else {
   console.log('');
 }

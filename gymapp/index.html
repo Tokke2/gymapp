@@ -1983,7 +1983,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v12  ·  No-login  ·  Firebase-ready
+   GymApp v13  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2217,7 +2217,7 @@ const TEMPLATES = [
     { n:'Tisdag',  t:'gym', ex:[
       { n:'Bänkpress',                        s:'6×',r:'15–20', img:'images/benchpress.png',    muscles:'Pectoralis, triceps, deltoideus',   steps:['Ligg på bänken, ögon under stången','Tag lite bredare än axelbredd','Sänk kontrollerat till bröstet','Pressa explosivt upp','Skulderblad hålls ihop'],                                                        breath:'IN ned, UT upp' },
       { n:'Cable flyes – maskin, bröstmitt',  s:'6×',r:'20–25', img:'images/cable-flyes.png',   muscles:'Pectoralis (insida), deltoideus',   steps:['Pulley i midjeposition','Lätt framåtlutning','Drag i bred bågrörelse','Håll 1 sek i mitten','Kontrollerat tillbaka'],                                                                                       breath:'UT ihop, IN ut' },
-      { n:'Axelpress maskin',                 s:'4×',r:'15–20', img:'images/lateral-raise.png', muscles:'Deltoideus, triceps, trapezius',    steps:['Säte i axelhöjd','Rak rygg','Pressa rakt upp','Sänk kontrollerat'],                                                                                                                                         breath:'UT upp, IN ned' },
+      { n:'Axelpress maskin',                 s:'4×',r:'15–20', img:'images/machine-shoulder-press.png', muscles:'Deltoideus, triceps, trapezius',    steps:['Säte i axelhöjd','Rak rygg','Pressa rakt upp','Sänk kontrollerat'],                                                                                                                                         breath:'UT upp, IN ned' },
       { n:'Lateral raises',                   s:'4×',r:'20–30', img:'images/lateral-raise.png', muscles:'Deltoideus (mitten)',               steps:['Hantlar längs sidorna, lätt böjda armbågar','Lyft rakt ut åt sidorna','Till axelhöjd – tummen lätt ned','Sänk LÅNGSAMT – 3 sek'],                                                                           breath:'UT upp, IN ned' },
       { n:'Tricepspress kabel',               s:'4×',r:'20–25', img:'images/tricep-press.png',  muscles:'Triceps brachii (alla 3)',          steps:['Kabel i övre position','Armbågarna intill – rör sig EJ','Pressa ned till raka armar','Håll 1 sek i botten'],                                                                                                breath:'UT ned, IN upp' },
       { n:'Facepull – bakre delta',           s:'4×',r:'20–25', img:'images/facepull.png',      muscles:'Bakre delta, rotatorkuff, rhomboids', steps:['Kabel i ögonhöjd, rephandtag','Dra mot ansiktet – armbågar ut','Händerna förbi öronen','Håll 1 sek – skulderblad ihop'],                                                                              breath:'UT drag, IN ut' },
@@ -2239,9 +2239,9 @@ const TEMPLATES = [
     ]},
     { n:'Fredag',  t:'rest', ex:[] },
     { n:'Lördag',  t:'home', ex:[
-      { n:'KB bent-over row (bordsstöd)', s:'4×',r:'15–20/sida',kb:1, img:'images/lat-pulldown.png',       muscles:'Latissimus, rhomboids, bakre delta', steps:['Luta ena handen mot bord','Rak rygg – parallell med golvet','Drag KB mot revbenen','Skulderblad bakåt'],           breath:'UT upp, IN ned' },
-      { n:'Hantel bicepscurl (sittande)', s:'4×',r:'20–30',ha:1,st:1, img:'images/bicep-curl-machine.png', muscles:'Biceps brachii, brachialis',         steps:['Sitt rak – armbågar intill','Curl upp till axelhöjd','Sänk LÅNGSAMT – 3 sek'],                                   breath:'UT upp, IN ned' },
-      { n:'Tricepsdips (stol)',           s:'4×',r:'20–25',st:1,       img:'images/tricep-press.png',       muscles:'Triceps brachii, deltoideus',        steps:['Grip stolkanten','Benen böjda 90°','Sänk rakt ned – armbågar bakåt','Pressa upp med triceps'],               breath:'IN ned, UT upp' },
+      { n:'KB bent-over row (bordsstöd)', s:'4×',r:'15–20/sida',kb:1, img:'images/kb-bent-over-row.png',       muscles:'Latissimus, rhomboids, bakre delta', steps:['Luta ena handen mot bord','Rak rygg – parallell med golvet','Drag KB mot revbenen','Skulderblad bakåt'],           breath:'UT upp, IN ned' },
+      { n:'Hantel bicepscurl (sittande)', s:'4×',r:'20–30',ha:1,st:1, img:'images/dumbbell-curl.png', muscles:'Biceps brachii, brachialis',         steps:['Sitt rak – armbågar intill','Curl upp till axelhöjd','Sänk LÅNGSAMT – 3 sek'],                                   breath:'UT upp, IN ned' },
+      { n:'Tricepsdips (stol)',           s:'4×',r:'20–25',st:1,       img:'images/triceps-dips.png',       muscles:'Triceps brachii, deltoideus',        steps:['Grip stolkanten','Benen böjda 90°','Sänk rakt ned – armbågar bakåt','Pressa upp med triceps'],               breath:'IN ned, UT upp' },
       { n:'KB chest press (liggande)',    s:'4×',r:'15–20',kb:1,li:1,  img:'images/kb-chest-press.png',     muscles:'Pectoralis, triceps, deltoideus',    steps:['Ligg på rygg – KB mot bröstet','Pressa rakt upp','Sänk – armbågar rör golvet'],                              breath:'UT upp, IN ned' },
       { n:'Ab roller (från knäna)',       s:'4×',r:'15–20',ro:1,        img:'images/ab-roller.png',          muscles:'Rectus abdominis, obliques, lat',    steps:['Knäna i golvet','Spänn magen HÅRT','Rulla framåt – rak kropp','Dra tillbaka med magkraft'],               breath:'IN framåt, UT tillbaka' },
     ]},
@@ -2274,15 +2274,19 @@ const IMG_BANK = [
   { f:'hip-thrust.png',         kw:['hip thrust','hipthrust','höftlyft','höftstöt','thrust','bänk höft','frog pump'] },
   { f:'skullcrusher.png',       kw:['skullcrusher','skull crusher','franska press','french press','liggande tricepspress','ez-curl triceps','overhead extension'] },
   { f:'tricep-kickback.png',    kw:['kickback','kick back','tricepskickback','bakåtspark arm','triceps kickback'] },
+  { f:'kb-bent-over-row.png',   kw:['bent-over row','bent over row','kb row','kettlebell row','kb-bent-over row','böjd rodd','böjda roddar','bordsstöd','rodd med stöd','enarmsrodd','enarms rodd','hantelrodd med stöd'] },
+  { f:'triceps-dips.png',       kw:['tricepsdips','triceps dips','dips på stol','stol dips','bänkdips','smala dips','dips'] },
+  { f:'dumbbell-curl.png',      kw:['hantel bicepscurl','hantelbicepscurl','hantelcurl','hantel curl','dumbbell curl','bicepscurl hantel','alternerande curl'] },
+  { f:'machine-shoulder-press.png', kw:['axelpress maskin','axelpressmaskin','maskin axelpress','maskinaxelpress','shoulder press machine','machine shoulder press','sittande axelpress maskin'] },
   { f:'counter-squat.png',      kw:['diskbänk','counter','squat vid','ryggsäck','bänksquat'] },
   { f:'goblet-squat.png',       kw:['goblet','kb squat','kettlebell squat','frontsquat'] },
-  { f:'sumo-squat.png',         kw:['sumo','bred squat','adduktor','plie'] },
+  { f:'sumo-squat.png',         kw:['sumo squat','sumo-squat','sumo','bred squat','adduktor','plie'] },
   { f:'smith-squat.png',        kw:['smith','knäböj','benböj','back squat','squat','utfall','lunge','step up','bulgarian','split squat'] },
   { f:'leg-press.png',          kw:['benpress','leg press','legpress','benmaskin'] },
   { f:'kb-deadlift.png',        kw:['deadlift','marklyft','rdl','höftfällning','good morning','hip hinge'] },
   { f:'glute-bridge.png',       kw:['glute bridge','bäckenlyft','bridge','clamshell','donkey kick','benspark','höftlyft golv'] },
   { f:'benchpress.png',         kw:['bänkpress','bench','bänk press','chest press','bröstpress'] },
-  { f:'kb-chest-press.png',     kw:['kb chest','floor press','golvpress','hantelpress bröst'] },
+  { f:'kb-chest-press.png',     kw:['kb chest press','kb-bröstpress','kb chest','floor press','golvpress','hantelpress bröst'] },
   { f:'cable-flyes.png',        kw:['flyes','fly','kabelkryss','pec deck','pecdeck','bröstmitt','crossover'] },
   { f:'pushup-knees.png',       kw:['armhävning','push up','pushup','push-up','armhävningar'] },
   { f:'shoulder-press.png',     kw:['shoulder press','axelpress','militärpress','overhead','skulderpress','kb press'] },
@@ -2292,7 +2296,7 @@ const IMG_BANK = [
   { f:'seated-row.png',         kw:['rodd','row','sittande rodd','skivstångsrodd','hantelrodd','t-bar','superman','ryggresning','hyperextension','face down'] },
   { f:'cable-straight-arm.png', kw:['straight arm','raka armar','pullover','lat pushdown'] },
   { f:'bicep-curl-machine.png', kw:['curl','biceps','bicep','hammer','skivstångscurl','armcurl'] },
-  { f:'tricep-press.png',       kw:['triceps','tricep','pushdown','dips','dip','nedpress','tricepspress','kabelpress'] },
+  { f:'tricep-press.png',       kw:['triceps','tricep','pushdown','nedpress','tricepspress','kabelpress'] },
   { f:'ab-roller.png',          kw:['ab roller','abroller','hjul','wheel','ab wheel'] },
   { f:'bicycle-crunches.png',   kw:['crunch','sit-up','situp','sit up','mage','magövning','bicycle','plankvrid','russian','planka','plank','core','hollow','v-up'] },
   { f:'bal-one-leg.png',        kw:['ett ben','enbens','one leg','stå på ett'] },
@@ -2323,14 +2327,18 @@ function _norm(t) {
 
 /* Hitta bästa bild för ett övningsnamn. Returnerar sökväg eller null. */
 function matchImage(name, extra) {
+  const nameHay = _norm(name);
   const hay = _norm(name + ' ' + (extra || ''));
   if (!hay) return null;
   let best = null, bestScore = 0;
   for (const item of IMG_BANK) {
     for (const kw of item.kw) {
       if (!hay.includes(kw)) continue;
-      // längre nyckelord = mer specifik träff
-      const score = kw.length + (hay.startsWith(kw) ? 3 : 0);
+      // längre nyckelord = mer specifik träff.
+      // Träff i själva övningsnamnet väger dubbelt – muskeltext
+      // (t.ex. "bakre delta") får aldrig sno bilden från "Latsdrag".
+      const inName = nameHay.includes(kw);
+      const score = (kw.length + (nameHay.startsWith(kw) ? 3 : 0)) * (inName ? 2 : 1);
       if (score > bestScore) { bestScore = score; best = item.f; }
     }
   }
@@ -2352,6 +2360,34 @@ function exImage(ex) {
   const saved = typeof ex?.img === 'string' ? ex.img : '';
   if (/^images\/[\w-]+\.png$/.test(saved)) return saved;
   return matchImage(ex?.n, ex?.muscles) || '';
+}
+
+/* Kända bildbyten – rättar scheman som sparats med fel bild.
+   Versionen gör att rättningen bara körs en gång per data. */
+const IMG_FIX_VERSION = 2;
+/* [namn-mönster, rätt bild, kända felaktiga bilder som får bytas ut] */
+const IMG_REPAIRS = [
+  [/\bbent[- ]?over\s*row\b|bordsstöd/i,             'images/kb-bent-over-row.png',     ['images/lat-pulldown.png','images/seated-row.png']],
+  [/\btriceps\s*dips?\b|\bdips\s*\(?stol/i,          'images/triceps-dips.png',         ['images/tricep-press.png']],
+  [/\bhantel\s*biceps\s*curl\b|\bdumbbell\s*curl\b/i, 'images/dumbbell-curl.png',        ['images/bicep-curl-machine.png']],
+  [/\baxelpress\s*maskin\b|\bshoulder press machine\b/i, 'images/machine-shoulder-press.png', ['images/lateral-raise.png','images/shoulder-press.png']],
+];
+
+function repairSchemaImages() {
+  let n = 0;
+  for (const sch of (UD.mySched || [])) {
+    for (const day of (sch?.days || [])) {
+      for (const ex of (day?.ex || [])) {
+        const old = typeof ex.img === 'string' ? ex.img : '';
+        for (const [re, img, wrong] of IMG_REPAIRS) {
+          if (old === img || !re.test(ex.n || '')) continue;
+          if (old && !wrong.includes(old)) continue;   // egen vald bild rörs inte
+          ex.img = img; n++; break;
+        }
+      }
+    }
+  }
+  return n;
 }
 
 const BAL = [
@@ -2526,6 +2562,14 @@ document.addEventListener('DOMContentLoaded', () => {
       UD.mySched.push(defaultSchema());
       UD.sch = SCHED.length + UD.mySched.length - 1;
     }
+    LOG.safe('seed', () => save());
+  }
+
+  /* 1c · Rättar scheman som sparats med fel bild (en gång per data) */
+  if ((UD.imgFixV | 0) < IMG_FIX_VERSION) {
+    UD.imgFixV = IMG_FIX_VERSION;
+    const fixed = LOG.safe('imgfix', repairSchemaImages, 0);
+    if (fixed) LOG.info('imgfix', `${fixed} bilder rättade`);
     LOG.safe('seed', () => save());
   }
 
@@ -4316,7 +4360,7 @@ window.GymBackupHost = {
 window.GymApp = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v12',
+  version: 'v13',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };

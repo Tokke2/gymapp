@@ -58,16 +58,21 @@ Varje övningsrad visar en bild bredvid namnet, och den stora bilden finns i
 övningspanelen. Bilden matchas automatiskt på övningsnamnet om schemat saknar
 en sparad bild – annars visas en emoji i stället, så inget blir tomt.
 
-**Bildboten** kontrollerar hela kedjan:
+**Bildboten** kontrollerar hela kedjan – och att bilden hör till rätt övning:
 
 ```bash
-npm run bildbot        # kontroll: referenser, sw.js, IMG_BANK och standardpasset
-npm run bildbot:fix    # lägger till nya bilder i service workerns lista
+npm run bildbot        # kontroll: referenser, sw.js, IMG_BANK, standardpasset
+npm run bildbot:fix    # rättar fel bild + lägger nya bilder i offline-cachen
 ```
 
 Den felar om en bild saknas, om en övning i standardpasset inte har bild,
-eller om `sw.js`/`IMG_BANK` pekar på filer som inte finns. Nya bilder i
-`gymapp/images/` fångas upp och kan läggas till offline-cachen automatiskt.
+om `sw.js`/`IMG_BANK` pekar på filer som inte finns, eller om en övning
+använder en bild som hör till en annan övning (t.ex. latsdrag på en
+KB bent-over row). `--fix` byter då till bilden som namnet matchar.
+
+Övningsnamnet väger tyngst vid matchningen – muskeltexten kan aldrig sno
+bilden från själva namnet. Scheman som redan sparats med fel bild rättas
+automatiskt vid start (en gång per data).
 
 ## Filstruktur
 

@@ -475,7 +475,7 @@ Valda funktioner som väntar på att byggas. Visas med kommandot `checklista` el
 | ☐ | **B1** | 🔄 **Migrationsbot** | Versionsnummer på datastrukturen. Gammal data konverteras automatiskt vid start så befintliga användare aldrig kraschar när formatet ändras. **Grunden – allt annat bygger på denna.** | 2026-09-05 |
 | ☐ | **B2** | 🧹 **Städbot** | Rensar tyst en gång i veckan: loggposter >200, balansdagar >400, föråldrade cacheversioner, övergivna `setsOk`-nycklar | 2026-09-05 |
 | ☐ | **B3** | 📋 **Schema-validerare** | Kontrollerar egna scheman mot regeluppsättning vid inläsning. Trasigt schema lagas eller hoppas över – tar aldrig ner appen | 2026-09-05 |
-| ☐ | **B4** | 🖼️ **Bild-autoregistrering** | Läser bildmappen och bygger `IMG_BANK` + SW-listan automatiskt. Idag krävs manuell inmatning på **tre ställen** – har redan orsakat ett fel (`counter-squat.png` saknades i `sw.js`) | 2026-09-05 |
+| ✅ | **B4** | 🖼️ **Bild-autoregistrering** | `tools/bildbot.cjs` kontrollerar referenser, `IMG_BANK`, SW-listan och namn↔bild-matchning; `--fix` lägger nya bilder i offline-cachen och byter fel bild automatiskt | 2026-10-31 |
 | ☐ | **B5** | 🚀 **Pre-flight** | Skript som körs före uppladdning: JS-syntax, HTML-balans, saknade bilder, manifest-validitet, döda `data-act`, oanvänd CSS. Automatiserar dagens manuella kontroller | 2026-09-05 |
 
 **Beroenden:** B1 bör byggas först. B2 och B3 är fristående. B4 och B5 rör byggkedjan och kan göras parallellt.
@@ -507,6 +507,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 15 | 2026-10-31 | **Standardpass + kortare README** – "🔥 Mitt Schema" läggs in och väljs automatiskt vid första start, dagsvyn ritas om vid dygnsbyte så bara dagens pass visas, copyright tillagd, README kortad och den interna manualen flyttad till `docs/PROJEKT.md`. Service worker v10. |
 | 16 | 2026-10-31 | **Egna scheman** – knappen "➕ Eget schema" i Schema-fliken, redigeringsknapp (✏️) på egna schema-kort som sparar över befintligt schema, import av JSON blir alltid ett nytt schema. Service worker v11. |
 | 17 | 2026-10-31 | **Bilder & bildbot** – bildtumme på varje övningsrad, automatisk bildmatchning även för äldre/importerade scheman, emoji-fallback om filen saknas, samt `tools/bildbot.cjs` (B4) som kontrollerar bilder, sw.js-listan och IMG_BANK. Service worker v12. |
+| 18 | 2026-10-31 | **Rätt bild per övning** – fyra nya illustrationer (`kb-bent-over-row`, `triceps-dips`, `dumbbell-curl`, `machine-shoulder-press`), namnet väger dubbelt i bildmatchningen så muskeltext inte kan sno bilden, bildboten upptäcker namn↔bild-mismatch och `--fix` byter till rätt bild, samt automatisk rättning av redan sparade scheman. Service worker v13. |
 
 ---
 
