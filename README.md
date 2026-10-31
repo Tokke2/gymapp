@@ -1,6 +1,6 @@
 # 💪 GymApp
 
-> **Din personliga träningsapp** – schema, vikter, balansrutin & musik.
+> **Din personliga träningsapp** – schema, vikter, balansrutin och framsteg.
 > Byggd som en PWA (Progressive Web App) med lokal datalagring och valfri Firebase-integration.
 
 ---
@@ -31,12 +31,10 @@
 ### ✅ Implementerade
 | Funktion | Beskrivning |
 |---|---|
-| 🔐 Konton | Användarnamn + lösenord, lokalt sparade |
-| 📋 3 träningsscheman | Mitt Schema (avancerat), Nybörjare, Mellannivå |
+| 📋 Egna scheman | Schemabyggare med mall; inga färdiga scheman ligger i appen |
 | 💾 Viktloggning | Spara kg per övning, visas i framsteg |
 | 💽 Säkerhetskopia | Lokal JSON-kopia och valfri manuell Google Drive-kopia. Kräver egen Google-konfiguration för Drive; [installationsguide](GOOGLE-DRIVE-SETUP.md). |
 | ⚖️ Balansrutin | 6 övningar med SVG-timer & avbockning |
-| 🎵 Musikspelare | 4 genrer, play/pause/next, volymkontroll |
 | 📈 Framstegsöversikt | Viktlogg, streak, träningshistorik |
 | 🔔 Påminnelser | Lokal timer när sidan körs; inte pålitliga push-notiser när appen är stängd. [Plan för Web Push](PUSH-PLAN.md) |
 | 📱 PWA | Installeras på hemskärmen, fungerar offline |
@@ -52,17 +50,28 @@ Se [Kommande funktioner](#-kommande-funktioner) för hela listan.
 ## 📁 Filstruktur
 
 ```
-gymapp/
+gymapp/                     ← repots rot (publiceras av GitHub Pages)
 │
-├── index.html          ← Hela appen (HTML + CSS + JS i en fil)
-├── manifest.json       ← PWA-manifest (ikoner, genvägar, display)
-├── sw.js               ← Service Worker (cache, offline, notiser)
-├── firebase.js         ← Firebase-integration (⏸ INAKTIVERAD)
-├── README.md           ← Den här filen
+├── index.html              ← startsida, skickar vidare till appen
 │
-└── icons/
-    ├── icon-192.png    ← App-ikon (liten)
-    └── icon-512.png    ← App-ikon (stor / splash)
+├── gymapp/                 ← själva appen
+│   ├── index.html          ← hela appen (HTML + CSS + JS i en fil)
+│   ├── manifest.json       ← PWA-manifest (ikoner, genvägar, display)
+│   ├── sw.js               ← Service Worker (cache, offline, notiser)
+│   ├── backup.js           ← lokal/Drive-säkerhetskopia
+│   ├── firebase.js         ← Firebase-integration (⏸ inaktiverad)
+│   ├── google-drive-setup.html
+│   ├── icons/
+│   │   ├── icon-192.png
+│   │   └── icon-512.png
+│   └── images/             ← övningsbilder (PNG)
+│
+├── balansrutin.html        ← balansrutin, fristående sida
+├── träningsschema.html     ← detaljerat veckoschema
+├── tests/                  ← node-tester (backup.js)
+├── README.md
+├── GOOGLE-DRIVE-SETUP.md
+└── PUSH-PLAN.md
 ```
 
 ---
@@ -489,6 +498,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 11 | 2026-10-11 | **Responsiv layout & alla webbläsare** – Bento-dashboard, sticky balans-timer, 2-kolumns dagsvy, fix av nästlad `<button>`, `vh/svh/dvh`, `-webkit-backdrop-filter` + `@supports`-fallback, scrollbars, `forced-colors` |
 | 12 | 2026-10-31 | **Säkerhetskopia** – lokal fil, valfri Google Drive-uppladdning och återställning med förhandsbekräftelse; kräver OAuth-konfiguration och test mot Google. Firebase och GymApp-konton fortsatt avstängda. |
 | 13 | 2026-10-31 | **Enklare Drive-anslutning** – en anslutningsknapp efter engångskonfiguration, lokal ägarinställning, uppdaterad guide och tester. Google-konfiguration behövs fortfarande. |
+| 14 | 2026-10-31 | **Städning** – dubblettkopior i rotmappen borttagna, oanvända logotyper borttagna, appikonerna beskurna/optimerade (2,1 MB → 51 kB), manifest utan falska skärmbilder och felaktig monochrome-ikon, service worker v9. Ett citat borttaget. |
 
 ---
 
@@ -918,17 +928,15 @@ Varje övning SKA ha:
 
 - Bottom nav på `≤640px`, top nav på `≥641px`
 - `100svh` istället för `100vh` (undviker iOS-adressfältet)
-- `env(safe-area-inset-bottom)` på musikbar och bottom-nav
+- `env(safe-area-inset-bottom)` på bottom-nav
 - Alla grids → `grid-template-columns: 1fr` på mobil
 - Inga hover-only interaktioner – allt klickbart
 
 ### 🔐 Kontoregler (nuläge)
 
-- Konton sparas i `localStorage` under nyckel `ga_a`
-- Lösenord hashas med 31-multiplikator hash (enkel men OK för localStorage)
-- Session sparas i `ga_s`
-- Användardata per uid: `ga_d_{uid}`
-- Vid Firebase-aktivering: byt ut `DB`-objektet mot `FBDB` från `firebase.js`
+- Inga konton och ingen inloggning är aktiverad – appen ägs av enheten.
+- All data sparas lokalt: `ga_data` (scheman, viktlogg, balansdagar), `gymapp_balance` (balansrutin), `gym_100reps` (repsräknare), `ga-notif`/`ga-bt`/`ga-wt` (påminnelser) och `gymapp-drive-client-id` (frivilligt OAuth-klient-ID).
+- `firebase.js` finns förberett men är avstängt (`FIREBASE_ENABLED = false`).
 
 ### 📁 Bildregler
 
@@ -938,13 +946,6 @@ Varje övning SKA ha:
 - Aspect ratio i HTML: `16:9` (via `aspect-ratio: 16/9`)
 - `loading="lazy"` på alla bilder
 - `alt`-text = övningens namn
-
-### 🔊 Musikregler
-
-- Fyra genrer: `gym`, `hiit`, `focus`, `heavy`
-- Varje genre: 2 radioströmmar (Zeno.fm)
-- Automatisk next-track vid slut (`ended`-event)
-- Volym och position i musikbaren
 
 ### 🔔 Notifikationsregler
 
