@@ -1,7 +1,7 @@
 {
-  "name":        "GymApp 💪 – Träning & Balans",
-  "short_name":  "GymApp",
-  "description": "Din personliga träningsapp – veckoschema, viktlogg, auto-progression och daglig balansrutin. Fungerar helt offline, inget konto krävs.",
+  "name":        "Gymlig – Träning & Balans",
+  "short_name":  "Gymlig",
+  "description": "Din personliga träningsapp – veckoschema, viktlogg, auto-progression, hemmaredskap och daglig balansrutin. Fungerar helt offline, inget konto krävs.",
   "id":          "/gymapp/",
   "start_url":   "./index.html?source=pwa",
   "scope":       "./",

@@ -1,12 +1,12 @@
-# 📓 Projektmanual – GymApp
+# 📓 Projektmanual – Gymlig
 
-> Intern arbetsmanual för underhåll av GymApp: kommandon, checklista,
+> Intern arbetsmanual för underhåll av Gymlig: kommandon, checklista,
 > ändringslogg och förslagsbank. Användar-/utvecklardokumentationen
 > finns i [README.md](../README.md).
 
 ---
 
-**GymApp** – schema, vikter, balansrutin och framsteg. PWA med lokal datalagring och valfri Firebase-integration.
+**Gymlig** – schema, vikter, hemmaredskap, balansrutin och framsteg. PWA med lokal datalagring och valfri Firebase-integration.
 
 ---
 
@@ -336,7 +336,7 @@ Lagring:      ~5MB av 1 GB   =  0.5%
 | K10 | 🌙 **Mörkt / ljust läge** | Toggle mellan dark glassmorphism och light mode | Sparas lokalt i `ga_data`. Alla tokens måste ha ljus-variant. *(Fanns i tidigare kommande-lista)* |
 | K11 | ⏱️ **Vilo-timer mellan set** | Popup-nedräkning 30/60/90/120 sek med vibration | Auto-start när set bockas av. Hänger ihop med K1. *(Fanns i tidigare kommande-lista)* |
 | K12 | 🏠💪 **Programgenerator från hemmautrustning** | Kryssa i vad du har hemma → appen bygger ett färdigt veckoschema (100 % offline) | **Upplägg:** Både *"Bara hemma"* (3–5 pass/v) och *"Hemma + Gym"* (t.ex. 3 hemma + 2 gym). **Utökad utrustning:** Kettlebell, Hantlar, Ryggsäck med vikt, Magrulle (Ab-roller), Gummiband, Pull-up-stång, Bänk/Pall, Stol & Diskbänk, Kroppsvikt. Hemmaträning behåller **fasta vikter** (inga fria kg-fält under passet). Följer alla regler: lägenhetsanpassat (inga hopp), balansanpassat (med stöd), inget marklyft/leg curl, återanvänder befintliga bilder + tekniksteg |
-| K13 | 🔔 **Träningspåminnelse med Web Push** | Påminn runt 17.00 på aktiva träningsdagar även när appen är stängd | Utan GymApp-konto; separat push-tjänst krävs. Förberedelse och villkor: [PUSH-PLAN.md](../PUSH-PLAN.md). Inte implementerat. |
+| K13 | 🔔 **Träningspåminnelse med Web Push** | Påminn runt 17.00 på aktiva träningsdagar även när appen är stängd | Utan Gymlig-konto; separat push-tjänst krävs. Förberedelse och villkor: [PUSH-PLAN.md](../PUSH-PLAN.md). Inte implementerat. |
 | K14 | 🏋️ **Enklare träningsvy** | Tydligare avbockning och översikt över dagens pass | Större lättåtkomliga knappar, tydligt vad som är klart och vad som återstår, mobilanpassat. Utan inloggning eller notiser. |
 
 ### 🔒 Väntar på konto-aktivering
@@ -466,7 +466,7 @@ Valda funktioner som väntar på att byggas. Visas med kommandot `checklista` el
 
 | Status | ID | Funktion | Vad den gör | Vald |
 |---|---|---|---|---|
-| ☐ | **K13** | Web Push på träningsdagar | Planerad påminnelse omkring 17.00 även när appen är stängd, utan GymApp-inloggning. Kräver separat tjänst och konfiguration. Se [PUSH-PLAN.md](../PUSH-PLAN.md). Inte byggd eller aktiverad. | 2026-10-31 |
+| ☐ | **K13** | Web Push på träningsdagar | Planerad påminnelse omkring 17.00 även när appen är stängd, utan Gymlig-inloggning. Kräver separat tjänst och konfiguration. Se [PUSH-PLAN.md](../PUSH-PLAN.md). Inte byggd eller aktiverad. | 2026-10-31 |
 
 ### 🤖 Underhållsbotar – prioriterad ordning
 
@@ -501,13 +501,14 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 9 | 2026-09-05 | **Alla filer i linje** – träningsschema v2, balansrutin färgpalett, manifest v2, sw v6, firebase v3 + B14 uppdateringsbot |
 | 10 | 2026-09-05 | **Tomma scheman + datakoppling** – inbyggda scheman borttagna, dagsvy, fristående sidor läser appens data |
 | 11 | 2026-10-11 | **Responsiv layout & alla webbläsare** – Bento-dashboard, sticky balans-timer, 2-kolumns dagsvy, fix av nästlad `<button>`, `vh/svh/dvh`, `-webkit-backdrop-filter` + `@supports`-fallback, scrollbars, `forced-colors` |
-| 12 | 2026-10-31 | **Säkerhetskopia** – lokal fil, valfri Google Drive-uppladdning och återställning med förhandsbekräftelse; kräver OAuth-konfiguration och test mot Google. Firebase och GymApp-konton fortsatt avstängda. |
+| 12 | 2026-10-31 | **Säkerhetskopia** – lokal fil, valfri Google Drive-uppladdning och återställning med förhandsbekräftelse; kräver OAuth-konfiguration och test mot Google. Firebase och Gymlig-konton fortsatt avstängda. |
 | 13 | 2026-10-31 | **Enklare Drive-anslutning** – en anslutningsknapp efter engångskonfiguration, lokal ägarinställning, uppdaterad guide och tester. Google-konfiguration behövs fortfarande. |
 | 14 | 2026-10-31 | **Städning** – dubblettkopior i rotmappen borttagna, oanvända logotyper borttagna, appikonerna beskurna/optimerade (2,1 MB → 51 kB), manifest utan falska skärmbilder och felaktig monochrome-ikon, service worker v9. Ett citat borttaget. |
 | 15 | 2026-10-31 | **Standardpass + kortare README** – "🔥 Mitt Schema" läggs in och väljs automatiskt vid första start, dagsvyn ritas om vid dygnsbyte så bara dagens pass visas, copyright tillagd, README kortad och den interna manualen flyttad till `docs/PROJEKT.md`. Service worker v10. |
 | 16 | 2026-10-31 | **Egna scheman** – knappen "➕ Eget schema" i Schema-fliken, redigeringsknapp (✏️) på egna schema-kort som sparar över befintligt schema, import av JSON blir alltid ett nytt schema. Service worker v11. |
 | 17 | 2026-10-31 | **Bilder & bildbot** – bildtumme på varje övningsrad, automatisk bildmatchning även för äldre/importerade scheman, emoji-fallback om filen saknas, samt `tools/bildbot.cjs` (B4) som kontrollerar bilder, sw.js-listan och IMG_BANK. Service worker v12. |
 | 18 | 2026-10-31 | **Rätt bild per övning** – fyra nya illustrationer (`kb-bent-over-row`, `triceps-dips`, `dumbbell-curl`, `machine-shoulder-press`), namnet väger dubbelt i bildmatchningen så muskeltext inte kan sno bilden, bildboten upptäcker namn↔bild-mismatch och `--fix` byter till rätt bild, samt automatisk rättning av redan sparade scheman. Service worker v13. |
+| 19 | 2026-11-01 | **Namnbyte till Gymlig + designlyft + redskap hemma** – nytt visningsnamn i titel, manifest, nav, rubrik, sidfot och dokumentation (lagringsnycklar och API-alias orörda), mjukare ytor och större träffytor i layouten, samt kortet **🏠 Redskap hemma** där kettlebell, hantlar, stol, matta, ab roller och band kan markeras. Övningar som kräver saknat redskap märks, filtret **Visa bara mina** döljer dem i hemmapassen, och valet sparas i `homeGear`/`gearFilter`. Service worker v14. |
 
 ---
 
@@ -658,7 +659,7 @@ Räknas som "finns i spec" – nästa `förslag` måste ge andra idéer.
 | F51 | 😴 **Manuell sömnlogg** – snabbknappar 5/6/7/8/9 h, minns gårdagens värde. Enda vägen för PWA |
 | F52 | 📥 **CSV-import från Zepp Life** – ladda upp exportfil, får sömn- och pulshistorik bakåt |
 | F53 | 📲 **TWA-paketering** – bygg appen som Play Store-app, låser upp Health Connect. Android only |
-| F54 | ⌚ **Parallellt klockpass** – guide: starta "Styrketräning" på bandet för puls, GymApp för vikter |
+| F54 | ⌚ **Parallellt klockpass** – guide: starta "Styrketräning" på bandet för puls, Gymlig för vikter |
 | F55 | 💓 **Manuell vilopuls** – logga morgonpuls, varning vid förhöjd (tecken på överträning) |
 
 **Struktur i passet**
@@ -923,7 +924,7 @@ Lokal server:  python3 -m http.server 8080
 
 ---
 
-*GymApp v4 · Glassmorphism · PWA · Local-first · Firebase-ready*
+*Gymlig v14 · Glassmorphism · PWA · Local-first · Firebase-ready*
 
 ---
 

@@ -9,16 +9,16 @@
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="GymApp"/>
+  <meta name="apple-mobile-web-app-title" content="Gymlig"/>
   <meta name="format-detection" content="telephone=no"/>
   <meta name="author" content="Rickard Längkvist"/>
-  <meta name="description" content="GymApp – Din personliga träningsapp med schema, vikter, balans och progression. Fungerar offline."/>
+  <meta name="description" content="Gymlig – Din personliga träningsapp med schema, vikter, balans och progression. Fungerar offline."/>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="icons/icon-192.png"/>
   <link rel="icon" href="icons/icon-192.png"/>
   <!-- Förladda det som syns först – snabbare första rendering -->
   <link rel="preload" as="image" href="icons/icon-192.png"/>
-  <title>💪 GymApp</title>
+  <title>Gymlig – träning & balans</title>
 <style>
 /* ── TOKENS ─────────────────────────────────── */
 :root {
@@ -1638,6 +1638,145 @@ body.lowfx .br-fill{filter:none;transition:none}
 .backup-actions button:disabled{opacity:.45;cursor:not-allowed}.backup-actions button:focus-visible,.backup-card summary:focus-visible{outline:2px solid #c4b5fd;outline-offset:3px}
 .backup-card a{color:#c4b5fd}.backup-status{min-height:1.5em;overflow-wrap:anywhere}
 
+/* ════════════════════════════════════════════════
+   V14 · DESIGNLYFT
+   Mjukare ytor, tydligare hierarki och större
+   träffytor – utan att röra logiken.
+════════════════════════════════════════════════ */
+
+/* Varumärke i nav */
+.nav-brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.brand-mark{
+  width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+  font-size:.82rem;font-weight:900;color:#fff;letter-spacing:0;
+  background:linear-gradient(140deg,var(--pl),var(--p) 55%,var(--c));
+  box-shadow:0 3px 10px rgba(124,58,237,.4),inset 0 1px 0 rgba(255,255,255,.35);
+}
+.nav-logo{letter-spacing:-.02em}
+
+/* Sektionsrubriker */
+.sh{font-size:.66rem;font-weight:800;letter-spacing:.12em;color:var(--t2)}
+.sh::after{background:linear-gradient(90deg,var(--b0),transparent)}
+
+/* Synlig fokusmarkering för tangentbord */
+:where(button,a,input,select,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--c);outline-offset:2px;
+}
+html{scroll-padding-top:calc(var(--nav-h) + 14px)}
+
+/* Hero – luftigare och lugnare typografi */
+.hero{padding-top:clamp(20px,3.4vw,32px)}
+.hero h1{font-size:clamp(2rem,5vw,2.85rem);margin-bottom:9px}
+.hero p{max-width:46ch;margin-inline:auto;line-height:1.55}
+
+/* Ytor – enhetlig ljusövergång överst */
+.dc,.stat,.prog-card,.backup-card,.today-hero,.ext-link,.qotd,.notif-banner{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.22);
+}
+.dc{padding:20px 20px 16px}
+.wk-grid{gap:16px}
+.wk-grid.day-view{max-width:760px}
+.wk-toolbar{gap:12px;margin-bottom:18px}
+.wk-tg{padding:11px 14px}
+
+/* Dagens kort */
+.dh{margin-bottom:6px}
+.dn{font-size:1.02rem;letter-spacing:-.01em}
+.dtl{margin-bottom:10px}
+
+/* Övningsrader – större bild, mer luft */
+.ex-head-btn{padding:12px 8px;gap:12px}
+.ex-thumb,.ex-thumb-emo{width:52px;height:52px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.32)}
+.ex-name{font-size:.88rem}
+.ex-sub{gap:7px}
+.tg{font-size:.6rem;padding:2px 7px;border-radius:6px}
+
+@media(max-width:380px){
+  .ex-thumb,.ex-thumb-emo{width:44px;height:44px;border-radius:9px}
+}
+
+/* ════════════════════════════════════════════════
+   REDSKAP HEMMA
+════════════════════════════════════════════════ */
+.gear-card{
+  margin-bottom:16px;padding:16px 17px 17px;
+  border-radius:var(--r20);
+  border:1px solid rgba(74,222,128,.2);
+  background:linear-gradient(150deg,rgba(74,222,128,.07),rgba(34,211,238,.035));
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+}
+.gear-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;margin-bottom:13px;
+}
+.gear-title{font-size:.92rem;font-weight:800;color:var(--gl);letter-spacing:-.01em}
+.gear-sub{font-size:.72rem;color:var(--t2);margin-top:3px;line-height:1.45}
+.gear-filter{
+  display:inline-flex;align-items:center;gap:7px;flex-shrink:0;
+  padding:8px 13px;border-radius:var(--rF);
+  background:var(--s0);border:1px solid var(--b0);color:var(--t2);
+  font-size:.72rem;font-weight:700;
+  transition:background var(--fast) var(--ease),border-color var(--fast),color var(--fast);
+}
+.gear-filter:hover{color:var(--t1);border-color:var(--b1)}
+.gear-filter .gf-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--t3);
+  transition:background var(--fast),box-shadow var(--fast);
+}
+.gear-filter[aria-pressed="true"]{
+  background:rgba(74,222,128,.16);border-color:rgba(74,222,128,.42);color:var(--gl);
+}
+.gear-filter[aria-pressed="true"] .gf-dot{background:var(--g);box-shadow:0 0 8px var(--g)}
+
+.gear-chips{display:flex;flex-wrap:wrap;gap:8px}
+.gear-chip{
+  display:flex;align-items:center;gap:9px;min-width:0;
+  padding:9px 12px;border-radius:14px;
+  background:rgba(255,255,255,.04);border:1px solid var(--b0);color:var(--t2);
+  text-align:left;
+  transition:transform var(--fast) var(--ease),background var(--fast) var(--ease),
+             border-color var(--fast) var(--ease),color var(--fast) var(--ease);
+}
+.gear-chip:hover{transform:translateY(-1px);border-color:var(--b1);color:var(--t1)}
+.gear-chip:active{transform:scale(.98)}
+.gear-chip .gc-ico{font-size:1.1rem;line-height:1;filter:grayscale(.55);opacity:.72;transition:filter var(--fast),opacity var(--fast)}
+.gear-chip .gc-txt{display:flex;flex-direction:column;line-height:1.18;min-width:0}
+.gear-chip .gc-txt b{font-size:.73rem;font-weight:800;white-space:nowrap}
+.gear-chip .gc-txt span{font-size:.61rem;color:var(--t3);white-space:nowrap}
+.gear-chip .gc-check{
+  width:16px;height:16px;border-radius:50%;display:grid;place-items:center;
+  font-size:.56rem;font-weight:900;color:transparent;
+  background:rgba(255,255,255,.08);flex-shrink:0;
+  transition:background var(--fast),color var(--fast);
+}
+.gear-chip.on{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);color:var(--t1)}
+.gear-chip.on .gc-ico{filter:none;opacity:1}
+.gear-chip.on .gc-check{background:var(--g);color:#052e16}
+.gear-all{
+  align-self:center;padding:8px 12px;border-radius:var(--rF);
+  font-size:.7rem;font-weight:700;color:var(--cl);
+  background:rgba(34,211,238,.1);border:1px dashed rgba(34,211,238,.32);
+}
+.gear-all:hover{background:rgba(34,211,238,.2)}
+
+/* Övningar som kräver redskap man inte markerat */
+.ex-li.no-gear .ex-head-btn{opacity:.72}
+.tg.miss{background:rgba(239,68,68,.12);color:var(--rl);border:1px solid rgba(239,68,68,.3)}
+.gear-note{
+  display:flex;align-items:center;gap:7px;
+  margin:0 0 10px;padding:8px 11px;border-radius:10px;
+  background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.22);
+  color:var(--ol);font-size:.7rem;font-weight:600;line-height:1.45;
+}
+.gear-note.warn{background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.24);color:var(--rl)}
+
+@media(max-width:520px){
+  .gear-head{flex-direction:column;align-items:stretch}
+  .gear-filter{justify-content:center}
+  .gear-chip{flex:1 1 calc(50% - 8px)}
+  .gear-chip .gc-txt b,.gear-chip .gc-txt span{white-space:normal}
+}
+
 </style>
 </head>
 <body>
@@ -1661,7 +1800,10 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <!-- ── NAV ── -->
 <nav id="nav" aria-label="Huvudnavigation">
-  <div class="nav-logo">💪 GymApp</div>
+  <div class="nav-brand">
+    <span class="brand-mark" aria-hidden="true">G</span>
+    <span class="nav-logo">Gymlig</span>
+  </div>
   <div class="nav-links" role="tablist">
     <button class="nlink on" role="tab" data-act="goTab" data-tab="home" data-i="0">🏠 Hem</button>
     <button class="nlink"    role="tab" data-act="goTab" data-tab="workout" data-i="1">🏋️ Schema</button>
@@ -1671,7 +1813,7 @@ body.lowfx .br-fill{filter:none;transition:none}
   <div class="nav-right">
     <!-- Installera-knapp (visas bara om appen INTE är installerad) -->
     <button id="nav-inst" type="button" data-act="install"
-            title="Installera GymApp på hemskärmen" aria-label="Installera GymApp">
+            title="Installera Gymlig på hemskärmen" aria-label="Installera Gymlig">
       <span class="ni-ico" aria-hidden="true">📲</span><span id="nav-inst-lbl">Installera</span>
     </button>
     <!-- Today's type badge -->
@@ -1684,8 +1826,8 @@ body.lowfx .br-fill{filter:none;transition:none}
   <div class="page-shell">
     <div class="hero">
       <div class="hero-greet"><span class="hg-dot" aria-hidden="true"></span><span id="greet-txt">Välkommen</span></div>
-      <h1>💪 <em>GymApp</em></h1>
-      <p id="hero-sub">Välj ett schema och börja träna!</p>
+      <h1><em>Gymlig</em></h1>
+      <p id="hero-sub">Dagens pass, vikter och balans – utan konto, direkt i fickan.</p>
     </div>
 
     <!-- Bento-dashboard: 1 kolumn på mobil, 2 kolumner på surfplatta/desktop -->
@@ -1730,10 +1872,10 @@ body.lowfx .br-fill{filter:none;transition:none}
 
       <div class="hb-col">
         <!-- Installera appen – knapp (döljs automatiskt när appen är installerad) -->
-        <button id="home-inst" type="button" data-act="install" aria-label="Installera GymApp på hemskärmen">
+        <button id="home-inst" type="button" data-act="install" aria-label="Installera Gymlig på hemskärmen">
           <span class="hi-ico" aria-hidden="true">📲</span>
           <span class="hi-txt">
-            <b id="home-inst-title">Installera GymApp</b>
+            <b id="home-inst-title">Installera Gymlig</b>
             <span id="home-inst-sub">Lägg till på hemskärmen – öppnas i helskärm och funkar offline.</span>
           </span>
           <span class="hi-arrow" aria-hidden="true">›</span>
@@ -1826,6 +1968,20 @@ body.lowfx .br-fill{filter:none;transition:none}
         <button class="wk-new" data-act="openBuilder" aria-label="Skapa eget schema">➕ Eget schema</button>
       </div>
     </div>
+
+    <!-- Redskap hemma – styr vilka hemmaövningar som passar -->
+    <section class="gear-card" aria-labelledby="gear-title">
+      <div class="gear-head">
+        <div>
+          <h2 class="gear-title" id="gear-title">🏠 Redskap hemma</h2>
+          <p class="gear-sub" id="gear-sub">Markera det du har – hemmapassen anpassas.</p>
+        </div>
+        <button type="button" class="gear-filter" id="gear-filter" data-act="gearFilter" aria-pressed="false">
+          <span class="gf-dot" aria-hidden="true"></span>Visa bara mina
+        </button>
+      </div>
+      <div class="gear-chips" id="gear-chips" role="group" aria-label="Redskap du har hemma"></div>
+    </section>
 
     <div class="wk-grid" id="wk-grid" role="list"></div>
   </div>
@@ -1949,7 +2105,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 <div id="install-modal" role="dialog" aria-modal="true" aria-label="Installationsguide">
   <div class="modal-card">
     <div class="modal-handle"></div>
-    <div class="modal-title">📲 Installera GymApp</div>
+    <div class="modal-title">📲 Installera Gymlig</div>
     <p class="modal-sub">Lägg till på hemskärmen – öppnas som en riktig app!</p>
     <div class="os-tabs" role="tablist">
       <button class="os-tab on" id="tab-ios"     role="tab" data-act="switchOS" data-os="ios">🍎 iPhone / iPad</button>
@@ -1983,7 +2139,7 @@ body.lowfx .br-fill{filter:none;transition:none}
 
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v13  ·  No-login  ·  Firebase-ready
+   Gymlig v14  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2000,7 +2156,7 @@ const esc = t => String(t ?? '').replace(/[&<>"']/g, c =>
    LOG · tyst diagnostik
    Ingen console-utskrift i normalläge. Felen sparas
    i en ringbuffert och kan hämtas med  ?debug=1
-   eller  GymApp.log()  i konsolen vid felsökning.
+   eller  Gymlig.log()  i konsolen vid felsökning.
 ════════════════════════════════════════════════ */
 const LOG = (() => {
   const BUF = [];
@@ -2529,6 +2685,50 @@ const DESC_MAP  = {
 /* ════════════════════════════════════════════════
    BOOT
 ════════════════════════════════════════════════ */
+/* ── REDSKAP HEMMA ──────────────────────────────
+   Flaggor på övningarna (kb/ha/st/li/ro) mappas mot
+   en lista användaren markerar. Inget markerat = alla. */
+const GEAR = [
+  { id:'kb', ico:'🔔', name:'Kettlebell',    short:'KB',        sub:'16 kg' },
+  { id:'ha', ico:'🏋️', name:'Hantlar',       short:'hantlar',   sub:'5 kg ×2' },
+  { id:'st', ico:'🪑', name:'Stol',          short:'stol',      sub:'med ryggstöd' },
+  { id:'li', ico:'🛏️', name:'Liggunderlag',  short:'matta',     sub:'eller matta' },
+  { id:'ro', ico:'🎡', name:'Ab roller',     short:'ab roller', sub:'hjul' },
+  { id:'ba', ico:'🎗️', name:'Motståndsband', short:'band',      sub:'valfritt' },
+];
+const GEAR_IDS = GEAR.map(g => g.id);
+const GEAR_BY  = Object.fromEntries(GEAR.map(g => [g.id, g]));
+const GEAR_FLAGS = ['kb','ha','st','li','ro'];
+
+const ownedGear = () => new Set(Array.isArray(UD.homeGear) ? UD.homeGear : GEAR_IDS);
+const exGearIds = ex => GEAR_FLAGS.filter(k => ex && ex[k]);
+const exMissingGear = ex => {
+  const own = ownedGear();
+  return exGearIds(ex).filter(id => !own.has(id));
+};
+
+function renderGear() {
+  const box = $('#gear-chips');
+  if (!box) return;
+  const own = ownedGear();
+  box.innerHTML = GEAR.map(g => {
+    const on = own.has(g.id);
+    return `<button type="button" class="gear-chip${on ? ' on' : ''}"
+              data-act="gearToggle" data-g="${g.id}" aria-pressed="${on}">
+        <span class="gc-ico" aria-hidden="true">${g.ico}</span>
+        <span class="gc-txt"><b>${esc(g.name)}</b><span>${esc(g.sub)}</span></span>
+        <span class="gc-check" aria-hidden="true">✓</span>
+      </button>`;
+  }).join('') + (own.size < GEAR.length
+    ? `<button type="button" class="gear-all" data-act="gearAll">Markera alla</button>` : '');
+
+  const sub = $('#gear-sub');
+  if (sub) sub.textContent = `${own.size} av ${GEAR.length} redskap markerade – hemmapassen anpassas.`;
+
+  const f = $('#gear-filter');
+  if (f) f.setAttribute('aria-pressed', String(!!UD.gearFilter));
+}
+
 /* Sanera inläst data – en plats, tydliga regler */
 function sanitize(d) {
   const o = (d && typeof d === 'object' && !Array.isArray(d)) ? d : {};
@@ -2542,6 +2742,10 @@ function sanitize(d) {
   o.weights = obj(o.weights);
   o.grips   = obj(o.grips);
   o.setsOk  = obj(o.setsOk);
+  /* Redskap: utelämnad lista = alla redskap (oförändrat beteende) */
+  if (Array.isArray(o.homeGear)) o.homeGear = [...new Set(o.homeGear.filter(id => GEAR_IDS.includes(id)))];
+  else delete o.homeGear;
+  o.gearFilter = o.gearFilter === true;
   return o;
 }
 
@@ -2578,6 +2782,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* 2 · Rita det som syns direkt – resten väntar till nästa frame */
   const critical = [
     ['updNavDay',     updNavDay],
+    ['renderGear',    renderGear],
     ['showQotd',      showQotd],
     ['updStats',      updStats],
     ['renderSchGrid', renderSchGrid],
@@ -3172,12 +3377,29 @@ function renderWorkout() {
     if (day.t === 'rest') {
       h += `<p class="rest-txt">Aktiv återhämtning – promenera, stretcha eller yoga 🌿</p>`;
     } else {
-      h += `<div class="dtl">${DTL(day.t)}</div><ul class="ex-ul">`;
-      day.ex.forEach((ex, ei) => {
+      /* Hemma: visa bara övningar som matchar markerade redskap när filtret är på */
+      const isHomeDay  = day.t === 'home';
+      const pairs      = day.ex.map((ex, ei) => [ex, ei]).filter(([ex]) =>
+        !(isHomeDay && UD.gearFilter && exMissingGear(ex).length));
+      const hiddenCnt  = day.ex.length - pairs.length;
+      const missCnt    = isHomeDay ? day.ex.filter(ex => exMissingGear(ex).length).length : 0;
+
+      h += `<div class="dtl">${DTL(day.t)}</div>`;
+      if (isHomeDay && missCnt) {
+        h += hiddenCnt
+          ? `<p class="gear-note warn">🚫 ${hiddenCnt} ${hiddenCnt === 1 ? 'övning' : 'övningar'} dold${hiddenCnt === 1 ? '' : 'a'} – du saknar redskap. Stäng av ”Visa bara mina” för att se alla.</p>`
+          : `<p class="gear-note">🏠 ${missCnt} av ${day.ex.length} övningar kräver redskap du inte markerat.</p>`;
+      }
+      h += `<ul class="ex-ul">`;
+      pairs.forEach(([ex, ei]) => {
         const key  = `s${SCH}_d${di}_e${ei}`;
         const val  = (UD.weights || {})[key] || '';
         const emo  = matchEmoji(ex.n, ex.muscles);
         const img  = exImage(ex);
+        const missing = isHomeDay ? exMissingGear(ex) : [];
+        const missTag = missing.length
+          ? `<span class="tg miss">Saknar ${missing.map(id => GEAR_BY[id].short).join(' + ')}</span>`
+          : '';
 
         // Equipment tags
         const tags = [
@@ -3230,7 +3452,7 @@ function renderWorkout() {
           </div>`;
 
         h += `
-          <li class="ex-li" id="eli_${key}">
+          <li class="ex-li${missing.length ? ' no-gear' : ''}" id="eli_${key}">
             <button type="button" class="ex-head-btn" data-act="togEx" data-id="eli_${key}" aria-expanded="false">
               ${img
                 ? `<img class="ex-thumb" src="${esc(img)}" alt="" data-emo="${emo}" loading="lazy" decoding="async"/>`
@@ -3239,6 +3461,7 @@ function renderWorkout() {
                 <span class="ex-name">${esc(ex.n)}${tags}</span>
                 <div class="ex-sub">
                   ${repTag}
+                  ${missTag}
                   ${isHome ? fixedLbl : ''}
                 </div>
               </div>
@@ -3733,7 +3956,7 @@ window.togNotif = async () => {
     if (perm === 'granted') {
       notifOn = true;
       localStorage.setItem('ga-notif', 'true');
-      new Notification('💪 GymApp', { body:'Påminnelser aktiverade!', icon:'./icons/icon-192.png' });
+      new Notification('💪 Gymlig', { body:'Påminnelser aktiverade!', icon:'./icons/icon-192.png' });
       schedNotifs(); updNotifUI(); toast('🔔 Påminnelser aktiverade!');
     } else toast('❌ Tillstånd nekat av webbläsaren');
   }
@@ -4163,7 +4386,7 @@ window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
   _relatedInstalled = true;
   updInstallUI();
-  toast('✅ GymApp installerad!');
+  toast('✅ Gymlig installerad!');
 });
 
 /* Ingen banner – bara knapp i nav (uppe till höger) + kort på hemsidan.
@@ -4327,6 +4550,21 @@ Object.assign(ACTIONS, {
   switchOS:     d => switchOS(d.os),
   swReload:     () => swReload(),
   swDismiss:    () => swDismiss(),
+  gearToggle:   d => {
+    const own = ownedGear();
+    own.has(d.g) ? own.delete(d.g) : own.add(d.g);
+    UD.homeGear = GEAR_IDS.filter(id => own.has(id));
+    save(); renderGear(); LOG.safe('renderWorkout', renderWorkout);
+  },
+  gearAll:      () => {
+    UD.homeGear = [...GEAR_IDS];
+    save(); renderGear(); LOG.safe('renderWorkout', renderWorkout);
+  },
+  gearFilter:   () => {
+    UD.gearFilter = !UD.gearFilter;
+    save(); renderGear(); LOG.safe('renderWorkout', renderWorkout);
+    toast(UD.gearFilter ? '🏠 Visar bara övningar du har redskap till' : '🏠 Visar alla hemmaövningar');
+  },
 });
 
 /* ════════════════════════════════════════════════
@@ -4357,16 +4595,18 @@ window.GymBackupHost = {
 };
 
 /* Publikt felsöks-API – tyst tills det efterfrågas */
-window.GymApp = {
+window.Gymlig = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v13',
+  version: 'v14',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };
   },
   save:    () => { saveNow(); return 'sparat'; },
 };
+/* Bakåtkompatibelt alias – äldre konsolkommandon och tester */
+window.GymApp = window.Gymlig;
 
 /*
   🔐 KONTO-KOD – FÖRBEREDD, EJ AKTIVERAD

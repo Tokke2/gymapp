@@ -1,7 +1,7 @@
-# 💪 GymApp
+# Gymlig
 
 Personlig träningsapp som PWA – veckoschema, viktlogg med auto-progression,
-balansrutin och framsteg. Allt sparas lokalt på enheten, inget konto krävs och
+hemmaredskap, balansrutin och framsteg. Allt sparas lokalt på enheten, inget konto krävs och
 appen fungerar offline.
 
 **Live:** <https://tokke2.github.io/gymapp/>
@@ -14,6 +14,7 @@ appen fungerar offline.
 |---|---|
 | 📋 Egna scheman | Skapa, redigera och radera egna veckoscheman – via text, mall eller JSON |
 | 🏋️ Dagens pass | Schemafliken visar bara **dagens** träning – inte morgondagens |
+| 🏠 Redskap hemma | Markera kettlebell, hantlar, stol, matta och ab roller – hemmapassen anpassas |
 | 💾 Viktlogg | Spara kg per övning och se historiken under Framsteg |
 | ⬆️ Auto-progression | Efter 2 pass i rad på samma vikt föreslås +2,5 kg (bara förslag) |
 | ⚖️ Balansrutin | 6 balansövningar med timer och avbockning |
@@ -39,6 +40,25 @@ Schema-fliken:
 
 Schemat är ett vanligt eget schema – det kan redigeras eller raderas. Efter det
 läggs det inte tillbaka automatiskt.
+
+## Redskap hemma
+
+Under **Schema** finns kortet **🏠 Redskap hemma**. Markera vad du har:
+
+| Redskap | Används av |
+|---|---|
+| Kettlebell 16 kg | KB-övningar (`kb`) |
+| Hantlar 5 kg ×2 | hantelövningar (`ha`) |
+| Stol med ryggstöd | sittande övningar (`st`) |
+| Liggunderlag / matta | golvövningar (`li`) |
+| Ab roller | maghjul (`ro`) |
+| Motståndsband | reserverat för egna övningar (`ba`) |
+
+- Övningar som kräver något du **inte** markerat märks *Saknar …* och dagen visar
+  en notis om hur många som inte passar.
+- **Visa bara mina** döljer de övningarna helt i hemmapassen (gympassen påverkas inte).
+- Valet sparas lokalt (`homeGear`, `gearFilter`). Är inget sparat gäller **alla**
+  redskap, så appen beter sig som förut för äldre data.
 
 ## Egna scheman
 
