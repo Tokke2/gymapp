@@ -112,6 +112,9 @@ gymapp/                     ← repots rot (GitHub Pages)
 │   └── images/             ← övningsbilder
 ├── balansrutin.html        ← balansrutin, fristående sida
 ├── träningsschema.html     ← detaljerat schema med 100-reps-räknare
+├── visitkort.html          ← tryckmaterial: visitkort + A5-flyer, skriv ut eller ladda ner
+├── tryck/                  ← SVG-filer för tryck (visitkort fram/bak, flyer, QR)
+├── tools/bygg-tryck.py     ← genererar allt i tryck/ (kör om efter textändringar)
 ├── tests/                  ← node-test för backup.js
 ├── docs/PROJEKT.md         ← arbetsmanual, checklista och ändringslogg
 ├── GOOGLE-DRIVE-SETUP.md

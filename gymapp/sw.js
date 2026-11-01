@@ -29,8 +29,8 @@
    ①  VERSION & CACHE-NAMN
    ── Öka VERSION vid varje deploy för att rensa gamla cacher ──
 ═══════════════════════════════════════════════════════════════ */
-const VERSION   = 'gymlig-v15';
-const BUILT_AT  = '2026-11-01b';          // uppdateras vid deploy
+const VERSION   = 'gymlig-v16';
+const BUILT_AT  = '2026-11-01c';          // uppdateras vid deploy
 const CACHE_APP = `${VERSION}-app`;      // HTML, manifest, ikoner
 const CACHE_IMG = `${VERSION}-img`;      // Bilder (långa TTL)
 const ALL_CACHES = [CACHE_APP, CACHE_IMG];
@@ -53,6 +53,10 @@ const APP_SHELL = [
 const EXTRA_PAGES = [
   '../träningsschema.html',
   '../balansrutin.html',
+  '../visitkort.html',
+  '../tryck/visitkort-framsida.svg',
+  '../tryck/visitkort-baksida.svg',
+  '../tryck/flyer-a5.svg',
 ];
 
 /* ═══════════════════════════════════════════════════════════════
