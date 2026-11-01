@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="91mm" height="61mm" viewBox="0 0 91 61"
+     role="img" aria-label="Gymlig visitkort, framsida">
+  <title>Gymlig – visitkort framsida (85 × 55 mm + 3 mm bleed)</title>
+  <defs>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="stripe" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="headline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c4b5fd"/><stop offset="0.55" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.2" cy="0.92" r="0.9">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#4c1d95" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#080814" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.32" cy="1" r="0.6">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="0.85" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="edgeFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0"/>
+      <stop offset="0.65" stop-color="#7c3aed" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#a78bfa" stop-opacity="0.42"/>
+    </linearGradient>
+  </defs>
+  <rect width="91" height="61" fill="#080814"/>
+  <rect width="91" height="61" fill="url(#glowA)"/>
+  <rect width="91" height="61" fill="url(#glowB)"/>
+  <g fill="none" stroke="#a78bfa" stroke-opacity="0.16" stroke-width="0.1">
+    <path d="M-6 58 L26 22 L30 64"/>
+    <path d="M2 64 L33 28"/>
+    <path d="M-8 40 L20 12"/>
+    <path d="M12 66 L40 34"/>
+    <circle cx="20" cy="46" r="13"/>
+    <circle cx="20" cy="46" r="19"/>
+    <circle cx="20" cy="46" r="26"/>
+  </g>
+  <g fill="none" stroke="#67e8f9" stroke-opacity="0.1" stroke-width="0.08">
+    <path d="M-4 30 L18 8"/>
+    <path d="M0 50 L30 20"/>
+  </g>
+  <rect x="56" y="13.6" width="9.6" height="9.6" rx="2.59" fill="url(#mark)"/><text x="60.80" y="20.37" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="5.57" font-weight="700" text-anchor="middle" fill="#ffffff">G</text>
+  <text x="55.7" y="33.3" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="7.6" font-weight="700"
+        letter-spacing="-0.16" fill="#f8fafc">Gymlig</text>
+  <text x="56" y="38.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.3" fill="#a8b3c4">Ditt pass. Ditt tempo.</text>
+  <rect x="56" y="41.2" width="15.5" height="0.42" rx="0.21" fill="url(#accent)"/>
+  <text x="56" y="45.7" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="1.32" font-weight="700"
+        letter-spacing="0.34" fill="#8b96a8">TRÄNING · SCHEMA · BALANS</text>
+</svg>

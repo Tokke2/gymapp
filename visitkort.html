@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="color-scheme" content="dark"/>
+<meta name="author" content="Rickard Längkvist"/>
+<meta name="description" content="Gymlig – tryckmaterial i SVG: visitkort (framsida och baksida) och flyer i A5. Skriv ut direkt eller ladda ner."/>
+<meta name="theme-color" content="#06060d"/>
+<title>Tryckmaterial – Gymlig</title>
+<style>
+  :root{
+    --bg:#06060d; --bg2:#0b0b18;
+    --p:#7c3aed; --pl:#a78bfa; --c:#22d3ee; --cl:#67e8f9; --g:#4ade80;
+    --t1:#f8fafc; --t2:#a8b3c4; --t3:#64748b;
+    --b0:rgba(255,255,255,.08); --b1:rgba(255,255,255,.16);
+    --s0:rgba(255,255,255,.045);
+    --r12:12px; --r16:16px; --r20:20px; --rF:9999px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{color-scheme:dark;-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1100px 620px at 12% 92%,rgba(124,58,237,.22),transparent 62%),
+               radial-gradient(900px 520px at 88% 8%,rgba(34,211,238,.12),transparent 60%),
+               var(--bg);
+    color:var(--t1);line-height:1.55;min-height:100vh;
+    padding:clamp(18px,4vw,44px) clamp(14px,4vw,40px) 70px;
+  }
+  a{color:var(--cl)}
+  .wrap{max-width:1040px;margin:0 auto}
+
+  header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .mark{
+    width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+    font-weight:900;font-size:19px;color:#fff;
+    background:linear-gradient(140deg,var(--pl),var(--p) 55%,var(--c));
+    box-shadow:0 6px 18px rgba(124,58,237,.42),inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .brand{font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+  .brand span{color:var(--t3);font-weight:600}
+  h1{font-size:clamp(1.6rem,4.4vw,2.3rem);letter-spacing:-.03em;line-height:1.1;margin:18px 0 8px}
+  h1 em{font-style:normal;background:linear-gradient(120deg,#c4b5fd,#67e8f9);
+        -webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{color:var(--t2);font-size:.94rem;max-width:62ch}
+
+  .note{
+    margin:22px 0 0;padding:13px 16px;border-radius:var(--r12);
+    background:rgba(250,204,21,.07);border:1px solid rgba(250,204,21,.22);
+    color:#fdba74;font-size:.82rem;line-height:1.5;
+  }
+  .note b{color:#fde047}
+
+  section{margin-top:34px}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  h2{font-size:1.12rem;letter-spacing:-.01em}
+  .dims{font-size:.74rem;color:var(--t3);font-variant-numeric:tabular-nums}
+
+  .stage{
+    background:linear-gradient(160deg,#15152a,#0b0b16 60%,#0a0a14);
+    border-radius:var(--r16);padding:clamp(16px,3vw,30px);
+    display:flex;gap:clamp(14px,3vw,26px);flex-wrap:wrap;justify-content:center;
+    box-shadow:inset 0 0 0 1px var(--b0),0 20px 50px -30px rgba(124,58,237,.6);
+  }
+  .stage.dark{background:linear-gradient(160deg,#101024,#08080f)}
+  figure{flex:1 1 320px;max-width:470px;margin:0}
+  figure img{display:block;width:100%;height:auto;border-radius:10px;
+             box-shadow:0 22px 44px -18px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.06)}
+  figcaption{margin-top:9px;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+             text-transform:uppercase;color:var(--t3);text-align:center}
+  .stage.dark figcaption{color:var(--t3)}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:11px 17px;border-radius:var(--rF);
+    font-size:.83rem;font-weight:700;text-decoration:none;cursor:pointer;border:1px solid transparent;
+    transition:transform .14s var(--ease),background .14s var(--ease),border-color .14s var(--ease);
+    font-family:inherit;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:scale(.98)}
+  .btn:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+  .btn-primary{background:linear-gradient(135deg,var(--pl),var(--p));color:#fff;
+               box-shadow:0 6px 18px rgba(124,58,237,.36)}
+  .btn-ghost{background:var(--s0);border-color:var(--b0);color:var(--t2)}
+  .btn-ghost:hover{border-color:var(--b1);color:var(--t1)}
+
+  .meta{margin-top:12px;font-size:.76rem;color:var(--t3)}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--b0);
+         font-size:.78rem;color:var(--t3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  /* ── Utskrift ──
+     Motivets storlek är fysisk (91 × 61 mm respektive 154 × 216 mm).
+     Vi lägger det på ett vitt A4-ark i 100 % skala – då funkar en
+     vanlig skrivare, och bleed-kanten klipps bort efteråt. */
+  .print-only{display:none}
+  @media print{
+    @page{size:A4;margin:0}
+    html,body{
+      background:#fff !important;background-image:none !important;
+      padding:0 !important;margin:0 !important;color:#000;
+    }
+    .print-only{display:none}
+    html.print-card .site,
+    html.print-flyer .site{display:none !important}
+    .sheet{
+      width:210mm;height:297mm;background:#fff;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6mm;
+      break-after:page;page-break-after:always;
+    }
+    .sheet:last-child{break-after:auto;page-break-after:auto}
+    .sheet img{display:block;margin:0}
+    #print-card .sheet img{width:91mm;height:61mm}
+    #print-flyer .sheet img{width:154mm;height:216mm}
+    .sheet p{font:400 8pt/1.4 -apple-system,"Segoe UI",Arial,sans-serif;color:#8a8f98;margin:0}
+    html.print-card #print-card,
+    html.print-flyer #print-flyer{display:block}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+
+<div class="site">
+  <div class="wrap">
+    <header>
+      <span class="mark" aria-hidden="true">G</span>
+      <span class="brand">Gymlig <span>· tryckmaterial</span></span>
+    </header>
+
+    <h1>Visitkort och flyer i <em>SVG</em></h1>
+    <p class="lede">
+      Allt här är vektorgrafik med 3 mm bleed och går att skriva ut direkt från sidan
+      eller ladda ner som <code>.svg</code> och lämna till tryckeri.
+    </p>
+
+    <p class="note">
+      <b>Skriv ut på A4, skala 100 %, marginaler ”Inga”</b> och kryssa i
+      ”Bakgrundsgrafik”. Motivet läggs då på arket i sin exakta storlek – mät eller klipp
+      bort 3 mm bleed runt om. Visitkortet blir två sidor: framsida först, baksida sedan
+      (skriv dubbelsidigt eller vänd arket).
+    </p>
+
+    <section aria-labelledby="kort">
+      <div class="sec-head">
+        <h2 id="kort">Visitkort</h2>
+        <span class="dims">85 × 55 mm + 3 mm bleed · 91 × 61 mm</span>
+      </div>
+      <div class="stage">
+        <figure>
+          <img src="tryck/visitkort-framsida.svg" alt="Visitkort framsida med Gymlig-märket och tagline" loading="lazy"/>
+          <figcaption>Framsida</figcaption>
+        </figure>
+        <figure>
+          <img src="tryck/visitkort-baksida.svg" alt="Visitkort baksida med kontaktuppgifter och QR-kod" loading="lazy"/>
+          <figcaption>Baksida</figcaption>
+        </figure>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" type="button" data-print="card">🖨 Skriv ut visitkort</button>
+        <a class="btn btn-ghost" href="tryck/visitkort-framsida.svg" download="gymlig-visitkort-framsida.svg">⬇️ Framsida (SVG)</a>
+        <a class="btn btn-ghost" href="tryck/visitkort-baksida.svg" download="gymlig-visitkort-baksida.svg">⬇️ Baksida (SVG)</a>
+      </div>
+      <p class="meta">QR-koden pekar på <a href="https://tokke2.github.io/gymapp/">tokke2.github.io/gymapp</a>. Vill du ha telefon eller e-post på kortet ändrar vi det i <code>tools/bygg-tryck.py</code>.</p>
+    </section>
+
+    <section aria-labelledby="flyer">
+      <div class="sec-head">
+        <h2 id="flyer">Flyer A5</h2>
+        <span class="dims">148 × 210 mm + 3 mm bleed · 154 × 216 mm</span>
+      </div>
+      <div class="stage dark">
+        <figure style="max-width:420px">
+          <img src="tryck/flyer-a5.svg" alt="Gymlig flyer i A5 med rubriken Ditt pass. Ditt tempo." loading="lazy"/>
+          <figcaption>Flyer · A5 stående</figcaption>
+        </figure>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" type="button" data-print="flyer">🖨 Skriv ut flyer</button>
+        <a class="btn btn-ghost" href="tryck/flyer-a5.svg" download="gymlig-flyer-a5.svg">⬇️ Flyer A5 (SVG)</a>
+      </div>
+      <p class="meta">Trycker du hos ett tryckeri: skicka SVG-filerna som de är – de innehåller bleed och trycks i 300 dpi eller högre.</p>
+    </section>
+
+    <footer>
+      <span>© 2026 Rickard Längkvist · Gymlig</span>
+      <span><a href="gymapp/index.html">← Till appen</a></span>
+    </footer>
+  </div>
+</div>
+
+<!-- Endast för utskrift -->
+<div class="print-only" id="print-card">
+  <div class="sheet">
+    <img src="tryck/visitkort-framsida.svg" alt=""/>
+    <p>Framsida · 91 × 61 mm inkl. 3 mm bleed – klipp 85 × 55 mm</p>
+  </div>
+  <div class="sheet">
+    <img src="tryck/visitkort-baksida.svg" alt=""/>
+    <p>Baksida · 91 × 61 mm inkl. 3 mm bleed – klipp 85 × 55 mm</p>
+  </div>
+</div>
+<div class="print-only" id="print-flyer">
+  <div class="sheet">
+    <img src="tryck/flyer-a5.svg" alt=""/>
+    <p>A5 · 154 × 216 mm inkl. 3 mm bleed – klipp 148 × 210 mm</p>
+  </div>
+</div>
+
+<script>
+  'use strict';
+  const root = document.documentElement;
+
+  document.querySelectorAll('[data-print]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.print;               // 'card' | 'flyer'
+      root.classList.remove('print-card', 'print-flyer');
+      root.classList.add('print-' + mode);
+      /* Låt webbläsaren måla om innan dialogen öppnas */
+      requestAnimationFrame(() => setTimeout(() => window.print(), 60));
+    });
+  });
+
+  window.addEventListener('afterprint', () => {
+    root.classList.remove('print-card', 'print-flyer');
+  });
+</script>
+</body>
+</html>
