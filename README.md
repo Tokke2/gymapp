@@ -20,6 +20,8 @@ appen fungerar offline.
 | ⚖️ Balansrutin | 6 balansövningar med timer och avbockning |
 | 📈 Framsteg | Streak, antal pass, viktlogg och veckoöversikt |
 | 💽 Säkerhetskopia | Lokal JSON-fil och valfri manuell Google Drive-kopia |
+| 📈 Viktförslag | Föreslår +2,5 kg när alla set klarats två pass i rad – syns som märke i raden, ändrar aldrig vikten själv |
+| 🧭 Passframsteg | Rad överst i dagens pass: antal klara övningar, procent och uppskattad tid kvar |
 | 🖨 Tryckmaterial | Visitkort och A5-flyer i SVG – skrivs ut från `visitkort.html` eller laddas ner |
 | 📱 PWA | Installeras på hemskärmen och fungerar offline |
 | 🔔 Påminnelser | Lokal timer medan sidan körs (se [PUSH-PLAN.md](PUSH-PLAN.md)) |

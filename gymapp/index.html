@@ -1816,6 +1816,34 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 }
 .dg-reset:hover{color:#fff}
 
+/* F184 – passets framsteg */
+.passprog{
+  margin:0 0 12px;padding:9px 12px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(34,211,238,.07));
+  border:1px solid rgba(124,58,237,.24);
+}
+.pp-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:7px}
+.pp-txt{font-size:.72rem;font-weight:700;color:var(--t2)}
+.pp-pct{font-size:.66rem;font-weight:800;color:var(--pl);font-variant-numeric:tabular-nums}
+.pp-bar{height:5px;border-radius:var(--rF);background:rgba(255,255,255,.08);overflow:hidden}
+.pp-bar i{display:block;height:100%;border-radius:inherit;
+          background:linear-gradient(90deg,var(--p),var(--c));
+          transition:width .45s var(--ease)}
+.passprog.done{border-color:rgba(74,222,128,.4);background:linear-gradient(135deg,rgba(74,222,128,.14),rgba(34,211,238,.07))}
+.passprog.done .pp-pct{color:var(--gl)}
+
+/* F180 – "har inte den" i förslagsrutan */
+.ab-no{
+  align-self:flex-start;margin-top:2px;padding:6px 11px;border-radius:var(--rF);
+  font-size:.68rem;font-weight:800;color:var(--t2);
+  background:rgba(255,255,255,.06);border:1px solid var(--b0);
+  transition:background var(--fast),border-color var(--fast),color var(--fast);
+}
+.ab-no:hover{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.34);color:var(--rl)}
+
+/* F183 – förslag om högre vikt direkt i raden */
+.tg.up{background:rgba(124,58,237,.16);color:#ddd6fe;border:1px solid rgba(167,139,250,.38)}
+
 @media(max-width:520px){
   .gear-head{flex-direction:column;align-items:stretch}
   .gear-filter{justify-content:center}
@@ -2185,7 +2213,7 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 
 <script>
 /* ════════════════════════════════════════════════
-   Gymlig v17  ·  No-login  ·  Firebase-ready
+   Gymlig v18  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2759,6 +2787,63 @@ const exMissingGear = (ex, own) => {
   return exGearIds(ex).filter(id => !set.has(id));
 };
 
+/* ── F184 · PASSETS FRAMSTEG ─────────────────────
+   Räknar hur många övningar i passet som markerats
+   klara idag och uppskattar återstående tid. */
+const PASS_MIN = { gym: 30, home: 14, rest: 0 };
+
+function passStats(di, day) {
+  const today = new Date().toLocaleDateString('sv-SE');
+  const total = (day.ex || []).length;
+  let done = 0;
+  (day.ex || []).forEach((_, ei) => {
+    const list = (UD.setsOk || {})[`s${SCH}_d${di}_e${ei}`];
+    if (Array.isArray(list) && list.length && list[list.length - 1].d === today) done++;
+  });
+  const pct  = total ? Math.round(done / total * 100) : 0;
+  const left = Math.max(0, Math.round((PASS_MIN[day.t] ?? 20) * (total - done) / (total || 1)));
+  return { total, done, pct, left };
+}
+
+function passProgress(di, day, isToday) {
+  if (day.t === 'rest' || !(day.ex || []).length) return '';
+  const { total, done, pct, left } = passStats(di, day);
+  const full = done === total;
+  return `<div class="passprog${full ? ' done' : ''}"${isToday ? ' id="passprog"' : ''}
+               data-d="${di}" data-total="${total}"
+               role="progressbar" aria-valuemin="0" aria-valuemax="${total}"
+               aria-valuenow="${done}" aria-label="Passets framsteg">
+    <div class="pp-top">
+      <span class="pp-txt">${full
+        ? '🎉 Passet klart – snyggt jobbat'
+        : `${done} av ${total} övningar klara · ≈ ${left} min kvar`}</span>
+      <span class="pp-pct">${pct} %</span>
+    </div>
+    <div class="pp-bar"><i style="width:${pct}%"></i></div>
+  </div>`;
+}
+
+/* Uppdatera bara framstegsraden – panelen får ligga kvar öppen */
+function updPassProgress() {
+  const el = $('#passprog');
+  if (!el) return;
+  const di  = +el.dataset.d;
+  const day = allSched()[SCH]?.days?.[di];
+  if (!day) return;
+  const { total, done, pct, left } = passStats(di, day);
+  const full = done === total;
+  const txt = el.querySelector('.pp-txt');
+  const pctEl = el.querySelector('.pp-pct');
+  const bar = el.querySelector('.pp-bar i');
+  if (txt) txt.textContent = full
+    ? '🎉 Passet klart – snyggt jobbat'
+    : `${done} av ${total} övningar klara · ≈ ${left} min kvar`;
+  if (pctEl) pctEl.textContent = pct + ' %';
+  if (bar) bar.style.width = pct + '%';
+  el.classList.toggle('done', full);
+  el.setAttribute('aria-valuenow', String(done));
+}
+
 /* Rad med redskapsknappar för ett enskilt pass */
 function gearRow(di, own, over) {
   const chips = GEAR.map(g => {
@@ -3246,6 +3331,7 @@ function renderSchGrid() {
    Föreslår +2,5 kg när alla set klarats två pass i rad.
    Endast förslag – ändrar aldrig vikten automatiskt.
 ════════════════════════════════════════════════ */
+const kg       = n => String(n).replace('.', ',');   // 42.5 → 42,5
 const PROG_STEP     = 2.5;   // kg som föreslås
 const PROG_NEEDED   = 2;     // antal lyckade pass i rad som krävs
 const PROG_MAX_DAYS = 45;    // äldre resultat räknas inte
@@ -3294,6 +3380,7 @@ window.markSetsOk = (key, name) => {
     UD.setsOk[key] = list;
     save();
     renderProgRow(key, name);
+    updPassProgress();
     toast('↩️ Markering borttagen');
     return;
   }
@@ -3303,6 +3390,7 @@ window.markSetsOk = (key, name) => {
   UD.setsOk[key] = list;
   save();
   renderProgRow(key, name);
+  updPassProgress();
 
   const n = progStreak(key, curW);
   if (n >= PROG_NEEDED) {
@@ -3361,7 +3449,7 @@ function progRowHTML(key, ex) {
           <span><b>Dags att öka!</b> ${n} pass i rad med alla set klara på ${curW} kg.</span>
         </div>
         <div class="prog-acts">
-          <button class="prog-yes" data-act="acceptProg"  data-key="${key}" data-ex="${safeN}">Höj till ${nw} kg</button>
+          <button class="prog-yes" data-act="acceptProg"  data-key="${key}" data-ex="${safeN}">Höj till ${kg(nw)} kg</button>
           <button class="prog-no"  data-act="dismissProg" data-key="${key}" data-ex="${safeN}">Behåll</button>
         </div>
       </div>`;
@@ -3531,6 +3619,7 @@ function renderWorkout() {
       const missCnt    = isHomeDay ? day.ex.filter(ex => exMissingGear(ex, own).length).length : 0;
 
       h += `<div class="dtl">${DTL(day.t)}</div>`;
+      h += passProgress(di, day, isToday);
       if (isHomeDay) h += gearRow(di, own, over);
       if (isHomeDay && missCnt) {
         h += hiddenCnt
@@ -3549,6 +3638,11 @@ function renderWorkout() {
           : '';
         const sub = missing.length ? exSubstitute(ex, own) : null;
         const subTag = sub ? `<span class="tg alt">💡 Byt: ${esc(sub.n)}</span>` : '';
+        /* F183: syns i raden när två pass i rad klarats på samma vikt */
+        const curW    = parseFloat((UD.weights || {})[key]) || 0;
+        const nextW   = curW ? Math.round((curW + PROG_STEP) * 10) / 10 : 0;
+        const progTag = (isToday && curW && progReady(key, curW))
+          ? `<span class="tg up">📈 Testa ${kg(nextW)} kg</span>` : '';
         const altBox = sub ? `
           <div class="alt-box">
             <span class="ab-ico" aria-hidden="true">💡</span>
@@ -3557,6 +3651,11 @@ function renderWorkout() {
               <p>${esc(sub.why)}</p>
               <span class="ab-meta">${esc(sub.s)} · ${esc(sub.r)}</span>
             </div>
+            <button type="button" class="ab-no" data-act="notHave"
+                    data-d="${di}" data-g="${missing[0]}"
+                    title="Ta bort ${esc(GEAR_BY[missing[0]]?.name || 'redskapet')} från hela det här passet">
+              🙅 Har inte den
+            </button>
           </div>` : '';
 
         // Equipment tags
@@ -3621,6 +3720,7 @@ function renderWorkout() {
                   ${repTag}
                   ${missTag}
                   ${subTag}
+                  ${progTag}
                   ${isHome ? fixedLbl : ''}
                 </div>
               </div>
@@ -4729,6 +4829,18 @@ Object.assign(ACTIONS, {
     day.gear = GEAR_IDS.filter(id => own.has(id));
     save(); LOG.safe('renderWorkout', renderWorkout); vib(8);
   },
+  /* F180: "har inte den" → redskapet bortvalt i hela passet */
+  notHave:      d => {
+    const day = allSched()[SCH]?.days?.[+d.d];
+    if (!day) return;
+    const own = ownedGear(day);
+    own.delete(d.g);                 // redan borta = ingen ändring, men valet pinnas
+    day.gear = GEAR_IDS.filter(id => own.has(id));
+    save();
+    LOG.safe('renderWorkout', renderWorkout); vib(12);
+    const nm = GEAR_BY[d.g]?.name || 'redskapet';
+    toast(`🙅 ${nm} bortvalt i det här passet – förslagen gäller hela passet`);
+  },
   dayGearReset: d => {
     const day = allSched()[SCH]?.days?.[+d.d];
     if (!day) return;
@@ -4774,7 +4886,7 @@ window.GymBackupHost = {
 window.Gymlig = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v15',
+  version: 'v18',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };
