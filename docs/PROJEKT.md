@@ -888,6 +888,20 @@ Räknas som "finns i spec" – nästa `förslag` måste ge andra idéer.
 | F174 | 🆕 **"Vad är nytt" efter uppdatering** – ett kort ark visar de senaste ändringarna första gången efter en ny version |
 | F175 | 📦 **Export/import av enskild övning** – spara eller skicka en övning som JSON och lägg in den i ett annat schema |
 
+**Omgång 2 – efter v16 (2026-11-01)**
+| # | Idé |
+|---|---|
+| F176 | 📇 **Visitkort med dina uppgifter** – e-post, telefon och Instagram som fält på `visitkort.html`; SVG:n uppdateras i webbläsaren innan utskrift eller nedladdning |
+| F177 | 🔳 **Schema som QR** – knapp i schemat som gör en QR av schemat (JSON i länken); skanna med andra telefonen och importera utan konto och utan nät |
+| F178 | 🖨 **Skriv ut dagens pass** – utskriftsvänlig A4 av dagsvyn med övningar, set × reps, vikt och kryssrutor att fylla i med penna |
+| F179 | 🏠 **Redskap per pass** – redskapsval per dag i stället för globalt, så hemmapasset kan sakna skivstång medan gympasset har allt |
+| F180 | 🙅 **"Har inte den" i panelen** – ett tryck i ersättningspanelen markerar redskapet som saknat och byter övningen i hela passet, inte bara i raden |
+| F181 | 📊 **Veckovolym per muskelgrupp** – staplar i Framsteg som visar set per muskelgrupp den här veckan jämfört med förra |
+| F182 | ⏱️ **Automatisk setvila** – bockar du av ett set startar vilotimern med övningens vilotid; nästa set ligger redo när den ringer |
+| F183 | 📈 **Viktförslag från förra passet** – panelen föreslår 42,5 kg när alla reps klarats på 40 kg två pass i rad (regeln synlig, höjningen aldrig automatisk) |
+| F184 | 🧭 **Passprogress** – tunn rad överst i dagsvyn: "3 av 12 set klara · 18 min kvar" räknat på set, reps och vila |
+| F185 | 🔍 **Sök** – sökfält i Schema som filtrerar övningar och scheman på namn, muskel och redskap |
+
 ---
 
 ## ✅ Checklista
