@@ -89,23 +89,35 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--b0);
          font-size:.78rem;color:var(--t3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-  /* ── Utskrift ── */
+  /* ── Utskrift ──
+     Motivets storlek är fysisk (91 × 61 mm respektive 154 × 216 mm).
+     Vi lägger det på ett vitt A4-ark i 100 % skala – då funkar en
+     vanlig skrivare, och bleed-kanten klipps bort efteråt. */
   .print-only{display:none}
   @media print{
-    html,body{background:#fff;padding:0;margin:0}
+    @page{size:A4;margin:0}
+    html,body{
+      background:#fff !important;background-image:none !important;
+      padding:0 !important;margin:0 !important;color:#000;
+    }
     .print-only{display:none}
     html.print-card .site,
     html.print-flyer .site{display:none !important}
+    .sheet{
+      width:210mm;height:297mm;background:#fff;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6mm;
+      break-after:page;page-break-after:always;
+    }
+    .sheet:last-child{break-after:auto;page-break-after:auto}
+    .sheet img{display:block;margin:0}
+    #print-card .sheet img{width:91mm;height:61mm}
+    #print-flyer .sheet img{width:154mm;height:216mm}
+    .sheet p{font:400 8pt/1.4 -apple-system,"Segoe UI",Arial,sans-serif;color:#8a8f98;margin:0}
     html.print-card #print-card,
     html.print-flyer #print-flyer{display:block}
-    #print-card img{display:block;width:91mm;height:61mm;
-                    break-after:page;page-break-after:always}
-    #print-card img:last-child{break-after:auto;page-break-after:auto}
-    #print-flyer img{display:block;width:154mm;height:216mm}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
 </style>
-<style id="print-page"></style>
 </head>
 <body>
 
@@ -123,8 +135,9 @@
     </p>
 
     <p class="note">
-      <b>Skriv ut i 100 % skala utan marginaler</b> och kryssa i ”Bakgrundsgrafik” i
-      utskriftsdialogen. Visitkortet skrivs som två sidor – framsida först, baksida sedan
+      <b>Skriv ut på A4, skala 100 %, marginaler ”Inga”</b> och kryssa i
+      ”Bakgrundsgrafik”. Motivet läggs då på arket i sin exakta storlek – mät eller klipp
+      bort 3 mm bleed runt om. Visitkortet blir två sidor: framsida först, baksida sedan
       (skriv dubbelsidigt eller vänd arket).
     </p>
 
@@ -178,16 +191,24 @@
 
 <!-- Endast för utskrift -->
 <div class="print-only" id="print-card">
-  <img src="tryck/visitkort-framsida.svg" alt=""/>
-  <img src="tryck/visitkort-baksida.svg" alt=""/>
+  <div class="sheet">
+    <img src="tryck/visitkort-framsida.svg" alt=""/>
+    <p>Framsida · 91 × 61 mm inkl. 3 mm bleed – klipp 85 × 55 mm</p>
+  </div>
+  <div class="sheet">
+    <img src="tryck/visitkort-baksida.svg" alt=""/>
+    <p>Baksida · 91 × 61 mm inkl. 3 mm bleed – klipp 85 × 55 mm</p>
+  </div>
 </div>
 <div class="print-only" id="print-flyer">
-  <img src="tryck/flyer-a5.svg" alt=""/>
+  <div class="sheet">
+    <img src="tryck/flyer-a5.svg" alt=""/>
+    <p>A5 · 154 × 216 mm inkl. 3 mm bleed – klipp 148 × 210 mm</p>
+  </div>
 </div>
 
 <script>
   'use strict';
-  const pageRule = document.getElementById('print-page');
   const root = document.documentElement;
 
   document.querySelectorAll('[data-print]').forEach(btn => {
@@ -195,9 +216,6 @@
       const mode = btn.dataset.print;               // 'card' | 'flyer'
       root.classList.remove('print-card', 'print-flyer');
       root.classList.add('print-' + mode);
-      pageRule.textContent = mode === 'card'
-        ? '@page{size:91mm 61mm;margin:0}'
-        : '@page{size:154mm 216mm;margin:0}';
       /* Låt webbläsaren måla om innan dialogen öppnas */
       requestAnimationFrame(() => setTimeout(() => window.print(), 60));
     });
@@ -205,7 +223,6 @@
 
   window.addEventListener('afterprint', () => {
     root.classList.remove('print-card', 'print-flyer');
-    pageRule.textContent = '';
   });
 </script>
 </body>

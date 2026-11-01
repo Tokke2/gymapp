@@ -511,6 +511,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 19 | 2026-11-01 | **Namnbyte till Gymlig + designlyft + redskap hemma** – nytt visningsnamn i titel, manifest, nav, rubrik, sidfot och dokumentation (lagringsnycklar och API-alias orörda), mjukare ytor och större träffytor i layouten, samt kortet **🏠 Redskap hemma** där kettlebell, hantlar, stol, matta, ab roller och band kan markeras. Övningar som kräver saknat redskap märks, filtret **Visa bara mina** döljer dem i hemmapassen, och valet sparas i `homeGear`/`gearFilter`. Service worker v14. |
 | 20 | 2026-11-01 | **Ersättningsförslag** – varje hemmapassövning som kräver ett redskap du inte markerat får ett konkret alternativ (`SUBSTITUTES` + `exSubstitute()`): kroppsvikt eller 1,5 l-flaska, med kort förklaring och set/reps både i raden och i panelen. Generisk fallback per redskap för egna övningar. Service worker v15. |
 | 21 | 2026-11-01 | **Tryckmaterial** – `visitkort.html` visar visitkortets fram- och baksida samt A5-flyern som vektorgrafik, med **Skriv ut** (rätt pappersstorlek via `@page`, 100 % skala) och nedladdning som `.svg`. All grafik genereras av `tools/bygg-tryck.py` till `tryck/` (85×55 mm och A5, båda med 3 mm bleed, QR-kod inbäddad). Länk i appens sidfot. Service worker v16 cachar sidan och SVG-filerna. |
+| 22 | 2026-11-01 | **Redskap per pass (F179)** – varje hemmapass har en rad *🏠 Redskap* i dagsvyn; valet sparas som `gear` på dagen och gäller bara den dagen, med `↺ Mina` för att gå tillbaka till kortets lista. Ersättningsförslag, *Saknar* och filtret **Visa bara mina** räknar mot passets egen lista. Ogiltiga id:n saneras vid start. Trycksidan skriver nu på **A4 i 100 % skala** (motivet i exakt mm-mått, bleed klipps bort) i stället för egen pappersstorlek, så en vanlig kontorsskrivare fungerar. Service worker v17. |
 
 ---
 
@@ -940,7 +941,7 @@ Lokal server:  python3 -m http.server 8080
 
 ---
 
-*Gymlig v14 · Glassmorphism · PWA · Local-first · Firebase-ready*
+*Gymlig v17 · Glassmorphism · PWA · Local-first · Firebase-ready*
 
 ---
 

@@ -1785,6 +1785,37 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 }
 .gear-note.warn{background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.24);color:var(--rl)}
 
+/* Redskap per pass – egna val på en enskild dag */
+.daygear{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  margin:0 0 10px;padding:8px 10px;border-radius:12px;
+  background:rgba(255,255,255,.03);border:1px solid var(--b0);
+}
+.dg-lbl{
+  font-size:.6rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--t3);margin-right:2px;
+}
+.dg-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 9px;border-radius:var(--rF);
+  font-size:.65rem;font-weight:700;color:var(--t3);
+  background:rgba(255,255,255,.04);border:1px solid var(--b0);
+  filter:grayscale(.65);opacity:.8;
+  transition:background var(--fast) var(--ease),border-color var(--fast) var(--ease),
+             color var(--fast) var(--ease),filter var(--fast),opacity var(--fast);
+}
+.dg-chip:hover{border-color:var(--b1);opacity:1}
+.dg-chip:active{transform:scale(.96)}
+.dg-chip.on{
+  background:rgba(74,222,128,.14);border-color:rgba(74,222,128,.4);color:var(--t1);
+  filter:none;opacity:1;
+}
+.dg-reset{
+  margin-left:auto;padding:5px 8px;border-radius:var(--rF);border:0;background:transparent;
+  font-size:.63rem;font-weight:800;color:var(--cl);text-decoration:underline dotted;
+}
+.dg-reset:hover{color:#fff}
+
 @media(max-width:520px){
   .gear-head{flex-direction:column;align-items:stretch}
   .gear-filter{justify-content:center}
@@ -2154,7 +2185,7 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 
 <script>
 /* ════════════════════════════════════════════════
-   Gymlig v16  ·  No-login  ·  Firebase-ready
+   Gymlig v17  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2715,12 +2746,33 @@ const GEAR_IDS = GEAR.map(g => g.id);
 const GEAR_BY  = Object.fromEntries(GEAR.map(g => [g.id, g]));
 const GEAR_FLAGS = ['kb','ha','st','li','ro'];
 
-const ownedGear = () => new Set(Array.isArray(UD.homeGear) ? UD.homeGear : GEAR_IDS);
+/* Redskap kan väljas per pass (day.gear). Saknas det gäller
+   listan i kortet "Redskap hemma" – som därför är standard. */
+const hasGearOverride = day => Array.isArray(day?.gear);
+const ownedGear = day => new Set(
+  hasGearOverride(day) ? day.gear
+                       : (Array.isArray(UD.homeGear) ? UD.homeGear : GEAR_IDS)
+);
 const exGearIds = ex => GEAR_FLAGS.filter(k => ex && ex[k]);
-const exMissingGear = ex => {
-  const own = ownedGear();
-  return exGearIds(ex).filter(id => !own.has(id));
+const exMissingGear = (ex, own) => {
+  const set = own || ownedGear();
+  return exGearIds(ex).filter(id => !set.has(id));
 };
+
+/* Rad med redskapsknappar för ett enskilt pass */
+function gearRow(di, own, over) {
+  const chips = GEAR.map(g => {
+    const on = own.has(g.id);
+    return `<button type="button" class="dg-chip${on ? ' on' : ''}"
+              data-act="dayGear" data-d="${di}" data-g="${g.id}"
+              aria-pressed="${on}" aria-label="${esc(g.name)} – ${on ? 'har' : 'saknar'}">
+        ${g.ico}<span>${esc(g.short)}</span></button>`;
+  }).join('');
+  return `<div class="daygear" role="group" aria-label="Redskap för det här passet">
+    <span class="dg-lbl">🏠 Redskap</span>${chips}
+    ${over ? `<button type="button" class="dg-reset" data-act="dayGearReset" data-d="${di}">↺ Mina</button>` : ''}
+  </div>`;
+}
 
 function renderGear() {
   const box = $('#gear-chips');
@@ -2738,7 +2790,7 @@ function renderGear() {
     ? `<button type="button" class="gear-all" data-act="gearAll">Markera alla</button>` : '');
 
   const sub = $('#gear-sub');
-  if (sub) sub.textContent = `${own.size} av ${GEAR.length} redskap markerade – hemmapassen anpassas.`;
+  if (sub) sub.textContent = `${own.size} av ${GEAR.length} redskap markerade – gäller pass som inte har eget val.`;
 
   const f = $('#gear-filter');
   if (f) f.setAttribute('aria-pressed', String(!!UD.gearFilter));
@@ -2804,8 +2856,8 @@ const GEAR_LABEL = {
   kb:'Kettlebell', ha:'Hantlar', st:'Stol', li:'Liggunderlag', ro:'Ab roller', ba:'Motståndsband',
 };
 
-function exSubstitute(ex) {
-  const missing = exMissingGear(ex);
+function exSubstitute(ex, own) {
+  const missing = exMissingGear(ex, own);
   if (!missing.length) return null;
   const t = _norm(ex?.n || '');
   for (const g of missing) {
@@ -2832,6 +2884,12 @@ function sanitize(d) {
   if (Array.isArray(o.homeGear)) o.homeGear = [...new Set(o.homeGear.filter(id => GEAR_IDS.includes(id)))];
   else delete o.homeGear;
   o.gearFilter = o.gearFilter === true;
+  /* Redskap per pass: okända id:n tas bort, tom lista = inga redskap */
+  o.mySched.forEach(sc => (sc.days || []).forEach(dy => {
+    if (!dy || typeof dy !== 'object') return;
+    if (Array.isArray(dy.gear)) dy.gear = [...new Set(dy.gear.filter(id => GEAR_IDS.includes(id)))];
+    else delete dy.gear;
+  }));
   return o;
 }
 
@@ -3465,12 +3523,15 @@ function renderWorkout() {
     } else {
       /* Hemma: visa bara övningar som matchar markerade redskap när filtret är på */
       const isHomeDay  = day.t === 'home';
+      const own        = ownedGear(day);
+      const over       = hasGearOverride(day);
       const pairs      = day.ex.map((ex, ei) => [ex, ei]).filter(([ex]) =>
-        !(isHomeDay && UD.gearFilter && exMissingGear(ex).length));
+        !(isHomeDay && UD.gearFilter && exMissingGear(ex, own).length));
       const hiddenCnt  = day.ex.length - pairs.length;
-      const missCnt    = isHomeDay ? day.ex.filter(ex => exMissingGear(ex).length).length : 0;
+      const missCnt    = isHomeDay ? day.ex.filter(ex => exMissingGear(ex, own).length).length : 0;
 
       h += `<div class="dtl">${DTL(day.t)}</div>`;
+      if (isHomeDay) h += gearRow(di, own, over);
       if (isHomeDay && missCnt) {
         h += hiddenCnt
           ? `<p class="gear-note warn">🚫 ${hiddenCnt} ${hiddenCnt === 1 ? 'övning' : 'övningar'} dold${hiddenCnt === 1 ? '' : 'a'} – du saknar redskap. Stäng av ”Visa bara mina” för att se alla.</p>`
@@ -3482,11 +3543,11 @@ function renderWorkout() {
         const val  = (UD.weights || {})[key] || '';
         const emo  = matchEmoji(ex.n, ex.muscles);
         const img  = exImage(ex);
-        const missing = isHomeDay ? exMissingGear(ex) : [];
+        const missing = isHomeDay ? exMissingGear(ex, own) : [];
         const missTag = missing.length
           ? `<span class="tg miss">Saknar ${missing.map(id => GEAR_BY[id].short).join(' + ')}</span>`
           : '';
-        const sub = missing.length ? exSubstitute(ex) : null;
+        const sub = missing.length ? exSubstitute(ex, own) : null;
         const subTag = sub ? `<span class="tg alt">💡 Byt: ${esc(sub.n)}</span>` : '';
         const altBox = sub ? `
           <div class="alt-box">
@@ -4658,6 +4719,22 @@ Object.assign(ACTIONS, {
   gearAll:      () => {
     UD.homeGear = [...GEAR_IDS];
     save(); renderGear(); LOG.safe('renderWorkout', renderWorkout);
+  },
+  /* Redskap per pass – rör bara den här dagens lista */
+  dayGear:      d => {
+    const day = allSched()[SCH]?.days?.[+d.d];
+    if (!day) return;
+    const own = ownedGear(day);
+    own.has(d.g) ? own.delete(d.g) : own.add(d.g);
+    day.gear = GEAR_IDS.filter(id => own.has(id));
+    save(); LOG.safe('renderWorkout', renderWorkout); vib(8);
+  },
+  dayGearReset: d => {
+    const day = allSched()[SCH]?.days?.[+d.d];
+    if (!day) return;
+    delete day.gear;
+    save(); LOG.safe('renderWorkout', renderWorkout); vib(8);
+    toast('🏠 Passet använder dina vanliga redskap igen');
   },
   gearFilter:   () => {
     UD.gearFilter = !UD.gearFilter;

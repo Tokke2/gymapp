@@ -20,6 +20,7 @@ appen fungerar offline.
 | ⚖️ Balansrutin | 6 balansövningar med timer och avbockning |
 | 📈 Framsteg | Streak, antal pass, viktlogg och veckoöversikt |
 | 💽 Säkerhetskopia | Lokal JSON-fil och valfri manuell Google Drive-kopia |
+| 🖨 Tryckmaterial | Visitkort och A5-flyer i SVG – skrivs ut från `visitkort.html` eller laddas ner |
 | 📱 PWA | Installeras på hemskärmen och fungerar offline |
 | 🔔 Påminnelser | Lokal timer medan sidan körs (se [PUSH-PLAN.md](PUSH-PLAN.md)) |
 
@@ -59,8 +60,11 @@ Under **Schema** finns kortet **🏠 Redskap hemma**. Markera vad du har:
   för KB-rodd, plankan i stället för ab roller. Förslaget förklarar varför och
   anger set/reps, så passet kan köras direkt utan redskap.
 - **Visa bara mina** döljer de övningarna helt i hemmapassen (gympassen påverkas inte).
-- Valet sparas lokalt (`homeGear`, `gearFilter`). Är inget sparat gäller **alla**
-  redskap, så appen beter sig som förut för äldre data.
+- **Eget val per pass:** varje hemmapass har en rad *🏠 Redskap* i dagsvyn. Ändrar du
+  där gäller det bara den dagen – bra när gympasset har allt men hemmapasset bara
+  hantlar. `↺ Mina` tar tillbaka kortets lista.
+- Valet sparas lokalt (`homeGear`, `gearFilter`, samt `gear` per dag i egna scheman).
+  Är inget sparat gäller **alla** redskap, så appen beter sig som förut för äldre data.
 
 ## Egna scheman
 
