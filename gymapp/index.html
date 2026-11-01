@@ -1759,6 +1759,19 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 }
 .gear-all:hover{background:rgba(34,211,238,.2)}
 
+/* Förslag på ersättning */
+.tg.alt{background:rgba(34,211,238,.12);color:var(--cl);border:1px solid rgba(34,211,238,.28)}
+.alt-box{
+  display:flex;gap:10px;margin:0 0 12px;padding:12px 13px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(34,211,238,.09),rgba(124,58,237,.06));
+  border:1px solid rgba(34,211,238,.24);
+}
+.alt-box .ab-ico{font-size:1.15rem;line-height:1.25;flex-shrink:0}
+.alt-box .ab-txt{min-width:0}
+.alt-box b{display:block;font-size:.78rem;color:var(--cl);line-height:1.35}
+.alt-box p{font-size:.72rem;color:var(--t2);line-height:1.5;margin:3px 0 5px}
+.alt-box .ab-meta{font-size:.66rem;font-weight:800;color:var(--pl);letter-spacing:.02em}
+
 /* Övningar som kräver redskap man inte markerat */
 .ex-li.no-gear .ex-head-btn{opacity:.72}
 .tg.miss{background:rgba(239,68,68,.12);color:var(--rl);border:1px solid rgba(239,68,68,.3)}
@@ -2139,7 +2152,7 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 
 <script>
 /* ════════════════════════════════════════════════
-   Gymlig v14  ·  No-login  ·  Firebase-ready
+   Gymlig v15  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2727,6 +2740,77 @@ function renderGear() {
 
   const f = $('#gear-filter');
   if (f) f.setAttribute('aria-pressed', String(!!UD.gearFilter));
+}
+
+/* ── ALTERNATIV NÄR REDSKAPET SAKNAS ────────────
+   Varje förslag använder det man faktiskt har:
+   kroppsvikt eller en 1,5 l-flaska. Förslagen
+   visas bara när redskapet är avmarkerat. */
+const SUBSTITUTES = [
+  { gear:'kb', re:/bent[- ]over\s*row|bordsstöd|rodd/i,
+    n:'Rodd med vattenflaska', s:'4×', r:'15–20/sida',
+    why:'Luta ena handen mot bordskanten och dra en 1,5 l-flaska mot revbenen. Samma dragrörelse, lättare vikt.' },
+  { gear:'kb', re:/kb.*(chest|bröst)|floor press|golvpress/i,
+    n:'Armhävning på knäna', s:'4×', r:'12–15',
+    why:'Samma pressmönster som golvpressen – kroppsvikten blir belastningen.' },
+  { gear:'kb', re:/glute bridge/i,
+    n:'Glute bridge på ett ben', s:'4×', r:'12/ben',
+    why:'Utan vikt: lyft ena foten, pressa upp med höften och håll en sekund i toppen.' },
+  { gear:'kb', re:/deadlift|marklyft/i,
+    n:'Höftfällning mot vägg', s:'4×', r:'15',
+    why:'Ryggen mot väggen, fötterna en bit ut. Skjut höften bakåt och res upp – samma höftledsrörelse.' },
+  { gear:'kb', re:/sumo/i,
+    n:'Sumo squat utan vikt', s:'4×', r:'20–25',
+    why:'Bred fotställning med händerna framför bröstet. Bromsa i bottenläget – tyngden räcker.' },
+  { gear:'kb', re:/press|axelpress|shoulder/i,
+    n:'Pike push-up på knä', s:'4×', r:'10–12',
+    why:'Höfterna högt, händerna i golvet, sänk huvudet mellan händerna och pressa upp. Tar axlarna utan vikt.' },
+  { gear:'kb', re:/squat|knäböj/i,
+    n:'Kroppsviktssquat med paus', s:'4×', r:'15–20',
+    why:'Samma rörelse utan vikt: håll två sekunder i botten så jobbar låren lika hårt.' },
+  { gear:'ha', re:/hantel.*biceps|bicepscurl|dumbbell curl|curl/i,
+    n:'Curl med vattenflaska', s:'4×', r:'20–30',
+    why:'Två 1,5 l-flaskor väger ungefär 3 kg. Samma curl, långsammare tempo – tre sekunder ned.' },
+  { gear:'ha', re:/lateral|sidolyft/i,
+    n:'Sidolyft med flaska', s:'4×', r:'20–25',
+    why:'En 1,5 l-flaska i varje hand eller en i taget. Lika högt, lika långsamt.' },
+  { gear:'ha', re:/shoulder press|axelpress|press/i,
+    n:'Armhävning i pike', s:'4×', r:'10–12',
+    why:'Axelpress utan vikt: höfterna högt, sänk huvudet mot golvet och pressa upp.' },
+  { gear:'st', re:/dips/i,
+    n:'Smal armhävning', s:'4×', r:'12–15',
+    why:'Händerna under axlarna och armbågarna intill kroppen – samma tricepsarbete som en stolsdips.' },
+  { gear:'st', re:/.*/i,
+    n:'Golvvariant', s:'4×', r:'15–20',
+    why:'Gör samma rörelse sittande eller liggande på golvet i stället för på stolen.' },
+  { gear:'ro', re:/.*/i,
+    n:'Plankan med armlyft', s:'4×', r:'30–40 sek',
+    why:'Håll plankan och lyft ena armen framåt växelvis – magen jobbar som med hjulet, utan hjul.' },
+  { gear:'li', re:/.*/i,
+    n:'Stående variant', s:'4×', r:'15–20',
+    why:'Samma rörelse stående på mjukt underlag, eller med en hand mot väggen för stöd.' },
+  { gear:'ba', re:/.*/i,
+    n:'Långsam tempo-variant', s:'4×', r:'12–15',
+    why:'Utan band: gör rörelsen långsamt, tre sekunder i varje riktning, så ökar belastningen.' },
+  { gear:'kb', re:/.*/i,
+    n:'Kroppsviktsvariant', s:'4×', r:'15–20',
+    why:'Gör samma rörelse utan vikt och bromsa på vägen ned – samma muskelgrupp, lägre belastning.' },
+];
+
+/* Kort namn på redskapet i förslaget */
+const GEAR_LABEL = {
+  kb:'Kettlebell', ha:'Hantlar', st:'Stol', li:'Liggunderlag', ro:'Ab roller', ba:'Motståndsband',
+};
+
+function exSubstitute(ex) {
+  const missing = exMissingGear(ex);
+  if (!missing.length) return null;
+  const t = _norm(ex?.n || '');
+  for (const g of missing) {
+    const hit = SUBSTITUTES.find(s => s.gear === g && s.re.test(t));
+    if (hit) return { ...hit, gearName: GEAR_LABEL[g] || 'redskapet' };
+  }
+  return null;
 }
 
 /* Sanera inläst data – en plats, tydliga regler */
@@ -3388,7 +3472,7 @@ function renderWorkout() {
       if (isHomeDay && missCnt) {
         h += hiddenCnt
           ? `<p class="gear-note warn">🚫 ${hiddenCnt} ${hiddenCnt === 1 ? 'övning' : 'övningar'} dold${hiddenCnt === 1 ? '' : 'a'} – du saknar redskap. Stäng av ”Visa bara mina” för att se alla.</p>`
-          : `<p class="gear-note">🏠 ${missCnt} av ${day.ex.length} övningar kräver redskap du inte markerat.</p>`;
+          : `<p class="gear-note">🏠 ${missCnt} av ${day.ex.length} övningar kräver redskap du inte markerat – varje rad har ett förslag på ersättning.</p>`;
       }
       h += `<ul class="ex-ul">`;
       pairs.forEach(([ex, ei]) => {
@@ -3400,6 +3484,17 @@ function renderWorkout() {
         const missTag = missing.length
           ? `<span class="tg miss">Saknar ${missing.map(id => GEAR_BY[id].short).join(' + ')}</span>`
           : '';
+        const sub = missing.length ? exSubstitute(ex) : null;
+        const subTag = sub ? `<span class="tg alt">💡 Byt: ${esc(sub.n)}</span>` : '';
+        const altBox = sub ? `
+          <div class="alt-box">
+            <span class="ab-ico" aria-hidden="true">💡</span>
+            <div class="ab-txt">
+              <b>Ingen ${esc(sub.gearName)}? Prova ${esc(sub.n)}</b>
+              <p>${esc(sub.why)}</p>
+              <span class="ab-meta">${esc(sub.s)} · ${esc(sub.r)}</span>
+            </div>
+          </div>` : '';
 
         // Equipment tags
         const tags = [
@@ -3462,6 +3557,7 @@ function renderWorkout() {
                 <div class="ex-sub">
                   ${repTag}
                   ${missTag}
+                  ${subTag}
                   ${isHome ? fixedLbl : ''}
                 </div>
               </div>
@@ -3478,6 +3574,7 @@ function renderWorkout() {
                   : `<div class="no-img"><span class="ni-emo">${emo}</span><span>${esc(ex.n)}</span></div>`}
                 ${gripPip(key, ex)}
               </div>
+              ${altBox}
               <div id="prog_${key}">${isHome ? '' : progRowHTML(key, ex)}</div>
               ${stepsH}
             </div>
@@ -4598,7 +4695,7 @@ window.GymBackupHost = {
 window.Gymlig = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v14',
+  version: 'v15',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };

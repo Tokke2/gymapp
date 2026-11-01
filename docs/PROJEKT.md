@@ -509,6 +509,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 17 | 2026-10-31 | **Bilder & bildbot** – bildtumme på varje övningsrad, automatisk bildmatchning även för äldre/importerade scheman, emoji-fallback om filen saknas, samt `tools/bildbot.cjs` (B4) som kontrollerar bilder, sw.js-listan och IMG_BANK. Service worker v12. |
 | 18 | 2026-10-31 | **Rätt bild per övning** – fyra nya illustrationer (`kb-bent-over-row`, `triceps-dips`, `dumbbell-curl`, `machine-shoulder-press`), namnet väger dubbelt i bildmatchningen så muskeltext inte kan sno bilden, bildboten upptäcker namn↔bild-mismatch och `--fix` byter till rätt bild, samt automatisk rättning av redan sparade scheman. Service worker v13. |
 | 19 | 2026-11-01 | **Namnbyte till Gymlig + designlyft + redskap hemma** – nytt visningsnamn i titel, manifest, nav, rubrik, sidfot och dokumentation (lagringsnycklar och API-alias orörda), mjukare ytor och större träffytor i layouten, samt kortet **🏠 Redskap hemma** där kettlebell, hantlar, stol, matta, ab roller och band kan markeras. Övningar som kräver saknat redskap märks, filtret **Visa bara mina** döljer dem i hemmapassen, och valet sparas i `homeGear`/`gearFilter`. Service worker v14. |
+| 20 | 2026-11-01 | **Ersättningsförslag** – varje hemmapassövning som kräver ett redskap du inte markerat får ett konkret alternativ (`SUBSTITUTES` + `exSubstitute()`): kroppsvikt eller 1,5 l-flaska, med kort förklaring och set/reps både i raden och i panelen. Generisk fallback per redskap för egna övningar. Service worker v15. |
 
 ---
 

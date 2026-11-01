@@ -54,8 +54,10 @@ Under **Schema** finns kortet **🏠 Redskap hemma**. Markera vad du har:
 | Ab roller | maghjul (`ro`) |
 | Motståndsband | reserverat för egna övningar (`ba`) |
 
-- Övningar som kräver något du **inte** markerat märks *Saknar …* och dagen visar
-  en notis om hur många som inte passar.
+- Övningar som kräver något du **inte** markerat märks *Saknar …*, och varje rad
+  får ett **konkret ersättningsförslag** – t.ex. rodd med vattenflaska i stället
+  för KB-rodd, plankan i stället för ab roller. Förslaget förklarar varför och
+  anger set/reps, så passet kan köras direkt utan redskap.
 - **Visa bara mina** döljer de övningarna helt i hemmapassen (gympassen påverkas inte).
 - Valet sparas lokalt (`homeGear`, `gearFilter`). Är inget sparat gäller **alla**
   redskap, så appen beter sig som förut för äldre data.
