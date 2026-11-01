@@ -29,8 +29,8 @@
    ①  VERSION & CACHE-NAMN
    ── Öka VERSION vid varje deploy för att rensa gamla cacher ──
 ═══════════════════════════════════════════════════════════════ */
-const VERSION   = 'gymlig-v18';
-const BUILT_AT  = '2026-11-01e';          // uppdateras vid deploy
+const VERSION   = 'gymlig-v19';
+const BUILT_AT  = '2026-11-01f';          // uppdateras vid deploy
 const CACHE_APP = `${VERSION}-app`;      // HTML, manifest, ikoner
 const CACHE_IMG = `${VERSION}-img`;      // Bilder (långa TTL)
 const ALL_CACHES = [CACHE_APP, CACHE_IMG];

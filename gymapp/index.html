@@ -62,7 +62,7 @@
   --day-rest: #a78bfa;
 
   /* ── TEXT ── */
-  --t1:#f8fafc; --t2:#a8b3c4; --t3:#64748b;
+  --t1:#f8fafc; --t2:#a8b3c4; --t3:#7c8798;
 
   /* ── FORM ── */
   --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r20:20px; --r24:24px; --rF:9999px;
@@ -254,11 +254,20 @@ body.lowfx .orb{animation:none;filter:blur(56px)}
 .page-shell{width:100%;max-width:1180px;margin:0 auto}
 
 /* ── HOME — HERO & BENTO DASHBOARD ──────────── */
-.hero{text-align:center;padding:clamp(16px, 3vw, 28px) 0 clamp(14px, 2.2vw, 22px);position:relative}
+.hero{text-align:center;padding:clamp(8px, 1.8vw, 16px) 0 clamp(8px, 1.5vw, 14px);position:relative}
 .hero h1{
-  font-size:clamp(1.8rem, 4.5vw, 2.65rem);font-weight:900;
-  letter-spacing:-.05em;margin-bottom:7px;line-height:1.06;
+  font-size:clamp(1.05rem, 2.5vw, 1.32rem);font-weight:800;
+  letter-spacing:-.02em;margin-bottom:5px;line-height:1.3;
+  display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;
 }
+.hero h1 .hg-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 8px var(--g);flex-shrink:0;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+body.lowfx .hero h1 .hg-dot{animation:none}
+.hero h1 .hg-sep{color:var(--t3);font-weight:600}
+.hero h1 .hero-date{color:var(--pl)}
 .hero h1 em{
   font-style:normal;color:var(--pl);
   background:var(--grad-hero);background-size:300% 300%;
@@ -438,14 +447,15 @@ body.lowfx .hg-dot{animation:none}
 .adot-circle.missed{background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.22);color:var(--t3)}
 .adot-lbl{font-size:.58rem;color:var(--t3);font-weight:600}
 
-/* Section heading */
+/* Section heading – en regel för alla sektionsrubriker */
 .sh{
-  font-size:.68rem;font-weight:700;
-  text-transform:uppercase;letter-spacing:.1em;
-  color:var(--t3);margin-bottom:14px;
+  font-size:.68rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.11em;
+  color:var(--t2);margin:18px 0 12px;
   display:flex;align-items:center;gap:8px;
 }
 .sh::after{content:'';flex:1;height:1px;background:var(--b0)}
+.page-shell > .sh:first-child{margin-top:0}
 
 /* Notif banner */
 .notif-wrap{margin:0}
@@ -1373,6 +1383,54 @@ body.lowfx .br-fill{filter:none;transition:none}
   transition:transform var(--fast) var(--ease),border-color var(--fast) var(--ease);
 }
 #home-inst.show{display:flex}
+
+/* ── MER-KORTET på Hem ─────────────────────────
+   Underhåll (installation, påminnelser, kopia,
+   tryck) flyttat hit – startsidan ska handla
+   om träningen, inte om inställningar. */
+.mer-card{
+  background:var(--s0);border:1px solid var(--b0);border-radius:var(--r20);
+  padding:14px 14px 12px;
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  display:flex;flex-direction:column;gap:8px;
+}
+.mer-card .sh{margin:0 0 4px;font-size:.64rem}
+.mer-card .sh::after{display:none}
+.mer-it{
+  border:1px solid var(--b0);border-radius:14px;overflow:hidden;
+  background:rgba(255,255,255,.03);
+}
+.mer-it>summary{
+  display:flex;align-items:center;gap:11px;padding:11px 13px;
+  cursor:pointer;list-style:none;min-height:46px;
+  transition:background var(--fast) var(--ease);
+}
+.mer-it>summary::-webkit-details-marker{display:none}
+.mer-it>summary::marker{content:''}
+.mer-it>summary:hover{background:rgba(255,255,255,.05)}
+.mer-it>summary:focus-visible{outline:2px solid var(--c);outline-offset:-2px}
+.mer-ico{font-size:1.12rem;line-height:1;flex-shrink:0}
+.mer-txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.32}
+.mer-txt b{font-size:.8rem;font-weight:800;color:var(--t1)}
+.mer-txt span{font-size:.68rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mer-chev{color:var(--t3);font-size:.72rem;flex-shrink:0;transition:transform var(--fast) var(--ease)}
+.mer-it[open] .mer-chev{transform:rotate(180deg)}
+.mer-it[open]>summary{border-bottom:1px solid var(--b0)}
+.mer-it .notif-wrap,.mer-it .backup-card{
+  margin:0;padding:12px 13px;border:0;border-radius:0;
+  background:transparent;box-shadow:none;
+}
+.mer-it .notif-banner{padding:11px 12px}
+.mer-link{
+  display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:14px;
+  min-height:46px;text-decoration:none;color:inherit;
+  background:rgba(255,255,255,.03);border:1px solid var(--b0);
+  transition:background var(--fast) var(--ease),border-color var(--fast) var(--ease);
+}
+.mer-link:hover{background:rgba(255,255,255,.06);border-color:var(--b1)}
+
+/* ── D: tomma siffror ── */
+.stat.is-empty .stat-val{color:var(--t3);font-weight:700}
 #home-inst:hover{transform:translateY(-2px);border-color:rgba(124,58,237,.5)}
 #home-inst:focus-visible{outline:2px solid var(--c);outline-offset:2px}
 .hi-ico{font-size:1.7rem;flex-shrink:0}
@@ -1657,7 +1715,6 @@ body.lowfx .br-fill{filter:none;transition:none}
 .nav-logo{letter-spacing:-.02em}
 
 /* Sektionsrubriker */
-.sh{font-size:.66rem;font-weight:800;letter-spacing:.12em;color:var(--t2)}
 .sh::after{background:linear-gradient(90deg,var(--b0),transparent)}
 
 /* Synlig fokusmarkering för tangentbord */
@@ -1899,8 +1956,12 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 <section id="tab-home" class="pg on" aria-label="Hem">
   <div class="page-shell">
     <div class="hero">
-      <div class="hero-greet"><span class="hg-dot" aria-hidden="true"></span><span id="greet-txt">Välkommen</span></div>
-      <h1><em>Gymlig</em></h1>
+      <h1 class="hero-hi">
+        <span class="hg-dot" aria-hidden="true"></span>
+        <span id="greet-txt">Välkommen</span>
+        <span class="hg-sep" aria-hidden="true">·</span>
+        <span class="hero-date" id="hero-date"></span>
+      </h1>
       <p id="hero-sub">Dagens pass, vikter och balans – utan konto, direkt i fickan.</p>
     </div>
 
@@ -1945,6 +2006,9 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
       </div>
 
       <div class="hb-col">
+        <nav class="mer-card" aria-labelledby="mer-title">
+          <h2 class="sh" id="mer-title">Mer</h2>
+
         <!-- Installera appen – knapp (döljs automatiskt när appen är installerad) -->
         <button id="home-inst" type="button" data-act="install" aria-label="Installera Gymlig på hemskärmen">
           <span class="hi-ico" aria-hidden="true">📲</span>
@@ -1955,6 +2019,37 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
           <span class="hi-arrow" aria-hidden="true">›</span>
         </button>
 
+          <details class="mer-it">
+            <summary>
+              <span class="mer-ico" aria-hidden="true">🔔</span>
+              <span class="mer-txt"><b>Påminnelser</b><span id="mer-notif-state">Avstängda</span></span>
+              <span class="mer-chev" aria-hidden="true">▾</span>
+            </summary>
+        <!-- Notifications -->
+        <div class="notif-wrap">
+          <div class="notif-banner" role="region" aria-label="Påminnelser">
+            <span class="notif-ico" aria-hidden="true">🔔</span>
+            <div class="notif-text"><b>Påminnelser</b><p>Daglig notis om träning &amp; balans</p></div>
+            <button class="btn-notif off" id="notif-btn" data-act="togNotif">Aktivera</button>
+          </div>
+          <div class="notif-box" id="notif-box">
+            <div class="notif-box-title">⏰ Mina påminnelsetider</div>
+            <div class="time-row">
+              <div><label for="n-bt">⚖️ Balansrutin kl</label><input id="n-bt" type="time" value="08:00"/></div>
+              <div><label for="n-wt">🏋️ Träning kl</label><input id="n-wt" type="time" value="17:00"/></div>
+            </div>
+            <button class="btn-save" data-act="saveNotif">💾 Spara tider</button>
+            <span class="saved-lbl" id="n-saved" aria-live="polite">✅ Sparat!</span>
+          </div>
+        </div>
+          </details>
+
+          <details class="mer-it">
+            <summary>
+              <span class="mer-ico" aria-hidden="true">💾</span>
+              <span class="mer-txt"><b>Säkerhetskopia</b><span id="mer-backup-state">Sparas lokalt i telefonen</span></span>
+              <span class="mer-chev" aria-hidden="true">▾</span>
+            </summary>
         <section class="backup-card" aria-labelledby="backup-title">
           <h2 id="backup-title">💾 Säkerhetskopia</h2>
           <p>Spara scheman, viktlogg och balanshistorik. Google Drive är frivilligt och kräver internet.</p>
@@ -1977,29 +2072,19 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
           </details>
           <p class="backup-status" id="backup-status" role="status" aria-live="polite">Ingen Google-anslutning behövs för lokal fil.</p>
         </section>
+          </details>
+
+          <a class="mer-link" href="../visitkort.html">
+            <span class="mer-ico" aria-hidden="true">🖨</span>
+            <span class="mer-txt"><b>Tryckmaterial</b><span>Visitkort och flyer i SVG</span></span>
+            <span class="hi-arrow" aria-hidden="true">›</span>
+          </a>
+        </nav>
 
         <!-- Quote of the day -->
         <div class="qotd" id="qotd-wrap" style="display:none">
           <span id="qotd-text"></span>
           <b id="qotd-author"></b>
-        </div>
-
-        <!-- Notifications -->
-        <div class="notif-wrap">
-          <div class="notif-banner" role="region" aria-label="Påminnelser">
-            <span class="notif-ico" aria-hidden="true">🔔</span>
-            <div class="notif-text"><b>Påminnelser</b><p>Daglig notis om träning &amp; balans</p></div>
-            <button class="btn-notif off" id="notif-btn" data-act="togNotif">Aktivera</button>
-          </div>
-          <div class="notif-box" id="notif-box">
-            <div class="notif-box-title">⏰ Mina påminnelsetider</div>
-            <div class="time-row">
-              <div><label for="n-bt">⚖️ Balansrutin kl</label><input id="n-bt" type="time" value="08:00"/></div>
-              <div><label for="n-wt">🏋️ Träning kl</label><input id="n-wt" type="time" value="17:00"/></div>
-            </div>
-            <button class="btn-save" data-act="saveNotif">💾 Spara tider</button>
-            <span class="saved-lbl" id="n-saved" aria-live="polite">✅ Sparat!</span>
-          </div>
         </div>
       </div>
     </div>
@@ -2213,7 +2298,7 @@ html{scroll-padding-top:calc(var(--nav-h) + 14px)}
 
 <script>
 /* ════════════════════════════════════════════════
-   Gymlig v18  ·  No-login  ·  Firebase-ready
+   Gymlig v19  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -3176,6 +3261,11 @@ function updNavDay() {
                   : h < 23 ? 'God kväll 🌆'
                   :          'God natt 🌙';
   }
+  const dEl = $('#hero-date');
+  if (dEl) {
+    const dstr = new Date().toLocaleDateString('sv-SE', { weekday:'long', day:'numeric', month:'long' });
+    dEl.textContent = dstr.charAt(0).toUpperCase() + dstr.slice(1);
+  }
 
   /* Dagens pass-kort */
   const card = $('#today-hero');
@@ -3942,8 +4032,18 @@ function updStats() {
   const str   = calcStreak();
 
   const sb = $('#s-bal');   if (sb) sb.textContent = `${bal}/6`;
-  countTo($('#s-sess'),   sess);
-  countTo($('#s-streak'), str);
+
+  /* Nya användare ska mötas av "—", inte av tre nollor */
+  const stat = (sel, v) => {
+    const el = $(sel); if (!el) return;
+    const box = el.closest('.stat');
+    if (v > 0) { box?.classList.remove('is-empty'); countTo(el, v); }
+    else { box?.classList.add('is-empty'); el.textContent = '—'; }
+  };
+  stat('#s-sess',   sess);
+  stat('#s-streak', str);
+
+  updMerState();
 
   /* Firande när alla balansövningar är klara */
   if (bal >= 6 && UD._celebBal !== today) {
@@ -3951,6 +4051,25 @@ function updStats() {
     save();
     confetti();
     toast('🎉 Alla balansövningar klara idag!');
+  }
+}
+
+/* Sammanfattning i Mer-kortet: notisläge + sparad datamängd */
+function updMerState() {
+  const n = $('#mer-notif-state');
+  if (n) {
+    /* läs nyckeln direkt – funktionen kan köra innan notifOn hunnit sättas */
+    const on = localStorage.getItem('ga-notif') === 'true';
+    n.textContent = on ? 'På – daglig notis' : 'Avstängda';
+  }
+  const b = $('#mer-backup-state');
+  if (b) {
+    try {
+      const kb = new Blob([JSON.stringify(UD)]).size / 1024;
+      b.textContent = kb < 1
+        ? 'Sparas bara lokalt i telefonen'
+        : `${Math.round(kb)} kB sparat lokalt i telefonen`;
+    } catch { b.textContent = 'Sparas lokalt i telefonen'; }
   }
 }
 
@@ -4886,7 +5005,7 @@ window.GymBackupHost = {
 window.Gymlig = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v18',
+  version: 'v19',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };

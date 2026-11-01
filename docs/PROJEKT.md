@@ -513,6 +513,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 21 | 2026-11-01 | **Tryckmaterial** – `visitkort.html` visar visitkortets fram- och baksida samt A5-flyern som vektorgrafik, med **Skriv ut** (rätt pappersstorlek via `@page`, 100 % skala) och nedladdning som `.svg`. All grafik genereras av `tools/bygg-tryck.py` till `tryck/` (85×55 mm och A5, båda med 3 mm bleed, QR-kod inbäddad). Länk i appens sidfot. Service worker v16 cachar sidan och SVG-filerna. |
 | 22 | 2026-11-01 | **Redskap per pass (F179)** – varje hemmapass har en rad *🏠 Redskap* i dagsvyn; valet sparas som `gear` på dagen och gäller bara den dagen, med `↺ Mina` för att gå tillbaka till kortets lista. Ersättningsförslag, *Saknar* och filtret **Visa bara mina** räknar mot passets egen lista. Ogiltiga id:n saneras vid start. Trycksidan skriver nu på **A4 i 100 % skala** (motivet i exakt mm-mått, bleed klipps bort) i stället för egen pappersstorlek, så en vanlig kontorsskrivare fungerar. Service worker v17. |
 | 23 | 2026-11-01 | **F180, F183, F184** – *🙅 Har inte den* i ersättningspanelen pinnar redskapet som saknat i hela passet; viktförslaget syns nu direkt i raden (*📈 Testa 42,5 kg*) i stället för bara i panelen, med svenskt decimalkomma; ny framstegsrad överst i dagens pass (*3 av 6 övningar klara · ≈ 14 min kvar*) med stapel som uppdateras utan att panelen stängs. Trycksidans förhandsvisning är mörk i stället för vit. Service worker v18. |
+| 24 | 2026-11-01 | **Startsidan omgjord** – Hem handlar nu om träning: kompakt hero med hälsning och datum i stället för stor logotyp, dagens pass → statistik → vecka, och underhåll samlat i ett **Mer**-kort (installation, påminnelser, säkerhetskopia, tryckmaterial) med hopfällbara paneler och sammanfattningstext. Nya användare möts av **—** i stället för tre nollor, sektionsrubrikerna har en gemensam regel och `--t3` är ljusare för bättre kontrast. Alla id:n och funktioner är oförändrade. Service worker v19. |
 
 ---
 
@@ -942,7 +943,7 @@ Lokal server:  python3 -m http.server 8080
 
 ---
 
-*Gymlig v18 · Glassmorphism · PWA · Local-first · Firebase-ready*
+*Gymlig v19 · Glassmorphism · PWA · Local-first · Firebase-ready*
 
 ---
 
