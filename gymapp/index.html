@@ -636,11 +636,13 @@ body.lowfx .hg-dot{animation:none}
 .ex-name{
   font-size:.86rem;font-weight:600;line-height:1.38;
   display:flex;flex-wrap:wrap;align-items:center;gap:5px;
-  overflow-wrap:anywhere;word-break:break-word;
+  min-width:0;max-width:100%;
 }
-.ex-sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.ex-right2{display:flex;align-items:center;gap:7px;flex-shrink:0}
-.ex-sets{font-size:.72rem;font-weight:700;color:var(--t2);white-space:nowrap}
+/* Ett riktigt flexbarn med min-width:0 gör även långa enskilda ord brytbara. */
+.ex-name-text{flex:1 1 100%;min-width:0;max-width:100%;overflow-wrap:break-word;overflow-wrap:anywhere;word-break:break-word}
+.ex-sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+.ex-right2{display:flex;align-items:center;gap:7px;flex:0 0 auto;max-width:35%;min-width:0}
+.ex-sets{font-size:.72rem;font-weight:700;color:var(--t2);white-space:normal;overflow-wrap:break-word;overflow-wrap:anywhere;word-break:break-word}
 .ex-chev{font-size:.67rem;color:var(--t3);transition:transform var(--fast) var(--ease),color var(--fast)}
 .ex-li.open .ex-chev{transform:rotate(180deg);color:var(--c)}
 .ex-panel2{display:none;padding:4px 4px 13px;animation:fdDn .2s var(--ease)}
@@ -1088,9 +1090,9 @@ body.lowfx .br-fill{filter:none;transition:none}
   padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.81rem;gap:7px;
 }
 .log-row:last-child{border-bottom:none}
-.log-name{color:var(--t1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.log-val{color:var(--c);font-weight:700;flex-shrink:0}
-.log-date{color:var(--t3);font-size:.67rem;flex-shrink:0}
+.log-name{color:var(--t1);flex:1;min-width:0;white-space:normal;overflow-wrap:break-word;overflow-wrap:anywhere;word-break:break-word;line-height:1.4}
+.log-val{color:var(--c);font-weight:700;flex:0 1 auto;min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.log-date{color:var(--t3);font-size:.67rem;flex-shrink:0;white-space:nowrap}
 .empty-msg{color:var(--t2);font-size:.82rem;font-style:italic}
 .bal-chips{display:flex;gap:6px;flex-wrap:wrap}
 .bal-chip{border-radius:var(--r8);padding:5px 10px;font-size:.71rem;font-weight:600}
@@ -1297,8 +1299,8 @@ body.lowfx .br-fill{filter:none;transition:none}
   width:30px;height:30px;border-radius:7px;flex-shrink:0;font-size:1rem;
   background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;
 }
-.sb-ex-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-ex-sr{font-size:.72rem;color:var(--t3);flex-shrink:0}
+.sb-ex-n{flex:1;min-width:0;white-space:normal;overflow-wrap:break-word;overflow-wrap:anywhere;word-break:break-word;line-height:1.4}
+.sb-ex-sr{font-size:.72rem;color:var(--t3);flex:0 1 auto;min-width:0;max-width:38%;text-align:right;white-space:normal;overflow-wrap:break-word;overflow-wrap:anywhere;word-break:break-word}
 
 /* ── PWA INSTALL – NAV-KNAPP (ingen banner) ── */
 #nav-inst{
@@ -1938,9 +1940,10 @@ body.lowfx .br-fill{filter:none;transition:none}
   <button class="mn"    data-act="goTab" data-tab="progress" data-i="3"><span class="ico">📈</span>Framsteg</button>
 </nav>
 
+<script src="./migration.js"></script>
 <script>
 /* ════════════════════════════════════════════════
-   GymApp v9  ·  No-login  ·  Firebase-ready
+   GymApp v7  ·  No-login  ·  Firebase-ready
    ──────────────────────────────────────────────
    Konton: förberedda, ej aktiverade → firebase.js
 ════════════════════════════════════════════════ */
@@ -2063,20 +2066,14 @@ const LS = {
   },
   /* Synkron skrivning – används vid pagehide/visibilitychange */
   flush: d => {
-    try {
-      localStorage.setItem('ga_data', JSON.stringify(d));
-      return true;
-    } catch (e) {
-      /* Kvoten full → trimma hårdare och försök igen en gång */
-      try {
-        if (Array.isArray(d.wLog) && d.wLog.length > 50) {
-          d.wLog = d.wLog.slice(-50);
-          localStorage.setItem('ga_data', JSON.stringify(d));
-          return true;
-        }
-      } catch {}
+    if (window.GymMigration?.canWrite() !== true) {
+      toast('⚠️ Ändringar är pausade för att skydda dina data.');
+      return false;
+    }
+    try { localStorage.setItem('ga_data', JSON.stringify(d)); return true; }
+    catch (e) {
       LOG.warn('storage', e.name);
-      toast('⚠️ Lagringen är full – exportera och rensa');
+      toast('⚠️ Kunde inte spara – kontrollera lagringsutrymmet.');
       return false;
     }
   },
@@ -2084,18 +2081,7 @@ const LS = {
 
 /* Trimma data innan skrivning (O8) */
 function trimData(d) {
-  if (Array.isArray(d.wLog) && d.wLog.length > LOG_MAX)
-    d.wLog = d.wLog.slice(-LOG_MAX);
-  if (Array.isArray(d.balDays) && d.balDays.length > 400)
-    d.balDays = d.balDays.slice(-400);
-  if (d.setsOk) {
-    for (const k in d.setsOk) {
-      const v = d.setsOk[k];
-      if (Array.isArray(v)) {
-        if (v.length > 40) d.setsOk[k] = v.slice(-40);
-      } else delete d.setsOk[k];
-    }
-  }
+  // B1: bevara äldre data; kvotfel får aldrig lösas genom att kasta historik.
   return d;
 }
 
@@ -2116,6 +2102,7 @@ const QUOTES = [
   { text:'Smärta är tillfällig. Att ge upp är för alltid.', by:'Lance Armstrong' },
   { text:'Ta hand om din kropp – det är det enda stället du måste leva i.', by:'Jim Rohn' },
   { text:'Träning är en hyllning till vad din kropp kan göra.', by:'Okänd' },
+  { text:'Framgång börjar dagen du bestämmer dig för att börja.', by:'Harvey MacKay' },
   { text:'Du behöver inte vara bra för att börja, men du måste börja för att bli bra.', by:'Zig Ziglar' },
   { text:'Kroppen uppnår vad sinnet tror.', by:'Napoleon Hill' },
   { text:'Stark är vad du blir när du är klar med att vara svag.', by:'Okänd' },
@@ -2147,6 +2134,7 @@ const TEMPLATES = [
       { n:'Armhävningar (på knäna)',         s:'4×',r:'20–25',       img:'images/pushup-knees.png',    muscles:'Bröst, triceps, deltoideus',        steps:['Händer bredare än axelbredd','Knäna i golvet – kroppen rak','Sänk kontrollerat mot golvet','Armbågarna pekar lätt bakåt','Stopp strax innan bröstet nuddar','Pressa explosivt upp'],                      breath:'IN ned, UT upp' },
       { n:'Hantel shoulder press (sit.)',   s:'4×',r:'20–25',ha:1,st:1, img:'images/shoulder-press.png', muscles:'Deltoideus, triceps, trapezius',  steps:['Sitt rak rygg, fötterna i golvet','Hantlar i axelhöjd, handflatorna framåt','Pressa rakt upp','Sänk kontrollerat till axelhöjd'],                                                                    breath:'UT upp, IN ned' },
       { n:'Glute bridge + KB på höfter',    s:'4×',r:'20–30',kb:1,li:1, img:'images/glute-bridge.png',  muscles:'Gluteus, hamstrings, core',        steps:['Ligg på rygg, knäna böjda','KB på höfterna – håll','Pressa fötterna i golvet','Lyft höfterna rakt upp','Knip gluteus hårt – 1 sek','Sänk nästan till golvet'],                                        breath:'UT upp, IN ned' },
+      { n:'Sittande banddrag mot ansiktet', s:'4×', r:'20–25', st:1, muscles:'Bakre axel och övre rygg', steps:['Sitt på en stadig stol med ryggstöd och båda fötterna i golvet','Fäst gummibandet säkert framför dig ungefär i ansikts- eller axelhöjd','Kontrollera att fästet och bandet sitter säkert innan du börjar','Håll bandets ändar, dra lugnt mot ansiktet med armbågarna utåt','Håll kort och för sedan händerna långsamt fram igen','Avbryt om fästet känns osäkert eller om övningen gör ont'], breath:'UT när du drar, IN på vägen tillbaka' },
     ]},
     { n:'Tisdag',  t:'gym', ex:[
       { n:'Bänkpress',                        s:'6×',r:'15–20', img:'images/benchpress.png',    muscles:'Pectoralis, triceps, deltoideus',   steps:['Ligg på bänken, ögon under stången','Tag lite bredare än axelbredd','Sänk kontrollerat till bröstet','Pressa explosivt upp','Skulderblad hålls ihop'],                                                        breath:'IN ned, UT upp' },
@@ -2154,7 +2142,6 @@ const TEMPLATES = [
       { n:'Axelpress maskin',                 s:'4×',r:'15–20', img:'images/lateral-raise.png', muscles:'Deltoideus, triceps, trapezius',    steps:['Säte i axelhöjd','Rak rygg','Pressa rakt upp','Sänk kontrollerat'],                                                                                                                                         breath:'UT upp, IN ned' },
       { n:'Lateral raises',                   s:'4×',r:'20–30', img:'images/lateral-raise.png', muscles:'Deltoideus (mitten)',               steps:['Hantlar längs sidorna, lätt böjda armbågar','Lyft rakt ut åt sidorna','Till axelhöjd – tummen lätt ned','Sänk LÅNGSAMT – 3 sek'],                                                                           breath:'UT upp, IN ned' },
       { n:'Tricepspress kabel',               s:'4×',r:'20–25', img:'images/tricep-press.png',  muscles:'Triceps brachii (alla 3)',          steps:['Kabel i övre position','Armbågarna intill – rör sig EJ','Pressa ned till raka armar','Håll 1 sek i botten'],                                                                                                breath:'UT ned, IN upp' },
-      { n:'Facepull – bakre delta',           s:'4×',r:'20–25', img:'images/facepull.png',      muscles:'Bakre delta, rotatorkuff, rhomboids', steps:['Kabel i ögonhöjd, rephandtag','Dra mot ansiktet – armbågar ut','Händerna förbi öronen','Håll 1 sek – skulderblad ihop'],                                                                              breath:'UT drag, IN ut' },
     ]},
     { n:'Onsdag',  t:'home', ex:[
       { n:'KB Sumo squat',               s:'4×',r:'15–20',kb:1,   img:'images/sumo-squat.png',        muscles:'Quad, gluteus, adduktorer',       steps:['Brett ben – tår 45°','KB hängande','Sänk rakt ned','Knäna följer tårna','Pressa upp'],                    breath:'IN ned, UT upp' },
@@ -2410,8 +2397,7 @@ function sanitize(d) {
   const arr = v => Array.isArray(v) ? v : [];
   const obj = v => (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
   o.mySched = arr(o.mySched)
-    .filter(x => x && typeof x === 'object' && Array.isArray(x.days))
-    .slice(0, 10);
+    .filter(x => x && typeof x === 'object' && Array.isArray(x.days));
   o.wLog    = arr(o.wLog);
   o.balDays = arr(o.balDays);
   o.weights = obj(o.weights);
@@ -2499,8 +2485,7 @@ const save = () => {
 function saveNow() {
   clearTimeout(_saveT);
   if (!_dirty) return;
-  _dirty = false;
-  LS.flush(trimData(UD));
+  if (LS.flush(trimData(UD))) _dirty = false;
 }
 /* Garantera att inget tappas när appen lämnas */
 addEventListener('pagehide', saveNow);
@@ -2800,7 +2785,6 @@ window.markSetsOk = (key, name) => {
   }
 
   list.push({ d: today, w: curW, ts: Date.now() });
-  if (list.length > 40) list.splice(0, list.length - 40);
   UD.setsOk[key] = list;
   save();
   renderProgRow(key, name);
@@ -3081,7 +3065,7 @@ function renderWorkout() {
           <li class="ex-li" id="eli_${key}">
             <button type="button" class="ex-head-btn" data-act="togEx" data-id="eli_${key}" aria-expanded="false">
               <div class="ex-left">
-                <span class="ex-name">${esc(ex.n)}${tags}</span>
+                <span class="ex-name"><span class="ex-name-text">${esc(ex.n)}</span>${tags}</span>
                 <div class="ex-sub">
                   ${repTag}
                   ${isHome ? fixedLbl : ''}
@@ -4104,10 +4088,11 @@ LOG.safe('perf', () => {
 });
 
 /* Backup använder enbart de tre kända lagringsnycklarna. Inga notisinställningar eller tokens. */
-window.GYMAPP_GOOGLE_CLIENT_ID = ''; // Valfritt: fyll i projektets publika OAuth-klient-ID vid publicering.
+window.GYMAPP_GOOGLE_CLIENT_ID = '716692268179-4tcaih54bk6nult8b2ec3hrqb4hnnpc2.apps.googleusercontent.com'; // Valfritt: fyll i projektets publika OAuth-klient-ID vid publicering.
 window.GymBackupHost = {
   flush: () => {
     clearTimeout(_saveT);
+    if (window.GymMigration?.canWrite() !== true) throw new Error('Data är skrivskyddade. Använd rådata-knappen i varningen.');
     if (_dirty && !LS.flush(trimData(UD))) throw new Error('Kunde inte spara aktuell data lokalt före säkerhetskopiering.');
     _dirty = false;
   },
@@ -4121,7 +4106,7 @@ window.GymBackupHost = {
 window.GymApp = {
   log:     () => LOG.dump(),
   data:    () => structuredClone(UD),
-  version: 'v9',
+  version: 'v8',
   storage: () => {
     const b = new Blob([JSON.stringify(UD)]).size;
     return { bytes: b, kb: +(b / 1024).toFixed(1), poster: (UD.wLog || []).length };

@@ -690,6 +690,7 @@ footer{
 
 <footer>⚖️ GymApp – Balansrutin &nbsp;·&nbsp; Resultat syns efter 2–4 veckor 💪</footer>
 
+<script src="gymapp/migration.js"></script>
 <script>
 'use strict';
 
@@ -748,6 +749,7 @@ const QUOTES = [
   { text:'Kroppen uppnår vad sinnet tror.', by:'Napoleon Hill' },
   { text:'Ta hand om din kropp – det är det enda stället du måste leva i.', by:'Jim Rohn' },
   { text:'Din enda gräns är du själv.', by:'Okänd' },
+  { text:'Framgång börjar dagen du bestämmer dig för att börja.', by:'Harvey MacKay' },
   { text:'Balans är inte något du hittar – det är något du skapar.', by:'Okänd' },
   { text:'Varje steg, hur litet det än är, för dig framåt.', by:'Okänd' },
 ];
@@ -847,7 +849,7 @@ function syncToApp(i, done) {
     const ix  = d.balDays.indexOf(key);
     if (done && ix === -1)      d.balDays.push(key);
     else if (!done && ix !== -1) d.balDays.splice(ix, 1);
-    if (d.balDays.length > KEEP_DAY) d.balDays = d.balDays.slice(-KEEP_DAY);
+    if (window.GymMigration?.canWrite() !== true) return;
     localStorage.setItem(APP_KEY, JSON.stringify(d));
   });
 }
@@ -862,16 +864,7 @@ function loadState() {
 }
 
 function trimState(st) {
-  const ex = Object.keys(st.exerciseDone);
-  if (ex.length > KEEP_EX) {
-    ex.sort();
-    ex.slice(0, ex.length - KEEP_EX).forEach(k => delete st.exerciseDone[k]);
-  }
-  const wd = Object.keys(st.weekDone);
-  if (wd.length > KEEP_DAY) {
-    wd.sort();
-    wd.slice(0, wd.length - KEEP_DAY).forEach(k => delete st.weekDone[k]);
-  }
+  // Behåll historiken: migrering får inte radera tidigare dagar.
   return st;
 }
 
@@ -886,9 +879,9 @@ function saveState() {
 }
 function saveNow() {
   clearTimeout(_saveT);
-  if (!_dirty) return;
-  _dirty = false;
-  LOG.safe('save', () => localStorage.setItem(KEY, JSON.stringify(trimState(ST))));
+  if (!_dirty || window.GymMigration?.canWrite() !== true) return;
+  try { localStorage.setItem(KEY, JSON.stringify(trimState(ST))); _dirty = false; }
+  catch (e) { LOG.warn('save', e?.message || e); }
 }
 addEventListener('pagehide', saveNow);
 addEventListener('beforeunload', saveNow);

@@ -674,6 +674,7 @@ body.lowfx .dc.flash{animation:none}
   <span>🔍 Klicka på bild för zoom</span>
 </footer>
 
+<script src="gymapp/migration.js"></script>
 <script>
 'use strict';
 
@@ -1260,6 +1261,7 @@ function loadReps() {
 }
 
 function saveReps() {
+  if (window.GymMigration?.canWrite() !== true) return;
   LOG.safe('reps', () => localStorage.setItem(REP_KEY, JSON.stringify({ d: ymd(), n: reps })));
 }
 

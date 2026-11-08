@@ -34,6 +34,7 @@
     if (!jsonObject(data) || data.app !== 'GymApp' || data.format !== 'gymapp-backup' || data.version !== 1 || !jsonObject(data.storage))
       throw new Error('Filen är inte en säkerhetskopia från GymApp eller har en version som inte stöds.');
     if (KEYS.some(k => !Object.prototype.hasOwnProperty.call(data.storage, k))) throw new Error('Säkerhetskopian är ofullständig.');
+    if (data.schemaVersion !== undefined && (!Number.isInteger(data.schemaVersion) || data.schemaVersion < 0 || data.schemaVersion > window.GymMigration.current)) throw new Error('Kopian kommer från en nyare eller okänd dataversion.');
     for (const k of KEYS) if (data.storage[k] !== null && typeof data.storage[k] !== 'string') throw new Error('Ogiltiga lagringsdata.');
     let main;
     try { main = data.storage.ga_data === null ? {} : JSON.parse(data.storage.ga_data); }
@@ -64,7 +65,7 @@
   function snapshot() {
     window.GymBackupHost.flush();
     const storage = Object.fromEntries(KEYS.map(k => [k, localStorage.getItem(k)]));
-    const backup = {app:'GymApp', format:'gymapp-backup', version:1, createdAt:new Date().toISOString(), storage};
+    const backup = {app:'GymApp', format:'gymapp-backup', version:1, schemaVersion:window.GymMigration.current, createdAt:new Date().toISOString(), storage};
     validate(backup);
     const text = JSON.stringify(backup, null, 2);
     if (new Blob([text]).size > MAX_BYTES) throw new Error('Datan är för stor (max 5 MB).');
@@ -75,12 +76,17 @@
     const d = data.storage.ga_data ? JSON.parse(data.storage.ga_data) : {};
     const date = Number.isNaN(Date.parse(data.createdAt)) ? 'okänt datum' : new Date(data.createdAt).toLocaleString('sv-SE');
     if (!confirm(`Säkerhetskopia: ${date}\nScheman: ${(d.mySched || []).length}\nViktloggposter: ${(d.wLog || []).length}\n\nÅterställning ersätter träningsdata, balanshistorik och 100-reps på denna enhet. Stäng andra öppna GymApp-flikar först. Fortsätta?`)) { status('Återställning avbruten.'); return; }
+    if (window.GymMigration?.canWrite() !== true) throw new Error('Återställning är pausad för att skydda lokala data. Ladda ner rådata i varningen och be om hjälp.');
     window.GymBackupHost.flush();
-    const old = Object.fromEntries(KEYS.map(k => [k, localStorage.getItem(k)]));
+    const versionKey = window.GymMigration.versionKey;
+    const allKeys = [...KEYS, versionKey];
+    const old = Object.fromEntries(allKeys.map(k => [k, localStorage.getItem(k)]));
     try {
       for (const k of KEYS) data.storage[k] === null ? localStorage.removeItem(k) : localStorage.setItem(k, data.storage[k]);
+      const version = data.schemaVersion || 0;
+      version ? localStorage.setItem(versionKey, String(version)) : localStorage.removeItem(versionKey);
     } catch (e) {
-      for (const k of KEYS) { try { old[k] === null ? localStorage.removeItem(k) : localStorage.setItem(k, old[k]); } catch {} }
+      for (const k of allKeys) { try { old[k] === null ? localStorage.removeItem(k) : localStorage.setItem(k, old[k]); } catch {} }
       throw new Error('Återställningen misslyckades. Kontrollera lagringsutrymme; tidigare data försökte återställas.');
     }
     window.GymBackupHost.restored(data.storage.ga_data);

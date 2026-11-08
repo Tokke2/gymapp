@@ -1,0 +1,457 @@
+{
+  "app": "GymApp",
+  "v": 1,
+  "name": "🔥 Mitt Schema",
+  "lv": "own",
+  "own": true,
+  "days": [
+    {
+      "n": "Måndag",
+      "t": "home",
+      "ex": [
+        {
+          "n": "Squat vid diskbänken (ryggsäck)",
+          "s": "4×",
+          "r": "15–20",
+          "img": "images/counter-squat.png",
+          "muscles": "Quad, gluteus, hamstrings, core",
+          "steps": [
+            "Stå framför diskbänken, händerna på kanten för stöd",
+            "Ryggsäcken på ryggen med önskad vikt",
+            "Fötterna höftbrett, tår lätt utåt",
+            "Sänk höfterna rakt ned – knäna följer tårna",
+            "Lår parallella med golvet eller djupare",
+            "Pressa upp explosivt – hälarnas i golvet"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "KB Deadlift (tvåhands)",
+          "s": "4×",
+          "r": "15–20",
+          "kb": 1,
+          "img": "images/kb-deadlift.png",
+          "muscles": "Hamstrings, gluteus, rygg",
+          "steps": [
+            "Fötterna höftbrett, KB mellan",
+            "Böj med rak rygg – bröst uppe",
+            "Grip KB med båda händer",
+            "Pressa hälarnas i golvet",
+            "Sträck ut – gluteus kniper",
+            "Sänk kontrollerat"
+          ],
+          "breath": "IN ned (håll), UT upp"
+        },
+        {
+          "n": "Armhävningar (på knäna)",
+          "s": "4×",
+          "r": "20–25",
+          "img": "images/pushup-knees.png",
+          "muscles": "Bröst, triceps, deltoideus",
+          "steps": [
+            "Händer bredare än axelbredd",
+            "Knäna i golvet – kroppen rak",
+            "Sänk kontrollerat mot golvet",
+            "Armbågarna pekar lätt bakåt",
+            "Stopp strax innan bröstet nuddar",
+            "Pressa explosivt upp"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "Hantel shoulder press (sit.)",
+          "s": "4×",
+          "r": "20–25",
+          "ha": 1,
+          "st": 1,
+          "img": "images/shoulder-press.png",
+          "muscles": "Deltoideus, triceps, trapezius",
+          "steps": [
+            "Sitt rak rygg, fötterna i golvet",
+            "Hantlar i axelhöjd, handflatorna framåt",
+            "Pressa rakt upp",
+            "Sänk kontrollerat till axelhöjd"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Glute bridge + KB på höfter",
+          "s": "4×",
+          "r": "20–30",
+          "kb": 1,
+          "li": 1,
+          "img": "images/glute-bridge.png",
+          "muscles": "Gluteus, hamstrings, core",
+          "steps": [
+            "Ligg på rygg, knäna böjda",
+            "KB på höfterna – håll",
+            "Pressa fötterna i golvet",
+            "Lyft höfterna rakt upp",
+            "Knip gluteus hårt – 1 sek",
+            "Sänk nästan till golvet"
+          ],
+          "breath": "UT upp, IN ned"
+        }
+      ]
+    },
+    {
+      "n": "Tisdag",
+      "t": "gym",
+      "ex": [
+        {
+          "n": "Bänkpress",
+          "s": "6×",
+          "r": "15–20",
+          "img": "images/benchpress.png",
+          "muscles": "Pectoralis, triceps, deltoideus",
+          "steps": [
+            "Ligg på bänken, ögon under stången",
+            "Tag lite bredare än axelbredd",
+            "Sänk kontrollerat till bröstet",
+            "Pressa explosivt upp",
+            "Skulderblad hålls ihop"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "Cable flyes – maskin, bröstmitt",
+          "s": "6×",
+          "r": "20–25",
+          "img": "images/cable-flyes.png",
+          "muscles": "Pectoralis (insida), deltoideus",
+          "steps": [
+            "Pulley i midjeposition",
+            "Lätt framåtlutning",
+            "Drag i bred bågrörelse",
+            "Håll 1 sek i mitten",
+            "Kontrollerat tillbaka"
+          ],
+          "breath": "UT ihop, IN ut"
+        },
+        {
+          "n": "Axelpress maskin",
+          "s": "4×",
+          "r": "15–20",
+          "img": "images/lateral-raise.png",
+          "muscles": "Deltoideus, triceps, trapezius",
+          "steps": [
+            "Säte i axelhöjd",
+            "Rak rygg",
+            "Pressa rakt upp",
+            "Sänk kontrollerat"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Lateral raises",
+          "s": "4×",
+          "r": "20–30",
+          "img": "images/lateral-raise.png",
+          "muscles": "Deltoideus (mitten)",
+          "steps": [
+            "Hantlar längs sidorna, lätt böjda armbågar",
+            "Lyft rakt ut åt sidorna",
+            "Till axelhöjd – tummen lätt ned",
+            "Sänk LÅNGSAMT – 3 sek"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Tricepspress kabel",
+          "s": "4×",
+          "r": "20–25",
+          "img": "images/tricep-press.png",
+          "muscles": "Triceps brachii (alla 3)",
+          "steps": [
+            "Kabel i övre position",
+            "Armbågarna intill – rör sig EJ",
+            "Pressa ned till raka armar",
+            "Håll 1 sek i botten"
+          ],
+          "breath": "UT ned, IN upp"
+        },
+        {
+          "n": "Facepull – bakre delta",
+          "s": "4×",
+          "r": "20–25",
+          "img": "images/facepull.png",
+          "muscles": "Bakre delta, rotatorkuff, rhomboids",
+          "steps": [
+            "Kabel i ögonhöjd, rephandtag",
+            "Dra mot ansiktet – armbågar ut",
+            "Händerna förbi öronen",
+            "Håll 1 sek – skulderblad ihop"
+          ],
+          "breath": "UT drag, IN ut"
+        }
+      ]
+    },
+    {
+      "n": "Onsdag",
+      "t": "home",
+      "ex": [
+        {
+          "n": "KB Sumo squat",
+          "s": "4×",
+          "r": "15–20",
+          "kb": 1,
+          "img": "images/sumo-squat.png",
+          "muscles": "Quad, gluteus, adduktorer",
+          "steps": [
+            "Brett ben – tår 45°",
+            "KB hängande",
+            "Sänk rakt ned",
+            "Knäna följer tårna",
+            "Pressa upp"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "Seated KB press (sittande)",
+          "s": "4×",
+          "r": "15–20",
+          "kb": 1,
+          "st": 1,
+          "img": "images/shoulder-press.png",
+          "muscles": "Deltoideus, triceps, serratus",
+          "steps": [
+            "Sitt på golv – rak rygg",
+            "KB mot bröstet",
+            "Pressa rakt upp",
+            "Sänk kontrollerat"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Hantel lateral raise (sit.)",
+          "s": "4×",
+          "r": "20–30",
+          "ha": 1,
+          "st": 1,
+          "img": "images/lateral-raise.png",
+          "muscles": "Deltoideus (mitten)",
+          "steps": [
+            "Sitt på stol – rak rygg",
+            "Hantlar längs sidorna",
+            "Lyft ut till axelhöjd",
+            "Sänk LÅNGSAMT"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Ab roller (från knäna)",
+          "s": "4×",
+          "r": "15–20",
+          "ro": 1,
+          "img": "images/ab-roller.png",
+          "muscles": "Rectus abdominis, obliques, lat",
+          "steps": [
+            "Knäna i golvet",
+            "Spänn magen HÅRT",
+            "Rulla framåt – kroppen rak",
+            "Dra tillbaka med magkraft"
+          ],
+          "breath": "IN framåt, UT tillbaka"
+        },
+        {
+          "n": "Bicycle crunches (liggande)",
+          "s": "4×",
+          "r": "25–30",
+          "li": 1,
+          "img": "images/bicycle-crunches.png",
+          "muscles": "Obliques, rectus abdominis",
+          "steps": [
+            "Ligg på rygg – axlar uppe",
+            "Dra ett knä mot bröstet",
+            "Rotera mot knät",
+            "Byt sida kontrollerat"
+          ],
+          "breath": "Andas rytmiskt"
+        }
+      ]
+    },
+    {
+      "n": "Torsdag",
+      "t": "gym",
+      "ex": [
+        {
+          "n": "Knäböj (Smith-maskin)",
+          "s": "5×",
+          "r": "15–20",
+          "img": "images/smith-squat.png",
+          "muscles": "Quad, gluteus, hamstrings",
+          "steps": [
+            "Stång på övre ryggen",
+            "Fötterna axelbredd",
+            "Sänk – knän trackear tårna",
+            "Lår parallella",
+            "Pressa upp"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "Benpress",
+          "s": "5×",
+          "r": "15–20",
+          "img": "images/leg-press.png",
+          "muscles": "Quad, gluteus, hamstrings",
+          "steps": [
+            "Fötterna axelbredd, midthöjd",
+            "Rygg mot kudden",
+            "Sänk till 90°",
+            "Pressa upp – lås EJ knäna"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "Latsdrag",
+          "s": "4×",
+          "r": "15–20",
+          "img": "images/lat-pulldown.png",
+          "muscles": "Latissimus, biceps, bakre delta",
+          "steps": [
+            "Grip bredare än axelbredd",
+            "Lätt bakåtlutning",
+            "Drag till övre bröstet",
+            "Håll 1 sek – rygg kniper"
+          ],
+          "breath": "UT ned, IN upp"
+        },
+        {
+          "n": "Sittande rodd",
+          "s": "4×",
+          "r": "15–20",
+          "img": "images/seated-row.png",
+          "muscles": "Rhomboids, trapezius, lat, biceps",
+          "steps": [
+            "Rak rygg – lätt framåtlutning",
+            "Drag mot nedre magen",
+            "Armbågar längs kroppen",
+            "Skulderblad bakåt"
+          ],
+          "breath": "UT drag, IN sträck"
+        },
+        {
+          "n": "Bicepscurl maskin (dropset)",
+          "s": "4×",
+          "r": "20→15→10",
+          "img": "images/bicep-curl-machine.png",
+          "muscles": "Biceps brachii, brachialis",
+          "steps": [
+            "Kör 20 reps",
+            "Sänk vikten direkt – kör 15",
+            "Sänk igen – kör 10",
+            "Ingen vila mellan",
+            "Sänk LÅNGSAMT – 3 sek"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Kabeldrag raka armar",
+          "s": "4×",
+          "r": "20–25",
+          "img": "images/cable-straight-arm.png",
+          "muscles": "Latissimus, serratus, teres major",
+          "steps": [
+            "Kabel högt – raka armar",
+            "Lätt framåtlutning",
+            "Drag ned mot låren",
+            "Håll 1 sek"
+          ],
+          "breath": "UT ned, IN upp"
+        }
+      ]
+    },
+    {
+      "n": "Fredag",
+      "t": "rest",
+      "ex": []
+    },
+    {
+      "n": "Lördag",
+      "t": "home",
+      "ex": [
+        {
+          "n": "KB bent-over row (bordsstöd)",
+          "s": "4×",
+          "r": "15–20/sida",
+          "kb": 1,
+          "img": "images/lat-pulldown.png",
+          "muscles": "Latissimus, rhomboids, bakre delta",
+          "steps": [
+            "Luta ena handen mot bord",
+            "Rak rygg – parallell med golvet",
+            "Drag KB mot revbenen",
+            "Skulderblad bakåt"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Hantel bicepscurl (sittande)",
+          "s": "4×",
+          "r": "20–30",
+          "ha": 1,
+          "st": 1,
+          "img": "images/bicep-curl-machine.png",
+          "muscles": "Biceps brachii, brachialis",
+          "steps": [
+            "Sitt rak – armbågar intill",
+            "Curl upp till axelhöjd",
+            "Sänk LÅNGSAMT – 3 sek"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Tricepsdips (stol)",
+          "s": "4×",
+          "r": "20–25",
+          "st": 1,
+          "img": "images/tricep-press.png",
+          "muscles": "Triceps brachii, deltoideus",
+          "steps": [
+            "Grip stolkanten",
+            "Benen böjda 90°",
+            "Sänk rakt ned – armbågar bakåt",
+            "Pressa upp med triceps"
+          ],
+          "breath": "IN ned, UT upp"
+        },
+        {
+          "n": "KB chest press (liggande)",
+          "s": "4×",
+          "r": "15–20",
+          "kb": 1,
+          "li": 1,
+          "img": "images/kb-chest-press.png",
+          "muscles": "Pectoralis, triceps, deltoideus",
+          "steps": [
+            "Ligg på rygg – KB mot bröstet",
+            "Pressa rakt upp",
+            "Sänk – armbågar rör golvet"
+          ],
+          "breath": "UT upp, IN ned"
+        },
+        {
+          "n": "Ab roller (från knäna)",
+          "s": "4×",
+          "r": "15–20",
+          "ro": 1,
+          "img": "images/ab-roller.png",
+          "muscles": "Rectus abdominis, obliques, lat",
+          "steps": [
+            "Knäna i golvet",
+            "Spänn magen HÅRT",
+            "Rulla framåt – rak kropp",
+            "Dra tillbaka med magkraft"
+          ],
+          "breath": "IN framåt, UT tillbaka"
+        }
+      ]
+    },
+    {
+      "n": "Söndag",
+      "t": "rest",
+      "ex": []
+    }
+  ]
+}
