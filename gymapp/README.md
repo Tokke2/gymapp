@@ -506,6 +506,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 15 | 2026-06-07 | **Balansanpassad face pull** – stående gymövning flyttad till måndag hemma som sittande banddrag med ryggstöd; mallen och separat schemafil uppdaterade. Sparade scheman ändras inte automatiskt. |
 | 16 | 2026-06-07 | **O19 Läsbara övningsnamn** – radbryt långa namn i träningsvy, schemaförhandsvisning och viktlogg. Service worker cacheversion uppdaterad. |
 | 17 | 2026-06-07 | **B1 Migrationsbot** – dataversion, icke-destruktiv migrering av gammal 100-reps-räknare, skrivskydd vid okänt format samt versionshantering vid backup; tester med simulerad lagring. |
+| 18 | 2026-11-08 | **Design/enkelhet** – hemsidan fick tydligare ordning (dagens pass/schema före statistik), verktyg samlades i en hopfällbar panel, större träningsknappar och tydligare fokusmarkering. Service worker v13. Ingen ny notisfunktion, konto eller Firebase aktiverades. |
 
 ---
 

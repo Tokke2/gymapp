@@ -154,7 +154,7 @@ A1 PB-tracker, A2 smart push, A3 foton, A4 kompisläge och A5 molnsynk avvaktar 
 - `filer`: visa de tio senast ändrade aktiva arbetsytefilerna, sorterade med klickbara länkar.
 - `töm`: analysera referenser, fråga alltid innan tvetydig borttagning, ta bort endast bekräftade filer och validera.
 - `förslag`: ge alltid 59 helt nya idéer som inte använts tidigare i specen, förslagsbanken eller tidigare omgångar. Kontrollera hela banken, fortsätt på nästa lediga F-nummer och skriv in alla 59 i förslagsbanken. Detta ersätter tidigare 25. 59 nya idéer F276–F334 lades till senast; nästa lediga F-nummer är F335. Bygg ingenting.
-- Efter varje **femte koduppdatering**: ge tio nya optimeringsförslag O-nummer och skriv in i specen. Senast dokumenterade koduppdatering är #17; nästa tröskel enligt den räknaren är #20. O1–O20 finns, O19 implementerad.
+- Efter varje **femte koduppdatering**: ge tio nya optimeringsförslag O-nummer och skriv in i specen. Senast dokumenterade koduppdatering är #18; nästa tröskel enligt den räknaren är #20. O1–O20 finns, O19 implementerad.
 - Git: pusha varje kodändring till aktuell Arena-arbetsbranch efter commit, aldrig till `main`. Användaren bekräftade detta 2026-11-08.
 - Radera inte kommande-punkter tyst. När en punkt är färdig, flytta/registrera den under `✅ Klart – tidigare kommande` med datum.
 - Datum i äldre changelog innehåller inkonsekvenser och framtida datum. Kontrollera aktuellt datum i den nya miljön och använd faktisk verifiering i stället för att gissa tidsordning.
@@ -697,6 +697,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 15 | 2026-06-07 | **Balansanpassad face pull** – stående gymövning flyttad till måndag hemma som sittande banddrag med ryggstöd; mallen och separat schemafil uppdaterade. Sparade scheman ändras inte automatiskt. |
 | 16 | 2026-06-07 | **O19 Läsbara övningsnamn** – radbryt långa namn i träningsvy, schemaförhandsvisning och viktlogg. Service worker cacheversion uppdaterad. |
 | 17 | 2026-06-07 | **B1 Migrationsbot** – dataversion, icke-destruktiv migrering av gammal 100-reps-räknare, skrivskydd vid okänt format samt versionshantering vid backup; tester med simulerad lagring. |
+| 18 | 2026-11-08 | **Design/enkelhet** – hemsidan fick tydligare ordning (dagens pass/schema före statistik), verktyg samlades i en hopfällbar panel, större träningsknappar och tydligare fokusmarkering. Service worker v13. Ingen ny notisfunktion, konto eller Firebase aktiverades. |
 
 ---
 
