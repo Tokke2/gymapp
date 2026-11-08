@@ -153,7 +153,7 @@ A1 PB-tracker, A2 smart push, A3 foton, A4 kompisläge och A5 molnsynk avvaktar 
 - `checklista` eller `lista`: visa endast ändringar som ännu inte är implementerade (☐ ej påbörjad eller 🔄 pågående), inklusive poster som väntar på klarsignal. Visa inte ✅ klara poster eller redan byggda funktioner. Bygg ingenting bara för att listan efterfrågas.
 - `filer`: visa de tio senast ändrade aktiva arbetsytefilerna, sorterade med klickbara länkar.
 - `töm`: analysera referenser, fråga alltid innan tvetydig borttagning, ta bort endast bekräftade filer och validera.
-- `förslag`: ge alltid 59 helt nya idéer som inte använts tidigare i specen, förslagsbanken eller tidigare omgångar. Kontrollera hela banken, fortsätt på nästa lediga F-nummer och skriv in alla 59 i förslagsbanken. Detta ersätter tidigare 25. 100 nya idéer F176–F275 lades till senast; nästa lediga F-nummer är F276. Bygg ingenting.
+- `förslag`: ge alltid 59 helt nya idéer som inte använts tidigare i specen, förslagsbanken eller tidigare omgångar. Kontrollera hela banken, fortsätt på nästa lediga F-nummer och skriv in alla 59 i förslagsbanken. Detta ersätter tidigare 25. 59 nya idéer F276–F334 lades till senast; nästa lediga F-nummer är F335. Bygg ingenting.
 - Efter varje **femte koduppdatering**: ge tio nya optimeringsförslag O-nummer och skriv in i specen. Senast dokumenterade koduppdatering är #17; nästa tröskel enligt den räknaren är #20. O1–O20 finns, O19 implementerad.
 - Git: pusha varje kodändring till aktuell Arena-arbetsbranch efter commit, aldrig till `main`. Användaren bekräftade detta 2026-11-08.
 - Radera inte kommande-punkter tyst. När en punkt är färdig, flytta/registrera den under `✅ Klart – tidigare kommande` med datum.
@@ -1229,6 +1229,98 @@ Räknas som "finns i spec" – nästa `förslag` måste ge andra idéer.
 | F274 | **🔍 Granska beroenden före publicering** – Sök i releasepaketet efter hemligheter, testadresser och filer som inte ska publiceras. |
 | F275 | **🧭 Testa navigering utan mus** – Kör ett sammanhängande test av appens viktigaste flöden med bara tangentbord. |
 
+### Omgång 9 – 2026-11-08 *(59 nya förslag: lokal träning, tillgänglighet, data och prestanda)*
+
+Ingen av dessa är byggd eller vald ännu.
+
+**Pass och träning**
+
+| # | Idé |
+|---|---|
+| F276 | ➕ **Engångsövning i dagens pass** – Lägg till en övning bara för idag utan att ändra det sparade schemat. |
+| F277 | ↩️ **Ångra senaste avbockning** – Visa en kort ångra-knapp direkt efter en bock, utan att öppna historiken. |
+| F278 | 🎯 **Starta pass från valfri övning** – Börja vid en vald övning men behåll möjligheten att gå tillbaka till tidigare steg. |
+| F279 | ⏱️ **Faktisk tid per övning** – Logga start och slut lokalt för att se hur lång tid varje övning brukar ta. |
+| F280 | 🗓️ **Kvarvarande schemapass i veckan** – Visa hur många planerade pass som återstår enligt aktuellt schema, utan att sätta ett nytt mål. |
+| F281 | ⭐ **Favoritmärk övningar** – Stjärnmärk övningar i byggaren för att snabbare hitta dem vid nya scheman. |
+| F282 | 📝 **Avvikelse per övning** – Notera kort att en övning gjordes annorlunda idag utan att redigera schemat eller skapa en ny passanteckning. |
+| F283 | 🔄 **Återställ dagens bockar** – Nollställ endast dagens avbockningar efter bekräftelse, utan att röra vikter eller schema. |
+| F284 | 📋 **Kopiera hela dagens pass som text** – Skapa en ren textlista med övningar, set och reps för SMS eller anteckningar. |
+| F285 | 🕒 **Senaste bocktid per övning** – Visa när en övning senast bockades av i historiken, utan att skapa en ny statistikvy. |
+
+**Schema och innehåll**
+
+| # | Idé |
+|---|---|
+| F286 | 🔁 **A/B-veckor** – Stöd för två scheman som växlar varannan vecka enligt ett valt startdatum. |
+| F287 | 📅 **Månadskalender för schema** – Visa planerade pass i en enkel månadsvy utan extern kalender. |
+| F288 | 🔒 **Lås schema mot redigering** – Markera ett schema som skrivskyddat tills användaren låser upp det. |
+| F289 | ⏳ **Tidsbaserade set i byggaren** – Tillåt set som anges i sekunder i stället för reps, med samma fasta vikter hemma. |
+| F290 | 🔂 **Cirkelpass med varv** – Ange att en grupp övningar ska upprepas ett valt antal varv i schemat. |
+| F291 | 📏 **Max övningar per dag** – Valfri gräns i byggaren som varnar innan ett utkast blir för långt. |
+| F292 | 🆔 **Stabila övnings-ID** – Behåll historik och bildmatchning när en övning byter namn i ett eget schema. |
+| F293 | 🏷️ **Källmärkning vid import** – Visa filnamn eller inklistringsdatum för ett importerat schema utan att ladda upp något. |
+| F294 | 🗓️ **Upprepa en dag på flera veckodagar** – Välj en färdig dag och applicera den på flera valda dagar i samma utkast. |
+| F295 | 🏠 **Teknikvariant per plats** – Spara separata tekniksteg för hemma- och gymvariant av samma övning. |
+
+**Tillgänglighet och läsbarhet**
+
+| # | Idé |
+|---|---|
+| F296 | 🔢 **Tabulära siffror** – Använd jämna sifferbredder för vikter, timers och statistik så att rader inte hoppar. |
+| F297 | 🗑️ **Tydliga destruktiva knappetiketter** – Använd verb och objekt, exempelvis Radera schema, i stället för endast soptunna. |
+| F298 | 📐 **Radavstånd för tekniksteg** – Anpassa radavstånd och styckemarginaler i numrerade tekniksteg så långa instruktioner blir lättare att följa på mobil. |
+| F299 | 🔍 **Fokusöverlägg i felsökningsläge** – Visa tabbordning som siffror över gränssnittet för att hitta fokusproblem. |
+| F300 | 🪟 **Minska genomskinlighet via systemval** – Respektera prefers-reduced-transparency där webbläsaren stöder det. |
+| F301 | 🔣 **Decimaltecken-val** – Låt användaren välja komma eller punkt i viktfält utan att ändra sparad data. |
+| F302 | 🧭 **Ingen fokusflytt vid toast** – Tillfälliga besked ska inte stjäla fokus från en öppen dialog eller ett fält. |
+| F303 | ⌨️ **Tangentbordsgenvägar i hjälp** – Visa en lokal lista över kortkommandon för vanliga vyer och dialoger. |
+| F304 | ➕ **Håll-och-upprepa för viktknappar** – Håll inne plus eller minus för att upprepa justeringen med tydlig visuell feedback. |
+| F305 | 📃 **Semantiska övningslistor** – Markera dagens övningar som listor så skärmläsare kan hoppa mellan poster. |
+
+**Lokal data och integritet**
+
+| # | Idé |
+|---|---|
+| F306 | 💾 **Plats per lagringsnyckel** – Visa hur många kB varje localStorage-nyckel använder i en lokal vy. |
+| F307 | ⚙️ **Exportera endast inställningar** – Skapa en liten JSON med teman och val men inga scheman eller loggar. |
+| F308 | 🧹 **Radera endast historik** – Separat, bekräftad rensning av viktlogg och passhistorik medan scheman behålls. |
+| F309 | 🕰️ **Dataålder per kategori** – Visa senaste datum för viktlogg, balans och scheman i en översikt. |
+| F310 | 🔒 **Sekretessläge för skärmdelning** – Dölj vikter, anteckningar och historik med en snabb knapp när appen visas för någon annan, utan att radera något. |
+| F311 | 🔌 **Lokal Drive-spärr** – En inställning som hindrar Drive-knappar från att aktiveras av misstag på enheten. |
+| F312 | 🏷️ **Eget backupnamn** – Lägg till en kort etikett i backupfilen, utöver datum och enhet. |
+| F313 | 📥 **Importkö utan skrivning** – Låt användaren lägga flera schemafiler i en lokal kö och granska dem en i taget innan någon sparas. |
+| F314 | 🎭 **Anonymiserad exempeldata** – Exportera en påhittad eller rensad datamängd för felsökning utan riktiga värden. |
+| F315 | 🕶️ **Varning för privat läge** – Visa ett tydligt besked om webbläsaren kan rensa lokal data när fönstret stängs. |
+
+**Prestanda och kod**
+
+| # | Idé |
+|---|---|
+| F316 | 🧠 **Idle-schemaläggning** – Kör tung bild- och statistikförberedelse i requestIdleCallback där det finns stöd. |
+| F317 | 🧩 **Moduluppdelad JavaScript** – Flytta tydliga ansvarsområden till lokala ES-moduler utan byggsteg. |
+| F318 | 📊 **Minnesmätning i debug** – Visa webbläsarens minnesindikator lokalt när API:t stöds, utan att skicka data. |
+| F319 | 🛑 **AbortController för Drive** – Avbryt pågående hämtning eller uppladdning när användaren stänger panelen. |
+| F320 | 📜 **Passiva scroll-lyssnare** – Markera lyssnare som passive där de inte behöver preventDefault. |
+| F321 | 🔄 **Debouncad orientation och resize** – Samla layoutändringar vid rotation och fönsterstorlek till en uppdatering. |
+| F322 | 🗺️ **WeakMap för DOM-data** – Koppla tillfällig data till element utan att läcka minne när kort tas bort. |
+| F323 | 🧬 **Strukturerad kloning** – Använd structuredClone för lokala kopior där det är säkrare än JSON-strängar. |
+| F324 | 🔤 **Lokala typsnitt med font-display** – Säkerställ att text syns snabbt även om ett typsnitt dröjer. |
+| F325 | 🎨 **Cachad kontrastberäkning** – Återanvänd beräknade kontrastvärden för designtokens i stället för att räkna om vid varje vy. |
+
+**Delning och motivation**
+
+| # | Idé |
+|---|---|
+| F326 | 📤 **Textdelning av närvaro** – Dela endast antal genomförda pass i veckan som text, utan vikter eller scheman. |
+| F327 | 📮 **Fristående schema-HTML** – Exportera ett schema som en lokal HTML-fil som mottagaren kan öppna offline utan att installera GymApp. |
+| F328 | 📈 **Relativ delning** – Visa framsteg som procent eller nivå mot eget tidigare värde utan absoluta kilon. |
+| F329 | 🌱 **Återstart efter lång paus** – Föreslå en mild startvy efter flera veckors uppehåll utan skuld eller streakkrav. |
+| F330 | 🏷️ **Passetiketter för sammanhang** – Märk pass med exempelvis tidspress, bra fokus eller sömnbrist för att senare filtrera historiken utan att ändra schemat. |
+| F331 | 🟩 **Kalenderprickar för vanor** – Dela en bild med träningsdagar som prickar, utan övningsnamn eller vikter. |
+| F332 | ✍️ **Egen delningssignatur** – Lägg till en kort avsändartext som följer med delade kort eller texter. |
+| F333 | 🔦 **Tryckvänlig delningsbakgrund** – Exportera delningskort med ljus, enkel bakgrund även om appen använder mörkt tema. |
+| F334 | 🧾 **Delningskvitto** – Visa efter en vald delning en lokal sammanfattning av vad som lämnade appen och när, utan att spara mottagare. |
 
 ## ✅ Checklista
 
