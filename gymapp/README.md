@@ -403,23 +403,26 @@ Rensa workspacet så **endast aktiva filer** blir kvar.
 
 ### `förslag`
 
-Ge **25 helt nya idéer** som **inte redan finns** någonstans i denna spec.
+Ge **alltid 59 helt nya idéer** när användaren skriver `förslag`.
 
 **Fokus:** appen · designen · **minnesanvändning** · prestanda · tydlighet · viralitet
 
-- Alla 25 skrivs in i [förslagsbanken](#-förslagsbank) direkt
-- Nästa `förslag` måste därför ge 25 **andra** idéer
-- Presenteras som en **meny att välja ur** – användaren plockar de som ska in i checklistan
-- **Bygg ingenting** förrän användaren pekar ut vilka
+- Idéerna får **inte redan ha använts** i specen, förslagsbanken eller tidigare omgångar, och får inte bara vara omskrivningar av gamla idéer.
+- Kontrollera **hela** den aktuella banken först. Den fullständiga banken finns i `gymapp/README.md`; kontrollera även tidigare överlämningar om de finns. Fortsätt på nästa lediga F-nummer.
+- Alla **59** skrivs in i [förslagsbanken](#-förslagsbank) direkt och presenteras som en **meny att välja ur**.
+- Nästa `förslag` ger 59 **andra** nya idéer. Gamla idéer får inte återanvändas.
+- **Bygg ingenting** förrän användaren pekar ut vilka.
+- Det fasta antalet **59 ersätter tidigare 25**. Ändra regeln endast om användaren uttryckligen ger en ny.
 
 ### `checklista` / `lista`
 
-Visa **implementations-checklistan** – allt som är valt men ännu inte byggt.
+Visa **endast ändringar som ännu inte är implementerade**.
 
-- Hämtas från [Implementations-checklista](#-implementations-checklista) nedan
-- Visa status per rad: ☐ ej påbörjad · 🔄 pågående · ✅ klar
-- Användaren kan välja vad som ska implementeras härnäst
-- **Bygg ingenting** utan uttryckligt val
+- Hämtas från [Implementations-checklista](#-implementations-checklista) nedan.
+- Visa bara status **☐ ej påbörjad** och **🔄 pågående**, även om en post väntar på klarsignal.
+- Visa **inte** ✅ klara poster, redan implementerade funktioner eller historik.
+- Användaren kan välja vad som ska implementeras härnäst.
+- **Bygg ingenting** utan uttryckligt val.
 
 ### Automatisk regel: optimeringsförslag var 5:e uppdatering
 

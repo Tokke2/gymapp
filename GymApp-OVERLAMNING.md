@@ -150,11 +150,12 @@ A1 PB-tracker, A2 smart push, A3 foton, A4 kompisläge och A5 molnsynk avvaktar 
 ## Kommandon och användarens arbetsregler
 
 - `kommande`: visa de planerade punkterna som meny, bygg ingenting.
-- `checklista` eller `lista`: visa checklistan från specen, bygg ingenting bara för att listan efterfrågas.
+- `checklista` eller `lista`: visa endast ändringar som ännu inte är implementerade (☐ ej påbörjad eller 🔄 pågående), inklusive poster som väntar på klarsignal. Visa inte ✅ klara poster eller redan byggda funktioner. Bygg ingenting bara för att listan efterfrågas.
 - `filer`: visa de tio senast ändrade aktiva arbetsytefilerna, sorterade med klickbara länkar.
 - `töm`: analysera referenser, fråga alltid innan tvetydig borttagning, ta bort endast bekräftade filer och validera.
-- `förslag`: ge 25 nya idéer som inte finns i specen, och lägg in dem i förslagsbanken. Om användaren uttryckligen ber om annat antal, följ det antalet. 100 nya idéer F176–F275 lades till senast. Kontrollera hela banken inför nästa omgång; nästa lediga F-nummer är F276.
+- `förslag`: ge alltid 59 helt nya idéer som inte använts tidigare i specen, förslagsbanken eller tidigare omgångar. Kontrollera hela banken, fortsätt på nästa lediga F-nummer och skriv in alla 59 i förslagsbanken. Detta ersätter tidigare 25. 100 nya idéer F176–F275 lades till senast; nästa lediga F-nummer är F276. Bygg ingenting.
 - Efter varje **femte koduppdatering**: ge tio nya optimeringsförslag O-nummer och skriv in i specen. Senast dokumenterade koduppdatering är #17; nästa tröskel enligt den räknaren är #20. O1–O20 finns, O19 implementerad.
+- Git: pusha varje kodändring till aktuell Arena-arbetsbranch efter commit, aldrig till `main`. Användaren bekräftade detta 2026-11-08.
 - Radera inte kommande-punkter tyst. När en punkt är färdig, flytta/registrera den under `✅ Klart – tidigare kommande` med datum.
 - Datum i äldre changelog innehåller inkonsekvenser och framtida datum. Kontrollera aktuellt datum i den nya miljön och använd faktisk verifiering i stället för att gissa tidsordning.
 
@@ -593,23 +594,26 @@ Rensa workspacet så **endast aktiva filer** blir kvar.
 
 ### `förslag`
 
-Ge **25 helt nya idéer** som **inte redan finns** någonstans i denna spec.
+Ge **alltid 59 helt nya idéer** när användaren skriver `förslag`.
 
 **Fokus:** appen · designen · **minnesanvändning** · prestanda · tydlighet · viralitet
 
-- Alla 25 skrivs in i [förslagsbanken](#-förslagsbank) direkt
-- Nästa `förslag` måste därför ge 25 **andra** idéer
-- Presenteras som en **meny att välja ur** – användaren plockar de som ska in i checklistan
-- **Bygg ingenting** förrän användaren pekar ut vilka
+- Idéerna får **inte redan ha använts** i specen, förslagsbanken eller tidigare omgångar, och får inte bara vara omskrivningar av gamla idéer.
+- Kontrollera **hela** den aktuella banken först. Den fullständiga banken finns i `gymapp/README.md`; kontrollera även tidigare överlämningar om de finns. Fortsätt på nästa lediga F-nummer.
+- Alla **59** skrivs in i [förslagsbanken](#-förslagsbank) direkt och presenteras som en **meny att välja ur**.
+- Nästa `förslag` ger 59 **andra** nya idéer. Gamla idéer får inte återanvändas.
+- **Bygg ingenting** förrän användaren pekar ut vilka.
+- Det fasta antalet **59 ersätter tidigare 25**. Ändra regeln endast om användaren uttryckligen ger en ny.
 
 ### `checklista` / `lista`
 
-Visa **implementations-checklistan** – allt som är valt men ännu inte byggt.
+Visa **endast ändringar som ännu inte är implementerade**.
 
-- Hämtas från [Implementations-checklista](#-implementations-checklista) nedan
-- Visa status per rad: ☐ ej påbörjad · 🔄 pågående · ✅ klar
-- Användaren kan välja vad som ska implementeras härnäst
-- **Bygg ingenting** utan uttryckligt val
+- Hämtas från [Implementations-checklista](#-implementations-checklista) nedan.
+- Visa bara status **☐ ej påbörjad** och **🔄 pågående**, även om en post väntar på klarsignal.
+- Visa **inte** ✅ klara poster, redan implementerade funktioner eller historik.
+- Användaren kan välja vad som ska implementeras härnäst.
+- **Bygg ingenting** utan uttryckligt val.
 
 ### Automatisk regel: optimeringsförslag var 5:e uppdatering
 
