@@ -153,8 +153,8 @@ A1 PB-tracker, A2 smart push, A3 foton, A4 kompisläge och A5 molnsynk avvaktar 
 - `checklista` eller `lista`: visa endast ändringar som ännu inte är implementerade (☐ ej påbörjad eller 🔄 pågående), inklusive poster som väntar på klarsignal. Visa inte ✅ klara poster eller redan byggda funktioner. Bygg ingenting bara för att listan efterfrågas.
 - `filer`: visa de tio senast ändrade aktiva arbetsytefilerna, sorterade med klickbara länkar.
 - `töm`: analysera referenser, fråga alltid innan tvetydig borttagning, ta bort endast bekräftade filer och validera.
-- `förslag`: ge alltid 59 helt nya idéer som inte använts tidigare i specen, förslagsbanken eller tidigare omgångar. Kontrollera hela banken, fortsätt på nästa lediga F-nummer och skriv in alla 59 i förslagsbanken. Detta ersätter tidigare 25. 59 nya idéer F276–F334 lades till senast; nästa lediga F-nummer är F335. Bygg ingenting.
-- Efter varje **femte koduppdatering**: ge tio nya optimeringsförslag O-nummer och skriv in i specen. Senast dokumenterade koduppdatering är #18; nästa tröskel enligt den räknaren är #20. O1–O20 finns, O19 implementerad.
+- `förslag`: ge alltid 59 helt nya idéer som inte använts tidigare i specen, förslagsbanken eller tidigare omgångar. Kontrollera hela banken, fortsätt på nästa lediga F-nummer och skriv in alla 59 i förslagsbanken. Detta ersätter tidigare 25. 59 nya idéer F276–F334 lades till i omgång 9; 25 idéer F335–F359 i omgång 10. Nästa lediga F-nummer är F360. Bygg ingenting.
+- Efter varje **femte koduppdatering**: ge tio nya optimeringsförslag O-nummer och skriv in i specen. Senast dokumenterade koduppdatering är #19; nästa tröskel enligt den räknaren är #20. O1–O20 finns, O19 implementerad.
 - Git: pusha varje kodändring till aktuell Arena-arbetsbranch efter commit, aldrig till `main`. Användaren bekräftade detta 2026-11-08.
 - Radera inte kommande-punkter tyst. När en punkt är färdig, flytta/registrera den under `✅ Klart – tidigare kommande` med datum.
 - Datum i äldre changelog innehåller inkonsekvenser och framtida datum. Kontrollera aktuellt datum i den nya miljön och använd faktisk verifiering i stället för att gissa tidsordning.
@@ -698,6 +698,7 @@ Räknare för regeln *"10 optimeringsförslag var 5:e uppdatering"*.
 | 16 | 2026-06-07 | **O19 Läsbara övningsnamn** – radbryt långa namn i träningsvy, schemaförhandsvisning och viktlogg. Service worker cacheversion uppdaterad. |
 | 17 | 2026-06-07 | **B1 Migrationsbot** – dataversion, icke-destruktiv migrering av gammal 100-reps-räknare, skrivskydd vid okänt format samt versionshantering vid backup; tester med simulerad lagring. |
 | 18 | 2026-11-08 | **Design/enkelhet** – hemsidan fick tydligare ordning (dagens pass/schema före statistik), verktyg samlades i en hopfällbar panel, större träningsknappar och tydligare fokusmarkering. Service worker v13. Ingen ny notisfunktion, konto eller Firebase aktiverades. |
+| 19 | 2026-11-08 | **Skärpa och anpassning** – tydligare ytor och text, hela övningsbilder och säkrare smala kolumner; balanstimern uppdateras vid sekundbyte och vilar i dold flik. Service worker v14. Timer testad simulerat, faktisk mobilvisning och energiförbrukning ej uppmätta. |
 
 ---
 
@@ -1322,6 +1323,39 @@ Ingen av dessa är byggd eller vald ännu.
 | F332 | ✍️ **Egen delningssignatur** – Lägg till en kort avsändartext som följer med delade kort eller texter. |
 | F333 | 🔦 **Tryckvänlig delningsbakgrund** – Exportera delningskort med ljus, enkel bakgrund även om appen använder mörkt tema. |
 | F334 | 🧾 **Delningskvitto** – Visa efter en vald delning en lokal sammanfattning av vad som lämnade appen och när, utan att spara mottagare. |
+
+### Omgång 10 – 2026-11-08 *(25 idéer, ej valda)*
+
+Idéerna är hypoteser inspirerade av efterfrågan på enkelhet, offlinefunktion och tillförlitlig sparning. Det är **inte verifierat** att varje idé efterfrågats uttryckligen eller saknas hos konkurrenter. Inget byggs utan val. Underlag: [användardiskussion om offline och enkelhet](https://www.reddit.com/r/beginnerfitness/comments/1pm7moq/workout_apps_that_are_actually_free_and_helpful/), [beskrivna användarbehov för träningslogg](https://github.com/alecryan88/workout_web/issues/1).
+
+| # | Idé |
+|---|---|
+| F335 | **Sittplats före bild** – Visa en valbar skiss av var stolen står i förhållande till skärm och stöd för varje övning, utan säkerhetsgaranti. |
+| F336 | **Fästpunktsavstånd i ord** – Beskriv om bandfästet är nära eller längre bort i en egen notering utan mått eller kilofält. |
+| F337 | **Vändbar instruktionsordning** – Låt användaren manuellt vända ordningen på sidoberoende instruktioner utan att ändra övningen. |
+| F338 | **Tydlig startsignal för varje sida** – Visa en valbar etikett för vilken sida användaren börjar med, utan att räkna repetitioner. |
+| F339 | **Pausplats i rummet** – Ange en valfri plats att vila på mellan övningar och visa den i dagens vy. |
+| F340 | **Fotavtryck för golvyta** – Visa schemats angivna fria golvyta som enkel skiss före ett pass, inte som automatiskt säkerhetsbesked. |
+| F341 | **Betraktningsavstånd per enhet** – Låt användaren välja avstånd nära eller längre bort och förhandsgranska passkortets läsbarhet. |
+| F342 | **Ikonernas innebörd vid tryck** – Öppna en liten förklaring för en specifik ikon utan att lämna aktuell vy. |
+| F343 | **Textankare vid rotation** – Behåll samma instruktion nära skärmens ovankant när enheten roteras, även om texten radbryts om. |
+| F344 | **Riktning i bildtext** – Komplettera en bild med användarens valda text om åt vilket håll rörelsen går i just den bilden. |
+| F345 | **Färgprov för egen skärm** – Visa några små provrutor och textstorlekar så användaren själv kan välja en läsbar kombination. |
+| F346 | **Prioritet vid smal spalt** – Låt användaren välja vilken av två icke-kritiska detaljer som ska visas först när bredden är begränsad. |
+| F347 | **Instruktionsfönster utan kantbeskärning** – Visa hela träningsbilden inom tillgänglig yta och låt användaren växla till en beskuren närbild. |
+| F348 | **Avläsning utan decimaler i översikt** – Avrunda enbart visad översikt efter eget val och visa exakt ursprungsvärde vid öppning; lagrade värden ändras inte. |
+| F349 | **Markera egen kontrollpunkt** – Låt användaren lägga en kort lokal kontrollfråga vid en övnings start utan automatisk bedömning. |
+| F350 | **Skydda övningens läsordning** – Förhandsvisa hur dagens instruktioner läses i textordning även när skärmen visar flera kolumner. |
+| F351 | **Utskrift av bara aktiva instruktioner** – Skriv ut valda tekniksteg för ett enskilt pass utan vikthistorik eller personliga kommentarer. |
+| F352 | **Avbrottskort utan sparade värden** – Visa manuellt valda nästa steg efter att appen återöppnats, utan att anta att ett set är slutfört. |
+| F353 | **Kontroll av gammal exporterad kopia** – Jämför datum på en manuellt vald backupfil med lokala ändringar utan att importera eller överföra filen. |
+| F354 | **Tydlig tidszon för passdatum** – Visa vilken lokal tidszon som används när ett passdatum registreras, utan att automatiskt ändra äldre datum. |
+| F355 | **Engångsläge för delad skärm** – Visa ett valt schema utan privata värden i en separat tillfällig vy som stängs utan att ändra datan. |
+| F356 | **Lokal översikt av bilddimensioner** – Visa originalmått och om bilden förstoras i aktuell vy, utan att ladda upp bilder. |
+| F357 | **Avsluta passvy utan väntande bildarbete** – Avbryt en lokal bildavkodningsuppgift när användaren lämnar vyn, där webbläsaren stöder det. |
+| F358 | **Mät paus mellan skärmuppdateringar** – Visa i ett lokalt utvecklartest antal timeruppdateringar under ett pass, utan analys eller uppladdning. |
+| F359 | **Testpaket för olika textlängder** – Generera tillfälliga exempelnamn med olika längd för att granska radbrytning utan att använda sparade scheman. |
+
 
 ## ✅ Checklista
 

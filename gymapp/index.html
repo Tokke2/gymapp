@@ -1659,6 +1659,27 @@ textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{
   .home-tools-body{padding:0 10px 12px}
 }
 
+
+/* Skärpa och anpassning utan att begränsa zoom eller ändra bildfiler. */
+:root{--s0:#161625;--s1:#202032;--s2:#2b2b40;--b0:rgba(255,255,255,.13);--t2:#c1cad8;--t3:#aab6c8;--blur:none;--blurH:none}
+body{-webkit-font-smoothing:auto;-moz-osx-font-smoothing:auto;text-rendering:auto}
+#bg{display:none}
+#nav,#mob-nav{background:#0b0b18}
+.pg,.page-shell,.wk-grid,.bal-layout,.prog-wrap,.home-shell{min-width:0}
+.sch-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.wk-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.ex-img2{object-fit:contain;background:#10101e}
+.stat-lbl,.dtl,.ex-sets,.sel-info-sub,.ext-txt span,.ht-txt span{line-height:1.45}
+.stat-lbl,.dtl,.ex-sets{font-size:max(.75rem,1em)}
+.mn .ico,.ext-ico,.ht-ico,.hi-ico{line-height:1.15}
+@media(max-width:360px){
+  .stats-row{gap:5px}.stat{padding:12px 4px}
+  .stat-lbl{font-size:.7rem;overflow-wrap:anywhere}
+  .mn{font-size:.68rem}.qa-btn{font-size:.75rem}
+  .activity-dots{gap:2px}.adot-circle{width:clamp(22px,7vw,28px);height:clamp(22px,7vw,28px)}
+}
+@media(min-width:641px) and (max-width:859px){.wk-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}}
+
 </style>
 </head>
 <body>
@@ -2147,7 +2168,7 @@ let SCH = 0;    // active schedule index
 
 /* ── TIMER ───────────────────────────────────── */
 const T = {
-  sec:20, left:20, raf:0, running:false,
+  sec:20, left:20, timeout:0, running:false,
   startTime:0, startLeft:0,
   CIRC: 2 * Math.PI * 65,  // ≈ 408.4
 };
@@ -3495,48 +3516,48 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden && T.running && !_wl) wakeOn();
 });
 
-/* requestAnimationFrame istället för setInterval:
-   pausas automatiskt när fliken är dold, och DOM skrivs
-   bara när sekunden faktiskt ändras (tidigare 4×/s alltid). */
+/* Uppdatera bara vid sekundbyte. Tiden beräknas alltid från klockan,
+   och uppdateras direkt när en dold flik blir synlig igen. */
 let _lastShown = -1;
-
+function tickBalanceTimer() {
+  if (!T.running) return;
+  T.timeout = 0;
+  T.left = Math.max(0, T.startLeft - (Date.now() - T.startTime) / 1000);
+  const whole = Math.ceil(T.left);
+  if (whole !== _lastShown) { _lastShown = whole; updTimer(); }
+  if (T.left <= 0) {
+    bStop();
+    setBtSt('✅ Klart! Byt övning!', 'done');
+    vib([150, 75, 150]);
+    toast('✅ Tid ute! Byt övning!');
+    return;
+  }
+  if (!document.hidden) {
+    const untilNext = (T.left - (whole - 1)) * 1000;
+    T.timeout = setTimeout(tickBalanceTimer, Math.max(16, Math.ceil(untilNext)));
+  }
+}
+document.addEventListener('visibilitychange', () => {
+  if (!T.running) return;
+  if (T.timeout) clearTimeout(T.timeout);
+  T.timeout = 0;
+  if (!document.hidden) tickBalanceTimer();
+});
 window.bStart = () => {
   if (T.running) return;
-  if (T.raf) { cancelAnimationFrame(T.raf); T.raf = 0; }
   if (T.left <= 0) T.left = T.sec;
-  T.running   = true;
+  T.running = true;
   T.startTime = Date.now();
   T.startLeft = T.left;
-  _lastShown  = -1;
+  _lastShown = -1;
   setBtSt('Kör på! 💪', 'run');
   wakeOn();
-
-  const tick = () => {
-    if (!T.running) return;
-    const elapsed = (Date.now() - T.startTime) / 1000;
-    T.left = Math.max(0, T.startLeft - elapsed);
-    const whole = Math.ceil(T.left);
-
-    if (whole !== _lastShown) {   // skriv bara vid faktisk förändring
-      _lastShown = whole;
-      updTimer();
-    }
-
-    if (T.left <= 0) {
-      bStop();
-      setBtSt('✅ Klart! Byt övning!', 'done');
-      vib([150, 75, 150]);
-      toast('✅ Tid ute! Byt övning!');
-      return;
-    }
-    T.raf = requestAnimationFrame(tick);
-  };
-  T.raf = requestAnimationFrame(tick);
+  tickBalanceTimer();
 };
-
 window.bStop = () => {
-  if (T.raf) cancelAnimationFrame(T.raf);
-  T.raf = 0;
+  if (T.timeout) clearTimeout(T.timeout);
+  T.timeout = 0;
+  if (T.running) T.left = Math.max(0, T.startLeft - (Date.now() - T.startTime) / 1000);
   T.running = false;
   wakeOff();
 };
